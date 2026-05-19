@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>סיפורי סבא - כל הפרקים</title>
+  <style>
+/* סגנון לעטיפה של הכותרת */
+        .hero-section {
+            position: relative;
+            padding: 60px 20px;
+            text-align: center;
+            overflow: hidden;
+            background-color: #f9f9f9; /* רקע כללי קליל מאחורי הלוגו */
+            border-radius: 8px;
+        }
+
+        /* יצירת שכבת הרקע עם הלוגו השקוף */
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* החלף את logo.png בנתיב לקובץ הלוגו שלך */
+            background-image: url('https://i.imgur.com/GDu9Lk5.jpeg'); 
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain; /* או cover,contain, תלוי איך תרצה שהלוגו יתפרס */
+            opacity: 0.9; /* 90% שקיפות */
+            z-index: 1; /* מוודא שהרקע מתחת לטקסט */
+        }
+
+        /* סגנון לטקסט עצמו - דואג שהטקסט יהיה מעל הרקע השקוף */
+        .hero-content {
+            position: relative;
+            z-index: 2; /* מעל שכבת ה-::before */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            color: #555;
+        }
+    body{
+      margin:0;
+      font-family:Arial;
+      background:#f4f4f4;
+    }.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  margin:20px 0;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:15px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  text-decoration:none;
+  color:black;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:scale(1.03);
+}
+
+.card img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:12px;
+}
+
+.title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.desc{
+  font-size:14px;
+  color:#555;
+  line-height:1.4;
+}
+
+.header-box{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:20px;
+  text-align:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+  </style>
+</head>
+<body>
+<div class="hero-section">
+        <div class="hero-content">
+        </div>
+    </div>  
+  
+<div class="grid"><!-- פרק 1 -->
+<a class="card" href="https://siporeysaba-s01e01.netlify.app/" target="_blank">
+  <img src="https://i.imgur.com/iU7y0Z0.jpeg">
+  <div class="card-content">
+    <div class="title">פרק 1 - התרנגולות שהפכו לעיזים - רבי חנינא בן דוסא</div>
+    <div class="desc">איך כמה תרנגולות אבודות הופכות לעדר עיזים שלם?</div>
+  </div>
+</a>
+
+<!-- פרק 2 -->
+<a class="card" href="#" target="_blank">
+  <img src="">
+  <div class="card-content">
+    <div class="title">בקרוב</div>
+    <div class="desc">בקרוב</div>
+  </div>
+</a>
+
+
+  </div></div></body>
+</html>
