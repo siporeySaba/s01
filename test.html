@@ -175,39 +175,36 @@ async function loadEpisodes(){
       }
     });
 
-    if(!res.ok){
-      throw new Error("GitHub load failed: " + res.status);
-    }
+    console.log("STATUS:", res.status);
 
     const file = await res.json();
+    console.log("GITHUB RESPONSE:", file);
 
-    cachedSha = file.sha;
+    if(!res.ok){
+      throw new Error("GitHub error: " + res.status);
+    }
 
     const json = JSON.parse(atob(file.content));
 
+    console.log("PARSED JSON:", json);
+
     const list = document.getElementById("episodesList");
-
-    if(!list) return;
-
     list.innerHTML = "";
 
-    json.forEach((ep, i) => {
-
+    json.forEach(ep => {
       list.innerHTML += `
         <div class="card">
           <b>${ep.title}</b><br>
-          <small>${ep.series}</small><br>
-          <span>${ep.shortDesc || ""}</span>
+          <small>${ep.series}</small>
         </div>
       `;
     });
 
   } catch(err){
-    console.error("Load error:", err);
-    alert("שגיאה בטעינת פרקים (תבדוק טוקן / JSON)");
+    console.error("FULL ERROR:", err);
+    alert("שגיאה אמיתית - פתח קונסול (F12)");
   }
 }
-
 /* =========================
    SAVE EPISODE (SAFE)
 ========================= */
