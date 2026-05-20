@@ -42,11 +42,11 @@
       height: 220px;
       border-radius: 12px;
       border: none;
+      margin-bottom: 15px;
     }
 
     .back {
       display: block;
-      margin-top: 15px;
       text-align: center;
       padding: 10px;
       background: #333;
@@ -54,6 +54,82 @@
       text-decoration: none;
       border-radius: 8px;
     }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <div class="title" id="title">טוען...</div>
+
+    <iframe id="video" src="" allowfullscreen></iframe>
+
+    <div class="desc" id="desc"></div>
+
+    <a class="back" href="index.html">
+      ⬅ חזרה לדף הבית
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+
+const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+
+function getVideoId(url) {
+
+  if (!url) return "";
+
+  if (url.includes("v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  return "";
+}
+
+const params = new URLSearchParams(window.location.search);
+const index = params.get("index");
+
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
+
+    const ep = data[index];
+
+    if (!ep) {
+      document.getElementById("title").innerText = "פרק לא נמצא";
+      return;
+    }
+
+    document.getElementById("title").innerText = ep.title || "";
+    document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
+
+    const videoId = getVideoId(ep.link);
+
+    if (videoId) {
+      document.getElementById("video").src =
+        `https://www.youtube.com/embed/${videoId}`;
+    }
+
+  })
+  .catch(err => {
+    console.error("שגיאה:", err);
+  });
+
+</script>
+
+</body>
+</html>    }
   </style>
 </head>
 
