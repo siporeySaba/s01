@@ -3,38 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>פרק</title>
+
+  <title>פרק צפייה</title>
 
   <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      background:linear-gradient(135deg,#fff7e6,#e6f3ff);
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f5f5f5;
     }
 
-    .container{
-      max-width:800px;
-      margin:auto;
-      padding:20px;
+    .container {
+      padding: 15px;
     }
 
-    .card{
-      background:white;
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    img{
-      width:100%;
-      height:260px;
-      object-fit:cover;
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .content{
-      padding:15px;
+    .desc {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 15px;
+      line-height: 1.6;
     }
 
+    iframe {
+      width: 100%;
+      height: 220px;
+      border-radius: 12px;
+      border: none;
+    }
+
+    .back {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      padding: 10px;
+      background: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <div class="title" id="title">טוען...</div>
+
+    <iframe id="video" src="" allowfullscreen></iframe>
+
+    <div class="desc" id="desc"></div>
+
+    <a class="back" href="index.html">⬅ חזרה לדף הבית</a>
+
+  </div>
+
+</div>
+
+<script>
+
+const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+
+function getVideoId(url) {
+
+  if (!url) return "";
+
+  if (url.includes("v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  return "";
+}
+
+const params = new URLSearchParams(window.location.search);
+const index = params.get("index");
+
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
+
+    const ep = data[index];
+
+    if (!ep) {
+      document.getElementById("title").innerText = "פרק לא נמצא";
+      return;
+    }
+
+    document.getElementById("title").innerText = ep.title || "";
+    document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
+
+    const videoId = getVideoId(ep.link);
+
+    if (videoId) {
+      document.getElementById("video").src =
+        `https://www.youtube.com/embed/${videoId}`;
+    }
+
+  })
+  .catch(err => {
+    console.error("שגיאה:", err);
+  });
+
+</script>
+
+</body>
+</html>
     .title{
       font-size:24px;
       font-weight:bold;
