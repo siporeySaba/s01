@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>דשבורד ניהול</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  display:flex;
+  height:100vh;
+  background:#f4f6fb;
+}
+
+/* Sidebar */
+.sidebar{
+  width:220px;
+  background:#1f2937;
+  color:white;
+  padding:20px;
+}
+
+.sidebar h2{
+  font-size:18px;
+  margin-bottom:20px;
+}
+
+.menu-item{
+  padding:10px;
+  margin:5px 0;
+  background:#374151;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.menu-item:hover{
+  background:#4b5563;
+}
+
+/* Main */
+.main{
+  flex:1;
+  padding:20px;
+}
+
+/* Cards */
+.card{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom:15px;
+}
+
+/* Inputs */
+input, select{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  padding:10px 15px;
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>📊 דשבורד</h2>
+
+  <div class="menu-item" onclick="showPage('add')">➕ הוספת פרק</div>
+  <div class="menu-item" onclick="showPage('list')">📚 כל הפרקים</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LOGIN -->
+  <div id="loginBox" class="card">
+    <h3>🔐 כניסה</h3>
+    <input id="code" placeholder="קוד 4 ספרות">
+    <button onclick="login()">כניסה</button>
+  </div>
+
+  <!-- ADD EPISODE -->
+  <div id="addPage" class="card" style="display:none">
+
+    <h3>➕ הוספת פרק</h3>
+
+    <input id="title" placeholder="כותרת">
+    <input id="shortDesc" placeholder="תיאור קצר">
+    <input id="fullDesc" placeholder="תיאור מלא">
+    <input id="link" placeholder="יוטיוב">
+
+    <select id="series">
+      <option value="stories">סיפורים</option>
+      <option value="parasha">פרשת שבוע</option>
+    </select>
+
+    <button onclick="saveEpisode()">💾 שמור</button>
+
+  </div>
+
+  <!-- LIST -->
+  <div id="listPage" class="card" style="display:none">
+    <h3>📚 פרקים</h3>
+    <div id="episodesList"></div>
+  </div>
+
+</div>
+
+<script>
+
+const ADMIN_CODE = "1234";
+const TOKEN = "PUT_YOUR_TOKEN_HERE";
+const REPO = "siporeySaba/s01";
+const FILE = "episodes.json";
+
+function login(){
+  const code = document.getElementById("code").value;
+
+  if(code === ADMIN_CODE){
+    document.getElementById("loginBox").style.display = "none";
+    showPage("add");
+    loadEpisodes();
+  } else {
+    alert("קוד שגוי");
+  }
+}
+
+function showPage(page){
+  document.getElementById("addPage").style.display = "none";
+  document.getElementById("listPage").style.display = "none";
+
+  document.getElementById(page + "Page").style.display = "block";
+}
+
+async function saveEpisode(){
+
+  const newEp = {
+    title: title.value,
+    shortDesc: shortDesc.value,
+    fullDesc: fullDesc.value,
+    link: link.value,
+    series: series.value
+  };
+
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+    headers: { Authorization: `token ${TOKEN}` }
+  });
+
+  const file = await res.json();
+
+  const json = JSON.parse(atob(file.content));
+  json.push(newEp);
+
+  await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "add episode",
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2)))),
+      sha: file.sha
+    })
+  });
+
+  alert("נשמר ✔");
+  loadEpisodes();
+}
+
+async function loadEpisodes(){
+
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+    headers: { Authorization: `token ${TOKEN}` }
+  });
+
+  const file = await res.json();
+  const json = JSON.parse(atob(file.content));
+
+  const list = document.getElementById("episodesList");
+  list.innerHTML = "";
+
+  json.forEach((ep, i) => {
+
+    list.innerHTML += `
+      <div class="card">
+        <b>${ep.title}</b><br>
+        <small>${ep.series}</small>
+      </div>
+    `;
+  });
+}
+
+</script>
+
+</body>
+</html>
