@@ -152,33 +152,42 @@ fetch(URL)
 
     // 🔥 פרקים מאותה סדרה בלבד
     const sameSeries = data.filter(item =>
-      item.series === ep.series
-    );
+  item.series === ep.series
+);
 
-    const index = sameSeries.findIndex(item =>
-      item.id === ep.id
-    );
+const currentIndex = sameSeries.findIndex(item =>
+  String(item.id) === String(ep.id)
+);
 
-    const prev = sameSeries[index - 1];
-    const next = sameSeries[index + 1];
+const prev = sameSeries[currentIndex - 1];
+const next = sameSeries[currentIndex + 1];
 
-    const nav = document.getElementById("nav");
+const nav = document.createElement("div");
+nav.className = "nav";
 
-    if (prev) {
-      nav.innerHTML += `
-        <a class="btn secondary" href="episode.html?id=${prev.id}">
-          ⬅ פרק קודם
-        </a>
-      `;
-    }
+nav.style.display = "flex";
+nav.style.gap = "10px";
+nav.style.marginTop = "15px";
 
-    if (next) {
-      nav.innerHTML += `
-        <a class="btn" href="episode.html?id=${next.id}">
-          פרק הבא ➡
-        </a>
-      `;
-    }
+if (prev) {
+  nav.innerHTML += `
+    <a class="btn secondary" style="flex:1;background:#555;"
+       href="episode.html?id=${prev.id}">
+      ⬅ פרק קודם
+    </a>
+  `;
+}
+
+if (next) {
+  nav.innerHTML += `
+    <a class="btn" style="flex:1;background:#333;"
+       href="episode.html?id=${next.id}">
+      פרק הבא ➡
+    </a>
+  `;
+}
+
+document.querySelector(".card").appendChild(nav);
 
   })
   .catch(err => {
