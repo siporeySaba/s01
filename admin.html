@@ -131,7 +131,7 @@ button:hover{
 <script>
 
 const ADMIN_CODE = "1234";
-const TOKEN = "PUT_YOUR_TOKEN_HERE";
+const TOKEN = "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";
 const REPO = "siporeySaba/s01";
 const FILE = "episodes.json";
 
@@ -164,16 +164,27 @@ async function saveEpisode(){
     series: series.value
   };
 
-  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
-    headers: { Authorization: `token ${TOKEN}` }
+  const url = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `token ${TOKEN}`
+    }
   });
 
   const file = await res.json();
 
   const json = JSON.parse(atob(file.content));
+
   json.push(newEp);
 
-  await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+  const updated = btoa(
+    unescape(
+      encodeURIComponent(JSON.stringify(json, null, 2))
+    )
+  );
+
+  const updateRes = await fetch(url, {
     method: "PUT",
     headers: {
       Authorization: `token ${TOKEN}`,
@@ -181,12 +192,14 @@ async function saveEpisode(){
     },
     body: JSON.stringify({
       message: "add episode",
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2)))),
+      content: updated,
       sha: file.sha
     })
   });
 
+  console.log(await updateRes.json());
   alert("נשמר ✔");
+
   loadEpisodes();
 }
 
