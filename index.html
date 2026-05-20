@@ -1,6 +1,100 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סיפורי צדיקים לילדים</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial;
+      background:linear-gradient(135deg,#fff7e6,#e6f3ff);
+    }
+
+    .container{
+      max-width:1000px;
+      margin:auto;
+      padding:20px;
+    }
+
+    .header{
+      background:linear-gradient(135deg,#ffcc70,#ff8a5c);
+      padding:25px;
+      border-radius:20px;
+      text-align:center;
+      color:white;
+      font-size:28px;
+      font-weight:bold;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:15px;
+      margin-top:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    .card img{
+      width:100%;
+      height:170px;
+      object-fit:cover;
+    }
+
+    .card-content{
+      padding:12px;
+    }
+
+    .title{
+      font-weight:bold;
+      font-size:18px;
+      margin-bottom:6px;
+    }
+
+    .desc{
+      color:#555;
+      font-size:14px;
+    }
+
+    .btn{
+      display:block;
+      margin-top:10px;
+      background:#ff8a5c;
+      color:white;
+      text-align:center;
+      padding:10px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:bold;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    📖 סיפורי צדיקים לילדים
+  </div>
+
+  <!-- זה מה שהיה חסר לך -->
+  <div id="episodes" class="grid"></div>
+
+</div>
+
 <script>
 
-fetch('episodes.json')
+fetch('./episodes.json')
 .then(response => response.json())
 .then(data => {
 
@@ -36,6 +130,10 @@ fetch('episodes.json')
     `;
   });
 
-});
+})
+.catch(err => console.error("שגיאה בטעינת JSON:", err));
 
 </script>
+
+</body>
+</html>
