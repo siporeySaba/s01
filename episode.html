@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>פרק צפייה</title>
+  <title>פרק</title>
 
   <style>
     body {
@@ -33,8 +33,9 @@
     .desc {
       font-size: 15px;
       color: #444;
-      margin-bottom: 15px;
       line-height: 1.6;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
     }
 
     iframe {
@@ -53,6 +54,14 @@
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .debug {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -65,13 +74,13 @@
 
     <div class="title" id="title">טוען...</div>
 
-    <iframe id="video" src="" allowfullscreen></iframe>
+    <iframe id="video" allowfullscreen></iframe>
 
     <div class="desc" id="desc"></div>
 
-    <a class="back" href="index.html">
-      ⬅ חזרה לדף הבית
-    </a>
+    <a class="back" href="index.html">⬅ חזרה לדף הבית</a>
+
+    <div class="debug" id="debug"></div>
 
   </div>
 
@@ -82,8 +91,12 @@
 const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
 
-function getVideoId(url) {
+function log(msg) {
+  const el = document.getElementById("debug");
+  el.innerText += msg + "\n";
+}
 
+function getVideoId(url) {
   if (!url) return "";
 
   if (url.includes("v=")) {
@@ -100,20 +113,21 @@ function getVideoId(url) {
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-const ep = data.find(item => item.id == id);
+log("ID מהURL: " + id);
 
-  function debug(msg) {
-  document.body.innerHTML += "<pre>" + msg + "</pre>";
-}
-  
 fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-debug("ID: " + id);
-debug(JSON.stringify(data));
+    log("כמות פרקים: " + data.length);
+
+    const ep = data.find(item =>
+      String(item.id).trim() === String(id).trim()
+    );
+
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
+      log("❌ לא נמצא פרק עם ID כזה");
       return;
     }
 
@@ -127,9 +141,11 @@ debug(JSON.stringify(data));
         `https://www.youtube.com/embed/${videoId}`;
     }
 
+    log("✔ נטען בהצלחה");
+
   })
   .catch(err => {
-    console.error("שגיאה:", err);
+    log("❌ שגיאה: " + err);
   });
 
 </script>
