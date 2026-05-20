@@ -1,98 +1,45 @@
-<!DOCTYPE html><html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>סיפורי סבא - כל הפרקים</title>
-  <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      background:#f4f4f4;
-    }.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
+<script>
 
-h1{
-  text-align:center;
-  margin:20px 0;
-}
+fetch('episodes.json')
+.then(response => response.json())
+.then(async data => {
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-  gap:15px;
-}
+  const container = document.getElementById('episodes');
 
-.card{
-  background:white;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
-  text-decoration:none;
-  color:black;
-  transition:0.2s;
-}
+  for (const ep of data) {
 
-.card:hover{
-  transform:scale(1.03);
-}
+    // שליפת מידע מיוטיוב
+    const res = await fetch(
+      `https://www.youtube.com/oembed?url=${ep.link}&format=json`
+    );
 
-.card img{
-  width:100%;
-  height:140px;
-  object-fit:cover;
-}
+    const yt = await res.json();
 
-.card-content{
-  padding:12px;
-}
+    container.innerHTML += `
+      <div class="card">
 
-.title{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:6px;
-}
+        <img src="${yt.thumbnail_url}">
 
-.desc{
-  font-size:14px;
-  color:#555;
-  line-height:1.4;
-}
+        <div class="card-content">
 
-.header-box{
-  background:white;
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:20px;
-  text-align:center;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
+          <div class="title">${yt.title}</div>
 
-  </style>
-</head>
-<body><div class="container">  <div class="header-box">
-    <h1>סיפורי סבא</h1>
-    <p>בחרו פרק לצפייה</p>
-  </div>  <div class="grid"><!-- פרק 1 -->
-<a class="card" href="https://siporeysaba-s01e01.netlify.app/" target="_blank">
-  <img src="https://i.imgur.com/iU7y0Z0.jpeg">
-  <div class="card-content">
-    <div class="title">פרק 1 - התרנגולות שהפכו לעיזים - רבי חנינא בן דוסא</div>
-    <div class="desc">איך כמה תרנגולות אבודות הופכות לעדר עיזים שלם?</div>
-  </div>
-</a>
+          <div class="desc">
+            ${ep.desc || ""}
+          </div>
 
-<!-- פרק 2 -->
-<a class="card" href="#" target="_blank">
-  <img src="">
-  <div class="card-content">
-    <div class="title">בקרוב</div>
-    <div class="desc">בקרוב</div>
-  </div>
-</a>
+          <a class="btn"
+             href="${ep.link}"
+             target="_blank">
+             ▶ לצפייה בפרק
+          </a>
 
+        </div>
 
-  </div></div></body>
-</html>
+      </div>
+    `;
+  }
+
+});
+
+</script>
