@@ -37,3 +37,44 @@
   <div id="episodes" class="grid"></div>
 
 </div>
+
+<script>
+fetch('./episodes.json')
+.then(res => res.json())
+.then(data => {
+
+  const container = document.getElementById('episodes');
+
+  data.forEach((ep, index) => {
+
+    const videoId = ep.link.split('v=')[1];
+    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+    container.innerHTML += `
+      <div class="card">
+
+        <img src="${thumbnail}" style="width:100%;border-radius:12px;">
+
+        <div style="padding:12px;">
+
+          <div class="title">${ep.title}</div>
+
+          <div class="desc">${ep.desc}</div>
+
+          <a class="btn"
+             style="display:block;margin-top:10px;background:#ff8a5c;color:white;text-align:center;padding:10px;border-radius:10px;text-decoration:none;"
+             href="episode.html?id=${index}">
+             ▶ לצפייה בפרק
+          </a>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+})
+.catch(err => {
+  console.error("שגיאה בטעינת פרקים:", err);
+});
+</script>
