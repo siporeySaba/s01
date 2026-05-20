@@ -102,12 +102,16 @@ const id = params.get("id");
 
 const ep = data.find(item => item.id == id);
 
+  function debug(msg) {
+  document.body.innerHTML += "<pre>" + msg + "</pre>";
+}
+  
 fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-console.log("ID מהURL:", id);
-console.log("DATA:", data);
+debug("ID: " + id);
+debug(JSON.stringify(data));
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
       return;
