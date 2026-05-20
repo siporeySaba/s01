@@ -1,3 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>סיפורי סבא</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(135deg,#fff7e6,#e6f3ff);
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  background:linear-gradient(135deg,#ffcc70,#ff8a5c);
+  color:white;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:15px;
+  margin-top:15px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+}
+
+.title{
+  font-weight:bold;
+  font-size:18px;
+  margin-bottom:8px;
+}
+
+.desc{
+  color:#555;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:15px;
+  margin-top:20px;
+}
+
+.card-episode{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+}
+
+.card-episode img{
+  width:100%;
+  height:170px;
+  object-fit:cover;
+}
+
+.content{
+  padding:12px;
+}
+
+.btn{
+  display:block;
+  margin-top:10px;
+  background:#ff8a5c;
+  color:white;
+  text-align:center;
+  padding:10px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
 <div class="container">
 
   <div class="header">
@@ -5,31 +98,28 @@
   </div>
 
   <!-- קישורים -->
-  <div class="card" style="margin-top:15px;padding:15px;">
+  <div class="card">
     <div class="title">🔗 הצטרפות והאזנה</div>
 
-    <a class="btn" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N?mlu=1&s=cl&p=a" target="_blank">📱 קבוצת וואטסאפ</a>
-    <a class="btn" href="https://youtu.be/07jSXTBBqjg" target="_blank">▶ ערוץ יוטיוב</a>
-    <a class="btn" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank">🎧 ספוטיפיי</a>
+    <a class="btn" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N?mlu=1&s=cl&p=a">📱 וואטסאפ</a>
+    <a class="btn" href="https://youtu.be/07jSXTBBqjg">▶ יוטיוב</a>
+    <a class="btn" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io">🎧 ספוטיפיי</a>
   </div>
 
   <!-- לוז -->
-  <div class="card" style="margin-top:15px;padding:15px;">
+  <div class="card">
     <div class="title">📅 לוז יציאת פרקים</div>
-
     <div class="desc">
-      שני ורביעי: פרק חדש מסדרת הסיפורים<br>
-      חמישי: פרק חדש מסדרת פרשת שבוע<br>
+      שני ורביעי: פרק חדש<br>
+      חמישי: פרשת שבוע
     </div>
   </div>
 
   <!-- הנצחה -->
-  <div class="card" style="margin-top:15px;padding:15px;">
+  <div class="card">
     <div class="title">🕯️ הנצחה</div>
-
     <div class="desc">
-      המיזם כולו מוקדשים באהבה ובקדושה לזכרם של ארבעת גיבורי שלומית, *אביעד, אוריאל, בכור וראובן ז"ל ולזכר שי שימריז ז"ל*, שנפלו בקרבות הגבורה בשמחת תורה תשפ"ד ובמלחמת התקומה. 
-פרויקט "סיפורי סבא" נולד מתוך רצון להרבות טוב, חסד וערכים בעולם – ואת הכוח, הרוח והאור למיזם הזה ובכלל אנחנו שואבים מהגבורה והלב הענק שהם השאירו לנו. יהי זכרם ברוך. 💔
+      המיזם מוקדש לזכר הנופלים הקדושים...
     </div>
   </div>
 
@@ -51,20 +141,17 @@ fetch('./episodes.json')
     const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
     container.innerHTML += `
-      <div class="card">
+      <div class="card-episode">
 
-        <img src="${thumbnail}" style="width:100%;border-radius:12px;">
+        <img src="${thumbnail}">
 
-        <div style="padding:12px;">
+        <div class="content">
 
           <div class="title">${ep.title}</div>
-
           <div class="desc">${ep.desc}</div>
 
-          <a class="btn"
-             style="display:block;margin-top:10px;background:#ff8a5c;color:white;text-align:center;padding:10px;border-radius:10px;text-decoration:none;"
-             href="episode.html?id=${index}">
-             ▶ לצפייה בפרק
+          <a class="btn" href="episode.html?id=${index}">
+            ▶ לצפייה בפרק
           </a>
 
         </div>
@@ -75,6 +162,9 @@ fetch('./episodes.json')
 
 })
 .catch(err => {
-  console.error("שגיאה בטעינת פרקים:", err);
+  console.error("בעיה בטעינת פרקים:", err);
 });
 </script>
+
+</body>
+</html>
