@@ -123,48 +123,44 @@ body{
 פרויקט "סיפורי סבא" נולד מתוך רצון להרבות טוב, חסד וערכים בעולם – ואת הכוח, הרוח והאור למיזם הזה ובכלל אנחנו שואבים מהגבורה והלב הענק שהם השאירו לנו. יהי זכרם ברוך. 💔
     </div>
   </div>
+<!-- כפתורים -->
+  <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
 
+  <button onclick="render('all')" class="btn">הכל</button>
+  <button onclick="render('stories')" class="btn">סיפורים</button>
+  <button onclick="render('parasha')" class="btn">פרשת שבוע</button>
+
+</div>
   <!-- פרקים -->
   <div id="episodes" class="grid"></div>
 
 </div>
 
+<div id="episodes"></div>
+
 <script>
-fetch('./episodes.json')
-.then(res => res.json())
-.then(data => {
+  let dataGlobal = {};
 
-  const container = document.getElementById('episodes');
-
-  data.forEach((ep, index) => {
-
-    const videoId = ep.link.split('v=')[1];
-    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-
-    container.innerHTML += `
-      <div class="card-episode">
-
-        <img src="${thumbnail}">
-
-        <div class="content">
-
-          <div class="title">${ep.title}</div>
-          <div class="desc">${ep.shortDesc}</div>
-
-          <a class="btn" href="episode.html?id=${index}">
-         כניסה לפרק
-          </a>
-
-        </div>
-
-      </div>
-    `;
+  fetch('./episodes.json')
+  .then(res => res.json())
+  .then(data => {
+    dataGlobal = data;
+    render('all');
   });
 
-})
-.catch(err => {
-  console.error("בעיה בטעינת פרקים:", err);
-});
+  function render(series){
+    const container = document.getElementById('episodes');
+    container.innerHTML = "";
+
+    dataGlobal[series].forEach((ep, index) => {
+      container.innerHTML += `
+        <div class="card">
+          <div class="title">${ep.title}</div>
+          <div class="desc">${ep.shortDesc}</div>
+        </div>
+      `;
+    });
+  }
 </script>
 
 </body>
