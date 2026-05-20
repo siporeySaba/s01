@@ -144,9 +144,29 @@ body{
 <div id="episodes"></div>
 
 <script>
-  
+
 const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+
+const defaultImages = {
+  stories: "https://i.imgur.com/GDu9Lk5.jpeg",
+  parasha: "https://i.imgur.com/wfc0OV8.jpeg",
+  default: "https://i.imgur.com/GDu9Lk5.jpeg"
+};
+
+function getVideoId(url) {
+  if(!url) return "";
+
+  if(url.includes("v=")){
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if(url.includes("youtu.be/")){
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  return "";
+}
 
 fetch(URL)
   .then(res => res.json())
@@ -154,30 +174,26 @@ fetch(URL)
 
     const container = document.getElementById("episodes");
 
-    if(!container){
-      console.error("Missing #episodes container");
-      return;
-    }
-
     container.innerHTML = "";
 
     data.forEach(ep => {
 
-      // מזהה יוטיוב (פשוט יחסית)
-      let videoId = "";
+      const videoId = getVideoId(ep.link);
 
-      if(ep.link.includes("v=")){
-        videoId = ep.link.split("v=")[1].split("&")[0];
-      }
-
-      const thumbnail = videoId
+      const youtubeThumb = videoId
         ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
         : "";
+
+      // בחירת תמונה לפי סדרה
+      const fallbackImg =
+        defaultImages[ep.series] || defaultImages.default;
+
+      const imageToShow = youtubeThumb || fallbackImg;
 
       container.innerHTML += `
         <div class="card">
 
-          ${thumbnail ? `<img src="${thumbnail}">` : ""}
+          <img src="${imageToShow}">
 
           <div class="card-content">
 
@@ -197,9 +213,9 @@ fetch(URL)
 
   })
   .catch(err => {
-    console.error("שגיאה בטעינת Google Sheets:", err);
+    console.error("שגיאה:", err);
   });
 
-</script>
+      </script>
 </body>
 </html>
