@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פרק</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial;
+      background:linear-gradient(135deg,#fff7e6,#e6f3ff);
+    }
+
+    .container{
+      max-width:800px;
+      margin:auto;
+      padding:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    img{
+      width:100%;
+      height:260px;
+      object-fit:cover;
+    }
+
+    .content{
+      padding:15px;
+    }
+
+    .title{
+      font-size:24px;
+      font-weight:bold;
+      margin-bottom:10px;
+    }
+
+    .desc{
+      color:#555;
+      line-height:1.6;
+    }
+
+    .btn{
+      display:block;
+      margin-top:15px;
+      background:#ff8a5c;
+      color:white;
+      text-align:center;
+      padding:12px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:bold;
+    }
+
+    .back{
+      display:inline-block;
+      margin-bottom:15px;
+      color:#ff8a5c;
+      text-decoration:none;
+      font-weight:bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <a class="back" href="index.html">⬅ חזרה לעמוד הראשי</a>
+
+  <div id="episode"></div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+fetch('./episodes.json')
+.then(res => res.json())
+.then(data => {
+
+  const ep = data[id];
+
+  if(!ep){
+    document.getElementById("episode").innerHTML = "פרק לא נמצא";
+    return;
+  }
+
+  const videoId = ep.link.split("v=")[1];
+  const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+  document.getElementById("episode").innerHTML = `
+    <div class="card">
+
+      <img src="${thumbnail}">
+
+      <div class="content">
+
+        <div class="title">${ep.title}</div>
+
+        <div class="desc">${ep.desc}</div>
+
+        <a class="btn" href="${ep.link}" target="_blank">
+          ▶ לצפייה בפרק ביוטיוב
+        </a>
+
+      </div>
+
+    </div>
+  `;
+
+});
+
+</script>
+
+</body>
+</html>
