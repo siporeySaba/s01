@@ -98,13 +98,14 @@ function getVideoId(url) {
 }
 
 const params = new URLSearchParams(window.location.search);
-const index = params.get("index");
+const id = params.get("id");
+
+const ep = data.find(item => item.id == id);
 
 fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-    const ep = data[index];
 
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
