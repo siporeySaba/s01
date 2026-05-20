@@ -172,7 +172,7 @@ async function loadEpisodes(){
 
     const res = await fetch(url, {
       headers: {
-        Authorization: `token ${TOKEN}`
+        Authorization: `Bearer ${TOKEN}`
       }
     });
 
@@ -225,7 +225,7 @@ async function saveEpisode(){
 
     const res = await fetch(url, {
       headers: {
-        Authorization: `token ${TOKEN}`
+        Authorization: `Bearer ${TOKEN}`
       }
     });
 
@@ -248,7 +248,7 @@ async function saveEpisode(){
     const updateRes = await fetch(url, {
       method: "PUT",
       headers: {
-        Authorization: `token ${TOKEN}`,
+        Authorization: `Bearer ${TOKEN}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
