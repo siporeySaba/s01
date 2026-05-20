@@ -204,75 +204,7 @@ fetch(URL)
 
 </body>
 </html>
-    .title{
-      font-size:24px;
-      font-weight:bold;
-      margin-bottom:10px;
-    }
-
-    .desc{
-      color:#555;
-      line-height:1.6;
-    }
-
-    .btn{
-      display:block;
-      margin-top:15px;
-      background:#ff8a5c;
-      color:white;
-      text-align:center;
-      padding:12px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:bold;
-    }
-
-    .back{
-      display:inline-block;
-      margin-bottom:15px;
-      color:#ff8a5c;
-      text-decoration:none;
-      font-weight:bold;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <a class="back" href="index.html">⬅ חזרה לעמוד הראשי</a>
-
-  <div id="episode"></div>
-
-</div>
-
-<script>
-
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-
-fetch('./episodes.json')
-.then(res => res.json())
-.then(data => {
-
-  const ep = data[id];
-
-  if(!ep){
-    document.getElementById("episode").innerHTML = "פרק לא נמצא";
-    return;
-  }
-
-  const videoId = ep.link.split("v=")[1];
-  const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-
-  document.getElementById("episode").innerHTML = `
-    <div class="card">
-
-      <img src="${thumbnail}">
-
-      <div class="content">
-
+    
         <div class="title">${ep.title}</div>
 
         <div class="desc">${ep.fullDesc}</div>
