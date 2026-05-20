@@ -1,139 +1,39 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>סיפורי צדיקים לילדים</title>
-
-  <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      background:linear-gradient(135deg,#fff7e6,#e6f3ff);
-    }
-
-    .container{
-      max-width:1000px;
-      margin:auto;
-      padding:20px;
-    }
-
-    .header{
-      background:linear-gradient(135deg,#ffcc70,#ff8a5c);
-      padding:25px;
-      border-radius:20px;
-      text-align:center;
-      color:white;
-      font-size:28px;
-      font-weight:bold;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:15px;
-      margin-top:20px;
-    }
-
-    .card{
-      background:white;
-      border-radius:16px;
-      overflow:hidden;
-      box-shadow:0 6px 18px rgba(0,0,0,0.1);
-    }
-
-    .card img{
-      width:100%;
-      height:170px;
-      object-fit:cover;
-    }
-
-    .card-content{
-      padding:12px;
-    }
-
-    .title{
-      font-weight:bold;
-      font-size:18px;
-      margin-bottom:6px;
-    }
-
-    .desc{
-      color:#555;
-      font-size:14px;
-    }
-
-    .btn{
-      display:block;
-      margin-top:10px;
-      background:#ff8a5c;
-      color:white;
-      text-align:center;
-      padding:10px;
-      border-radius:10px;
-      text-decoration:none;
-      font-weight:bold;
-    }
-  </style>
-
-</head>
-
-<body>
-
 <div class="container">
 
   <div class="header">
-    📖 סיפורי צדיקים לילדים
+    📖 סיפורי סבא
   </div>
 
-  <!-- זה מה שהיה חסר לך -->
+  <!-- קישורים -->
+  <div class="card" style="margin-top:15px;padding:15px;">
+    <div class="title">🔗 הצטרפות והאזנה</div>
+
+    <a class="btn" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N?mlu=1&s=cl&p=a" target="_blank">📱 קבוצת וואטסאפ</a>
+    <a class="btn" href="https://youtu.be/07jSXTBBqjg" target="_blank">▶ ערוץ יוטיוב</a>
+    <a class="btn" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank">🎧 ספוטיפיי</a>
+  </div>
+
+  <!-- לוז -->
+  <div class="card" style="margin-top:15px;padding:15px;">
+    <div class="title">📅 לוז יציאת פרקים</div>
+
+    <div class="desc">
+      שני ורביעי: פרק חדש מסדרת הסיפורים<br>
+      חמישי: פרק חדש מסדרת פרשת שבוע<br>
+    </div>
+  </div>
+
+  <!-- הנצחה -->
+  <div class="card" style="margin-top:15px;padding:15px;">
+    <div class="title">🕯️ הנצחה</div>
+
+    <div class="desc">
+      המיזם כולו מוקדשים באהבה ובקדושה לזכרם של ארבעת גיבורי שלומית, *אביעד, אוריאל, בכור וראובן ז"ל ולזכר שי שימריז ז"ל*, שנפלו בקרבות הגבורה בשמחת תורה תשפ"ד ובמלחמת התקומה. 
+פרויקט "סיפורי סבא" נולד מתוך רצון להרבות טוב, חסד וערכים בעולם – ואת הכוח, הרוח והאור למיזם הזה ובכלל אנחנו שואבים מהגבורה והלב הענק שהם השאירו לנו. יהי זכרם ברוך. 💔
+    </div>
+  </div>
+
+  <!-- פרקים -->
   <div id="episodes" class="grid"></div>
 
 </div>
-
-<script>
-
-fetch('./episodes.json')
-.then(response => response.json())
-.then(data => {
-
-  const container = document.getElementById('episodes');
-
-  data.forEach(ep => {
-
-    const videoId = ep.link.split('v=')[1];
-
-    const thumbnail =
-      `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-
-    container.innerHTML += `
-      <div class="card">
-
-        <img src="${thumbnail}">
-
-        <div class="card-content">
-
-          <div class="title">${ep.title}</div>
-
-          <div class="desc">${ep.desc}</div>
-
-          <a class="btn"
-             href="${ep.link}"
-             target="_blank">
-             ▶ לצפייה בפרק
-          </a>
-
-        </div>
-
-      </div>
-    `;
-  });
-
-})
-.catch(err => console.error("שגיאה בטעינת JSON:", err));
-
-</script>
-
-</body>
-</html>
