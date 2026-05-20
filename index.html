@@ -139,33 +139,51 @@ body{
 <div id="episodes"></div>
 
 <script>
-  let dataGlobal = {};
 
-  fetch('./episodes.json')
-  .then(res => res.json())
-  .then(data => {
-    dataGlobal = data;
-    render('all');
-  });
+let dataGlobal = [];
+
+fetch('./episodes.json')
+.then(res => res.json())
+.then(data => {
+
+  dataGlobal = data;
+  render("all");
+
+});
 
 function render(series){
 
   const container = document.getElementById('episodes');
   container.innerHTML = "";
 
-  dataGlobal.all.forEach((ep, index) => {
+  dataGlobal.forEach((ep, index) => {
 
-    if (series !== "all" && ep.series !== series) return;
+    if(series !== "all" && ep.series !== series) return;
+
+    const videoId = ep.link.split('v=')[1];
+    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
     container.innerHTML += `
       <div class="card">
-        <div class="title">${ep.title}</div>
-        <div class="desc">${ep.shortDesc}</div>
+
+        <img src="${thumbnail}">
+
+        <div class="card-content">
+
+          <div class="title">${ep.title}</div>
+          <div class="desc">${ep.shortDesc}</div>
+
+          <a class="btn" href="episode.html?id=${index}">
+            ▶ לצפייה
+          </a>
+
+        </div>
+
       </div>
     `;
   });
 }
-</script>
 
+</script>
 </body>
 </html>
