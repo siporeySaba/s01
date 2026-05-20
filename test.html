@@ -131,9 +131,14 @@ button:hover{
 <script>
 
 const ADMIN_CODE = "1234";
-const TOKEN = "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";
+
+
+const TOKEN = "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";
+
 const REPO = "siporeySaba/s01";
 const FILE = "episodes.json";
+
+let cachedSha = null;
 
 function login(){
   const code = document.getElementById("code").value;
@@ -151,79 +156,121 @@ function showPage(page){
   document.getElementById("addPage").style.display = "none";
   document.getElementById("listPage").style.display = "none";
 
-  document.getElementById(page + "Page").style.display = "block";
+  const el = document.getElementById(page + "Page");
+  if(el) el.style.display = "block";
 }
 
-async function saveEpisode(){
-
-  const newEp = {
-    title: title.value,
-    shortDesc: shortDesc.value,
-    fullDesc: fullDesc.value,
-    link: link.value,
-    series: series.value
-  };
-
-  const url = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
-
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `token ${TOKEN}`
-    }
-  });
-
-  const file = await res.json();
-
-  const json = JSON.parse(atob(file.content));
-
-  json.push(newEp);
-
-  const updated = btoa(
-    unescape(
-      encodeURIComponent(JSON.stringify(json, null, 2))
-    )
-  );
-
-  const updateRes = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: "add episode",
-      content: updated,
-      sha: file.sha
-    })
-  });
-
-  console.log(await updateRes.json());
-  alert("נשמר ✔");
-
-  loadEpisodes();
-}
-
+/* =========================
+   LOAD EPISODES (SAFE)
+========================= */
 async function loadEpisodes(){
 
-  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
-    headers: { Authorization: `token ${TOKEN}` }
-  });
+  try {
 
-  const file = await res.json();
-  const json = JSON.parse(atob(file.content));
+    const url = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 
-  const list = document.getElementById("episodesList");
-  list.innerHTML = "";
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `token ${TOKEN}`
+      }
+    });
 
-  json.forEach((ep, i) => {
+    if(!res.ok){
+      throw new Error("GitHub load failed: " + res.status);
+    }
 
-    list.innerHTML += `
-      <div class="card">
-        <b>${ep.title}</b><br>
-        <small>${ep.series}</small>
-      </div>
-    `;
-  });
+    const file = await res.json();
+
+    cachedSha = file.sha;
+
+    const json = JSON.parse(atob(file.content));
+
+    const list = document.getElementById("episodesList");
+
+    if(!list) return;
+
+    list.innerHTML = "";
+
+    json.forEach((ep, i) => {
+
+      list.innerHTML += `
+        <div class="card">
+          <b>${ep.title}</b><br>
+          <small>${ep.series}</small><br>
+          <span>${ep.shortDesc || ""}</span>
+        </div>
+      `;
+    });
+
+  } catch(err){
+    console.error("Load error:", err);
+    alert("שגיאה בטעינת פרקים (תבדוק טוקן / JSON)");
+  }
+}
+
+/* =========================
+   SAVE EPISODE (SAFE)
+========================= */
+async function saveEpisode(){
+
+  try {
+
+    const newEp = {
+      title: title.value,
+      shortDesc: shortDesc.value,
+      fullDesc: fullDesc.value,
+      link: link.value,
+      series: series.value
+    };
+
+    const url = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `token ${TOKEN}`
+      }
+    });
+
+    if(!res.ok){
+      throw new Error("GitHub fetch failed: " + res.status);
+    }
+
+    const file = await res.json();
+
+    const json = JSON.parse(atob(file.content));
+
+    json.push(newEp);
+
+    const updatedContent = btoa(
+      unescape(
+        encodeURIComponent(JSON.stringify(json, null, 2))
+      )
+    );
+
+    const updateRes = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "add episode",
+        content: updatedContent,
+        sha: file.sha
+      })
+    });
+
+    if(!updateRes.ok){
+      throw new Error("GitHub save failed");
+    }
+
+    alert("✔ נשמר בהצלחה");
+    loadEpisodes();
+
+  } catch(err){
+    console.error(err);
+    alert("❌ שגיאה בשמירה - פתח קונסול");
+  }
 }
 
 </script>
