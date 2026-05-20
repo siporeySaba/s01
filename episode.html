@@ -86,15 +86,13 @@
 
 </div>
 
-<script>
+<<script>
 
 const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
 
-function log(msg) {
-  const el = document.getElementById("debug");
-  el.innerText += msg + "\n";
-}
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
 function getVideoId(url) {
   if (!url) return "";
@@ -110,27 +108,23 @@ function getVideoId(url) {
   return "";
 }
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-
-log("ID: " + id);
-
 fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-    log("כמות פרקים: " + data.length);
-
-    const ep = data.find(item =>
-      String(item.id).trim() === String(id).trim()
+    // פרק נוכחי
+    const currentIndex = data.findIndex(ep =>
+      String(ep.id).trim() === String(id).trim()
     );
+
+    const ep = data[currentIndex];
 
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
-      log("❌ לא נמצא פרק עם ID כזה");
       return;
     }
 
+    // הצגת פרק
     document.getElementById("title").innerText = ep.title || "";
     document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
 
@@ -141,11 +135,153 @@ fetch(URL)
         `https://www.youtube.com/embed/${videoId}`;
     }
 
-    log("✔ נטען בהצלחה");
+    // 🔥 סינון לפי סדרה
+    const sameSeries = data.filter(item =>
+      item.series === ep.series
+    );
+
+    const seriesIndex = sameSeries.findIndex(item =>
+      item.id === ep.id
+    );
+
+    const prev = sameSeries[seriesIndex - 1];
+    const next = sameSeries[seriesIndex + 1];
+
+    // שם הפרק הנוכחי
+    const nav = document.createElement("div");
+    nav.style.marginTop = "15px";
+    nav.style.textAlign = "center";
+    nav.style.fontWeight = "bold";
+
+    nav.innerText = "📖 " + ep.title;
+    document.querySelector(".card").appendChild(nav);
+
+    // כפתורים
+    const buttons = document.createElement("div");
+    buttons.style.display = "flex";
+    buttons.style.gap = "10px";
+    buttons.style.marginTop = "10px";
+
+    if (prev) {
+      buttons.innerHTML += `
+        <a class="back" style="flex:1;background:#555;" href="episode.html?id=${prev.id}">
+          ⬅ פרק קודם
+        </a>
+      `;
+    }
+
+    if (next) {
+      buttons.innerHTML += `
+        <a class="back" style="flex:1;background:#555;" href="episode.html?id=${next.id}">
+          פרק הבא ➡
+        </a>
+      `;
+    }
+
+    document.querySelector(".card").appendChild(buttons);
 
   })
   .catch(err => {
-    log("❌ שגיאה: " + err);
+    console.error(err);
+  });
+
+<script>
+
+const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+function getVideoId(url) {
+  if (!url) return "";
+
+  if (url.includes("v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  return "";
+}
+
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
+
+    // פרק נוכחי
+    const currentIndex = data.findIndex(ep =>
+      String(ep.id).trim() === String(id).trim()
+    );
+
+    const ep = data[currentIndex];
+
+    if (!ep) {
+      document.getElementById("title").innerText = "פרק לא נמצא";
+      return;
+    }
+
+    // הצגת פרק
+    document.getElementById("title").innerText = ep.title || "";
+    document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
+
+    const videoId = getVideoId(ep.link);
+
+    if (videoId) {
+      document.getElementById("video").src =
+        `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    // 🔥 סינון לפי סדרה
+    const sameSeries = data.filter(item =>
+      item.series === ep.series
+    );
+
+    const seriesIndex = sameSeries.findIndex(item =>
+      item.id === ep.id
+    );
+
+    const prev = sameSeries[seriesIndex - 1];
+    const next = sameSeries[seriesIndex + 1];
+
+    // שם הפרק הנוכחי
+    const nav = document.createElement("div");
+    nav.style.marginTop = "15px";
+    nav.style.textAlign = "center";
+    nav.style.fontWeight = "bold";
+
+    nav.innerText = "📖 " + ep.title;
+    document.querySelector(".card").appendChild(nav);
+
+    // כפתורים
+    const buttons = document.createElement("div");
+    buttons.style.display = "flex";
+    buttons.style.gap = "10px";
+    buttons.style.marginTop = "10px";
+
+    if (prev) {
+      buttons.innerHTML += `
+        <a class="back" style="flex:1;background:#555;" href="episode.html?id=${prev.id}">
+          ⬅ פרק קודם
+        </a>
+      `;
+    }
+
+    if (next) {
+      buttons.innerHTML += `
+        <a class="back" style="flex:1;background:#555;" href="episode.html?id=${next.id}">
+          פרק הבא ➡
+        </a>
+      `;
+    }
+
+    document.querySelector(".card").appendChild(buttons);
+
+  })
+  .catch(err => {
+    console.error(err);
   });
 
 </script>
