@@ -113,7 +113,7 @@ function getVideoId(url) {
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-log("ID מהURL: " + id);
+log("ID: " + id);
 
 fetch(URL)
   .then(res => res.json())
