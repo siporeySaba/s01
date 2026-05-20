@@ -217,7 +217,18 @@ fetch(URL)
     );
 
     const ep = data[currentIndex];
+let ep = data.find(item =>
+  String(item.id).trim() === String(id).trim()
+);
 
+// 🔥 fallback אם לא נמצא
+if (!ep) {
+  const index = Number(id);
+
+  if (!isNaN(index)) {
+    ep = data[index];
+  }
+}
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
       return;
@@ -239,9 +250,11 @@ fetch(URL)
       item.series === ep.series
     );
 
-    const seriesIndex = sameSeries.findIndex(item =>
-      item.id === ep.id
-    );
+    if (!ep) {
+  document.getElementById("title").innerText = "פרק לא נמצא";
+  document.getElementById("desc").innerText = "";
+  return;
+}
 
     const prev = sameSeries[seriesIndex - 1];
     const next = sameSeries[seriesIndex + 1];
