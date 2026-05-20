@@ -106,7 +106,8 @@ fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-
+console.log("ID מהURL:", id);
+console.log("DATA:", data);
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
       return;
