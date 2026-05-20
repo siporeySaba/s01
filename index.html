@@ -2,31 +2,27 @@
 
 fetch('episodes.json')
 .then(response => response.json())
-.then(async data => {
+.then(data => {
 
   const container = document.getElementById('episodes');
 
-  for (const ep of data) {
+  data.forEach(ep => {
 
-    // שליפת מידע מיוטיוב
-    const res = await fetch(
-      `https://www.youtube.com/oembed?url=${ep.link}&format=json`
-    );
+    const videoId = ep.link.split('v=')[1];
 
-    const yt = await res.json();
+    const thumbnail =
+      `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
     container.innerHTML += `
       <div class="card">
 
-        <img src="${yt.thumbnail_url}">
+        <img src="${thumbnail}">
 
         <div class="card-content">
 
-          <div class="title">${yt.title}</div>
+          <div class="title">${ep.title}</div>
 
-          <div class="desc">
-            ${ep.desc || ""}
-          </div>
+          <div class="desc">${ep.desc}</div>
 
           <a class="btn"
              href="${ep.link}"
@@ -38,7 +34,7 @@ fetch('episodes.json')
 
       </div>
     `;
-  }
+  });
 
 });
 
