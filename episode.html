@@ -49,7 +49,7 @@
     .nav {
       display: flex;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     .btn {
@@ -66,19 +66,7 @@
     .btn.secondary {
       background: #555;
     }
-    
-.back-full {
-  display: block;
-  width: 100%;
-  margin-top: 15px;
-  padding: 12px;
-  text-align: center;
-  background: #1f2937;
-  color: white;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: bold;
-}
+
     .series-title {
       margin-top: 10px;
       font-weight: bold;
@@ -91,6 +79,22 @@
       text-align: center;
       margin-top: 10px;
     }
+
+    /* 🔥 כפתור חזרה קבוע ובולט */
+    .back-full {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      text-align: center;
+      background: #0f172a;
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
   </style>
 </head>
 
@@ -108,13 +112,15 @@
 
     <div class="series-title" id="series"></div>
 
+    <!-- 🔥 ניווט -->
     <div class="nav" id="nav"></div>
 
-    <div class="error" id="error"></div>
-
+    <!-- 🔥 כפתור חזרה -->
     <a class="back-full" href="index.html">
-  ⬅ חזרה למסך הראשי
+      ⬅ חזרה למסך הראשי
     </a>
+
+    <div class="error" id="error"></div>
 
   </div>
 
@@ -130,8 +136,15 @@ const id = params.get("id");
 
 function getVideoId(url) {
   if (!url) return "";
-  if (url.includes("v=")) return url.split("v=")[1].split("&")[0];
-  if (url.includes("youtu.be/")) return url.split("youtu.be/")[1].split("?")[0];
+
+  if (url.includes("v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
   return "";
 }
 
@@ -139,7 +152,7 @@ fetch(URL)
   .then(res => res.json())
   .then(data => {
 
-    // 🔥 מציאת פרק לפי ID (חובה)
+    // 🔥 מציאת פרק לפי ID
     let ep = data.find(item =>
       String(item.id).trim() === String(id).trim()
     );
@@ -162,44 +175,36 @@ fetch(URL)
         `https://www.youtube.com/embed/${videoId}`;
     }
 
-    // 🔥 פרקים מאותה סדרה בלבד
+    // 🔥 פרקים מאותה סדרה
     const sameSeries = data.filter(item =>
-  item.series === ep.series
-);
+      item.series === ep.series
+    );
 
-const currentIndex = sameSeries.findIndex(item =>
-  String(item.id) === String(ep.id)
-);
+    const currentIndex = sameSeries.findIndex(item =>
+      String(item.id) === String(ep.id)
+    );
 
-const prev = sameSeries[currentIndex - 1];
-const next = sameSeries[currentIndex + 1];
+    const prev = sameSeries[currentIndex - 1];
+    const next = sameSeries[currentIndex + 1];
 
-const nav = document.createElement("div");
-nav.className = "nav";
+    const nav = document.getElementById("nav");
+    nav.innerHTML = "";
 
-nav.style.display = "flex";
-nav.style.gap = "10px";
-nav.style.marginTop = "15px";
+    if (prev) {
+      nav.innerHTML += `
+        <a class="btn secondary" href="episode.html?id=${prev.id}">
+          ⬅ פרק קודם
+        </a>
+      `;
+    }
 
-if (prev) {
-  nav.innerHTML += `
-    <a class="btn secondary" style="flex:1;background:#555;"
-       href="episode.html?id=${prev.id}">
-      ⬅ פרק קודם
-    </a>
-  `;
-}
-
-if (next) {
-  nav.innerHTML += `
-    <a class="btn" style="flex:1;background:#333;"
-       href="episode.html?id=${next.id}">
-      פרק הבא ➡
-    </a>
-  `;
-}
-
-document.querySelector(".card").appendChild(nav);
+    if (next) {
+      nav.innerHTML += `
+        <a class="btn" href="episode.html?id=${next.id}">
+          פרק הבא ➡
+        </a>
+      `;
+    }
 
   })
   .catch(err => {
