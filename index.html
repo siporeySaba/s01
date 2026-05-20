@@ -148,19 +148,23 @@ body{
     render('all');
   });
 
-  function render(series){
-    const container = document.getElementById('episodes');
-    container.innerHTML = "";
+function render(series){
 
-    dataGlobal[series].forEach((ep, index) => {
-      container.innerHTML += `
-        <div class="card">
-          <div class="title">${ep.title}</div>
-          <div class="desc">${ep.shortDesc}</div>
-        </div>
-      `;
-    });
-  }
+  const container = document.getElementById('episodes');
+  container.innerHTML = "";
+
+  dataGlobal.all.forEach((ep, index) => {
+
+    if (series !== "all" && ep.series !== series) return;
+
+    container.innerHTML += `
+      <div class="card">
+        <div class="title">${ep.title}</div>
+        <div class="desc">${ep.shortDesc}</div>
+      </div>
+    `;
+  });
+}
 </script>
 
 </body>
