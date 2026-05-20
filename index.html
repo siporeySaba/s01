@@ -30,12 +30,18 @@ body{
   font-weight:bold;
 }
 
-.card{
-  background:white;
-  border-radius:16px;
-  padding:15px;
-  margin-top:15px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+.card {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
 }
 
 .title{
@@ -73,7 +79,7 @@ body{
 .content{
   padding:12px;
 }
-
+  
 .btn{
   display:block;
   margin-top:10px;
@@ -139,50 +145,61 @@ body{
 <div id="episodes"></div>
 
 <script>
+  
+const SHEET_ID = "1TGq0fcor5DKlLQgVvrQJ3VoZCp714vesMov_h0Ixhcg";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
 
-let dataGlobal = [];
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
 
-fetch('./episodes.json')
-.then(res => res.json())
-.then(data => {
+    const container = document.getElementById("episodes");
 
-  dataGlobal = data;
-  render("all");
+    if(!container){
+      console.error("Missing #episodes container");
+      return;
+    }
 
-});
+    container.innerHTML = "";
 
-function render(series){
+    data.forEach(ep => {
 
-  const container = document.getElementById('episodes');
-  container.innerHTML = "";
+      // מזהה יוטיוב (פשוט יחסית)
+      let videoId = "";
 
-  dataGlobal.forEach((ep, index) => {
+      if(ep.link.includes("v=")){
+        videoId = ep.link.split("v=")[1].split("&")[0];
+      }
 
-    if(series !== "all" && ep.series !== series) return;
+      const thumbnail = videoId
+        ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+        : "";
 
-    const videoId = ep.link.split('v=')[1];
-    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      container.innerHTML += `
+        <div class="card">
 
-    container.innerHTML += `
-      <div class="card">
+          ${thumbnail ? `<img src="${thumbnail}">` : ""}
 
-        <img src="${thumbnail}">
+          <div class="card-content">
 
-        <div class="card-content">
+            <div class="title">${ep.title || ""}</div>
 
-          <div class="title">${ep.title}</div>
-          <div class="desc">${ep.shortDesc}</div>
+            <div class="desc">${ep.shortDesc || ""}</div>
 
-          <a class="btn" href="episode.html?id=${index}">
-            ▶ לצפייה
-          </a>
+            <a class="btn" href="${ep.link}" target="_blank">
+              ▶ לצפייה בפרק
+            </a>
+
+          </div>
 
         </div>
+      `;
+    });
 
-      </div>
-    `;
+  })
+  .catch(err => {
+    console.error("שגיאה בטעינת Google Sheets:", err);
   });
-}
 
 </script>
 </body>
