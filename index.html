@@ -202,7 +202,11 @@ fetch(URL)
   .then(data => {
     dataGlobal = data;
     render("all");
+  })
+  .catch(err => {
+    console.error("שגיאה:", err);
   });
+  
 
 </script>
 
@@ -213,32 +217,22 @@ fetch(URL)
 
     const imageToShow = youtubeThumb || fallback;
 
-    container.innerHTML += `
-      <div class="card">
+container.innerHTML += `
+  <div class="episode">
+    <img src="${imageToShow}" alt="${ep.title || ""}" />
 
-        <img src="${imageToShow}">
+    <div class="info">
+      <h3>${ep.title || ""}</h3>
+      <p>${ep.shortDesc || ""}</p>
 
-        <div class="card-content">
+      <a href="${ep.youtubeUrl || "#"}" target="_blank">
+        ▶ יוטיוב
+      </a>
 
-          <div class="title">${ep.title || ""}</div>
-          <div class="desc">${ep.shortDesc || ""}</div>
-
-          <div class="buttons">
-
-            <a class="btn youtube" href="${ep.link}" target="_blank">
-              ▶ יוטיוב
-            </a>
-
-            <a class="btn entry" href="episode.html?index=${index}">
-              📖 פרק
-            </a>
-
-          </div>
-
-        </div>
-
-      </div>
-    `;
+      <span>📖 פרק</span>
+    </div>
+  </div>
+`;
   });
 }
 
