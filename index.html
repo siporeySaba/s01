@@ -149,13 +149,20 @@ let dataGlobal = [];
 const defaultImages = {
   stories: "https://i.imgur.com/GDu9Lk5.jpeg",
   parasha: "https://i.imgur.com/wfc0OV8.jpeg",
-  default: "https://i.imgur.com/M15F39y.jpeg"
+  default: "https://i.imgur.com/GDu9Lk5.jpeg"
 };
 
 function getVideoId(url) {
   if (!url) return "";
-  if (url.includes("v=")) return url.split("v=")[1].split("&")[0];
-  if (url.includes("youtu.be/")) return url.split("youtu.be/")[1].split("?")[0];
+
+  if (url.includes("v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
   return "";
 }
 
@@ -173,22 +180,36 @@ function render(filter = "all") {
 
     const videoId = getVideoId(ep.link);
 
-    const thumb = videoId
+    const youtubeThumb = videoId
       ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-      : defaultImages[ep.series] || defaultImages.default;
+      : "";
+
+    const fallback =
+      defaultImages[ep.series] || defaultImages.default;
+
+    const imageToShow = youtubeThumb || fallback;
 
     container.innerHTML += `
       <div class="card">
 
-        <img src="${thumb}">
+        <img src="${imageToShow}">
 
-        <div class="title">${ep.title || ""}</div>
-        <div class="desc">${ep.shortDesc || ""}</div>
+        <div class="card-content">
 
-        <div class="buttons">
+          <div class="title">${ep.title || ""}</div>
+          <div class="desc">${ep.shortDesc || ""}</div>
 
-          <a class="btn youtube" href="${ep.link}" target="_blank">יוטיוב</a>
-          <a class="btn entry" href="episode.html?index=${index}">פרק</a>
+          <div class="buttons">
+
+            <a class="btn youtube" href="${ep.link}" target="_blank">
+              ▶ יוטיוב
+            </a>
+
+            <a class="btn entry" href="episode.html?index=${index}">
+              📖 פרק
+            </a>
+
+          </div>
 
         </div>
 
@@ -206,47 +227,10 @@ fetch(URL)
   .catch(err => {
     console.error("שגיאה:", err);
   });
-  
 
 </script>
 
 </body>
 </html>
-    const fallback =
-      defaultImages[ep.series] || defaultImages.default;
-
-    const imageToShow = youtubeThumb || fallback;
-
-container.innerHTML += `
-  <div class="episode">
-    <img src="${imageToShow}" alt="${ep.title || ""}" />
-
-    <div class="info">
-      <h3>${ep.title || ""}</h3>
-      <p>${ep.shortDesc || ""}</p>
-
-      <a href="${ep.youtubeUrl || "#"}" target="_blank">
-        ▶ יוטיוב
-      </a>
-
-      <span>📖 פרק</span>
-    </div>
-  </div>
-`;
-  });
-}
-
-fetch(URL)
-  .then(res => res.json())
-  .then(data => {
-    dataGlobal = data;
-    render("all");
-  })
-  .catch(err => {
-    console.error("שגיאה:", err);
-  });
-
-</script>
-
-</body>
-</html>
+    
+    
