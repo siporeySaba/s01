@@ -94,6 +94,27 @@
       font-weight: bold;
       box-sizing: border-box;
     }
+    .no-video {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.no-video img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.sleep-msg {
+  background: #fff4cc;
+  border: 2px solid #facc15;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: bold;
+  color: #444;
+}
 
   </style>
 </head>
@@ -133,7 +154,9 @@ const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
-
+const sleepingImage =
+  "https://i.imgur.com/M15F39y.jpeg";
+  
 function getVideoId(url) {
   if (!url) return "";
 
@@ -170,10 +193,41 @@ fetch(URL)
 
     const videoId = getVideoId(ep.link);
 
-    if (videoId) {
-      document.getElementById("video").src =
-        `https://www.youtube.com/embed/${videoId}`;
-    }
+    const video = document.getElementById("video");
+
+if (videoId) {
+
+  video.src =
+    `https://www.youtube.com/embed/${videoId}`;
+
+} else {
+
+  video.style.display = "none";
+
+  const noVideo = document.createElement("div");
+
+  noVideo.className = "no-video";
+
+  noVideo.innerHTML = `
+    <img src="https://i.imgur.com/M15F39y.jpeg">
+
+    <div class="sleep-msg">
+      סבא הלך לישון 😴<br><br>
+
+      לצערינו הפרק לא זמין לצפייה כרגע.<br><br>
+
+      שילחו לנו הודעה ונסדר זאת בהקדם.<br><br>
+
+      (בלי להעיר את סבא כמובן 🤣)
+    </div>
+  `;
+
+  document.querySelector(".card")
+    .insertBefore(
+      noVideo,
+      document.getElementById("desc").nextSibling
+    );
+}
 
     // 🔥 פרקים מאותה סדרה
     const sameSeries = data.filter(item =>
