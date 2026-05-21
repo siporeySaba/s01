@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>סיפורי סבא</title>
-
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 body {
   font-family: Arial;
@@ -87,6 +88,26 @@ body {
   font-size: 14px;
   display: block;
 }
+  .social-buttons {
+  justify-content: center;
+}
+
+.social-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-size: 28px;
+  flex: unset;
+}
+
+.social-btn i {
+  pointer-events: none;
+}
 
 .youtube { background: #ff0000; color: white; }
 .spotify { background: #1DB954; color: white; }
@@ -108,10 +129,32 @@ body {
 
     <div class="title">🔗 הצטרפות והאזנה</div>
 
-    <div class="buttons">
-      <a class="btn whatsapp" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank">וואטסאפ</a>
-      <a class="btn youtube" href="https://youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q" target="_blank">יוטיוב</a>
-      <a class="btn spotify" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank">ספוטיפיי</a>
+    <div class="buttons social-buttons">
+
+  <a class="social-btn whatsapp"
+     href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N"
+     target="_blank">
+
+    <i class="fa-brands fa-whatsapp"></i>
+
+  </a>
+
+  <a class="social-btn youtube"
+     href="https://youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q"
+     target="_blank">
+
+    <i class="fa-brands fa-youtube"></i>
+
+  </a>
+
+  <a class="social-btn spotify"
+     href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io"
+     target="_blank">
+
+    <i class="fa-brands fa-spotify"></i>
+
+  </a>
+
     </div>
 
   </div>
