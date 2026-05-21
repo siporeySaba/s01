@@ -57,6 +57,11 @@ body {
   border-radius: 8px;
   background: #ddd;
 }
+  .filters button.active {
+  background: #333;
+  color: white;
+  font-weight: bold;
+  }
 
 .card img {
   width: 100%;
@@ -131,9 +136,23 @@ body {
 
   <!-- פילטרים -->
   <div class="filters">
-    <button onclick="render('all')">הכל</button>
-    <button onclick="render('stories')">סידרת הסיפורים</button>
-    <button onclick="render('parasha')">פרשת שבוע</button>
+
+  <button id="btn-all"
+          class="active"
+          onclick="render('all')">
+    הכל
+  </button>
+
+  <button id="btn-stories"
+          onclick="render('stories')">
+    סידרת הסיפורים
+  </button>
+
+  <button id="btn-parasha"
+          onclick="render('parasha')">
+    פרשת שבוע
+  </button>
+
   </div>
 
   <!-- פרקים -->
@@ -169,7 +188,17 @@ function getVideoId(url) {
 }
 
 function render(filter = "all") {
+// ניקוי active מכל הכפתורים
+document
+  .querySelectorAll(".filters button")
+  .forEach(btn => btn.classList.remove("active"));
 
+// סימון הכפתור הנוכחי
+const activeBtn = document.getElementById("btn-" + filter);
+
+if (activeBtn) {
+  activeBtn.classList.add("active");
+}
   const container = document.getElementById("episodes");
   container.innerHTML = "";
 
