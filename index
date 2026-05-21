@@ -264,15 +264,14 @@ if (activeBtn) {
     ? [...dataGlobal]
     : dataGlobal.filter(ep => ep.series === filter);
 
-// 🔥 חדש לישן לפי ID
-filtered.sort((a, b) => Number(b.id) - Number(a.id));
+  // 🔥 חדש לישן לפי ID
+  filtered.sort((a, b) => Number(b.id) - Number(a.id));
   
   filtered.forEach((ep, index) => {
-const viewed =
-  JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
+  const viewed = JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
 
-const isNew =
-  !viewed.includes(String(ep.id));
+  const isNew = !viewed.includes(String(ep.id));
+    
     const videoId = getVideoId(ep.link);
 
     const youtubeThumb = videoId
@@ -300,7 +299,7 @@ const isNew =
               ▶ יוטיוב
             </a>
 
-            <a class="btn entry" href="episode.html?id=${ep.id || index}">
+            <a class="btn entry" href="episode.html?id=${ep.id}">
   📖 פרק
 </a>
 
