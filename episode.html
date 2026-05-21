@@ -180,6 +180,20 @@ fetch(URL)
       String(item.id).trim() === String(id).trim()
     );
 
+    // 🔥 שמירת פרק שנצפה
+let viewed =
+  JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
+
+if (!viewed.includes(String(id))) {
+
+  viewed.push(String(id));
+
+  localStorage.setItem(
+    "viewedEpisodes",
+    JSON.stringify(viewed)
+  );
+}
+    
     if (!ep) {
       document.getElementById("title").innerText = "פרק לא נמצא";
       document.getElementById("error").innerText = "לא נמצא פרק עם מזהה כזה";
