@@ -180,18 +180,14 @@ fetch(URL)
       String(item.id).trim() === String(id).trim()
     );
 
-    // 🔥 שמירת פרק שנצפה
-let viewed =
-  JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
+    //שמירת צפייה
+   let viewed = JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
 
-if (!viewed.includes(String(id))) {
+const currentId = String(ep.id);
 
-  viewed.push(String(id));
-
-  localStorage.setItem(
-    "viewedEpisodes",
-    JSON.stringify(viewed)
-  );
+if (!viewed.includes(currentId)) {
+  viewed.push(currentId);
+  localStorage.setItem("viewedEpisodes", JSON.stringify(viewed));
 }
     
     if (!ep) {
