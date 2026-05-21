@@ -189,7 +189,6 @@ fetch(URL)
     // הצגת פרק
     document.getElementById("title").innerText = ep.title || "";
     document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
-    document.getElementById("series").innerText = "סדרה: " + (ep.series || "");
 
     const videoId = getVideoId(ep.link);
 
