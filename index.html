@@ -246,10 +246,13 @@ if (activeBtn) {
   container.innerHTML = "";
 
   const filtered =
-    filter === "all"
-      ? dataGlobal
-      : dataGlobal.filter(ep => ep.series === filter);
+  filter === "all"
+    ? [...dataGlobal]
+    : dataGlobal.filter(ep => ep.series === filter);
 
+// 🔥 חדש לישן לפי ID
+filtered.sort((a, b) => Number(b.id) - Number(a.id));
+  
   filtered.forEach((ep, index) => {
 
     const videoId = getVideoId(ep.link);
