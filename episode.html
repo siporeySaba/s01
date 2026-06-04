@@ -66,6 +66,15 @@
     .btn.secondary {
       background: #555;
     }
+ 
+    .share-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
 
     .series-title {
       margin-top: 10px;
@@ -135,7 +144,12 @@
 
     <!-- 🔥 ניווט -->
     <div class="nav" id="nav"></div>
-
+      
+    <!-- 🔥 כפתור שיתוף -->
+    <button class="btn share-btn" onclick="shareEpisode()">
+    📤 שתף
+    </button>
+    
     <!-- 🔥 כפתור חזרה -->
     <a class="back-full" href="index.html">
       ⬅ חזרה למסך הראשי
@@ -156,6 +170,7 @@ const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 const sleepingImage =
   "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png";
+  let currentEpisode = null;
   
 function getVideoId(url) {
   if (!url) return "";
@@ -195,7 +210,8 @@ if (!viewed.includes(currentId)) {
       document.getElementById("error").innerText = "לא נמצא פרק עם מזהה כזה";
       return;
     }
-
+    //שמירת הפרקעבור השיתוף
+    currentEpisode = ep;
     // הצגת פרק
     document.getElementById("title").innerText = ep.title || "";
     document.getElementById("desc").innerText = ep.fullDesc || ep.shortDesc || "";
@@ -275,7 +291,36 @@ if (videoId) {
       "שגיאה בטעינת נתונים";
     console.error(err);
   });
+function shareEpisode() {
 
+  if (!currentEpisode) return;
+
+  const message =
+`📖 סיפורי סבא
+
+${currentEpisode.title}
+
+🎧 לצפייה:
+${currentEpisode.link}
+
+📲 רוצים לקבל כל פרק חדש?
+
+הצטרפו לקבוצת הוואטסאפ שלנו:
+https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
+
+  if (navigator.share) {
+
+    navigator.share({
+      title: currentEpisode.title,
+      text: message
+    });
+
+  } else {
+
+    alert("המכשיר אינו תומך בשיתוף ישיר");
+
+  }
+}
 </script>
 
 </body>
