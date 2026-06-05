@@ -363,47 +363,42 @@ fetch(URL)
   navigator.serviceWorker.register("sw.js");
 }
 
-  let deferredPrompt = null;
-
+  //כפתור התקנה - לוגיקה 
+let deferredPrompt = null;
 const btn = document.getElementById("installApp");
 
-// הופעה רק אם אפשר להתקין
+console.log("Install script loaded:", btn);
+
 window.addEventListener("beforeinstallprompt", (e) => {
+  console.log("beforeinstallprompt fired");
+
   e.preventDefault();
   deferredPrompt = e;
 
   btn.style.display = "block";
-
-  // אנימציה עדינה כל כמה שניות
-  setInterval(() => {
-    btn.classList.add("pulse");
-
-    setTimeout(() => {
-      btn.classList.remove("pulse");
-    }, 1200);
-  }, 6000);
 });
 
-// לחיצה על התקנה
 btn.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
+  if (!deferredPrompt) {
+    alert("אין אפשרות התקנה כרגע");
+    return;
+  }
 
   deferredPrompt.prompt();
 
-  const choice = await deferredPrompt.userChoice;
-
-  if (choice.outcome === "accepted") {
-    console.log("התקנה בוצעה");
-  }
+  const result = await deferredPrompt.userChoice;
+  console.log(result);
 
   deferredPrompt = null;
   btn.style.display = "none";
 });
 
-// אם כבר מותקן
 window.addEventListener("appinstalled", () => {
+  console.log("App installed");
   btn.style.display = "none";
 });
+
+
 </script>
 <button id="installApp" style="
   position: fixed;
