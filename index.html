@@ -348,7 +348,10 @@ fetch(URL)
   .catch(err => {
     console.error("שגיאה:", err);
   });
-
+//בניית אפליקציה מהאתר
+  if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
 </script>
 
 </body>
