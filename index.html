@@ -160,6 +160,16 @@ body {
 .whatsapp { background: #25D366; color: white; }
 .entry { background: #333; color: white; }
 
+
+  @keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1.2s ease-in-out infinite;
+}
 </style>
 </head>
 
@@ -352,8 +362,66 @@ fetch(URL)
   if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
-</script>
 
+  let deferredPrompt = null;
+
+const btn = document.getElementById("installApp");
+
+// הופעה רק אם אפשר להתקין
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  btn.style.display = "block";
+
+  // אנימציה עדינה כל כמה שניות
+  setInterval(() => {
+    btn.classList.add("pulse");
+
+    setTimeout(() => {
+      btn.classList.remove("pulse");
+    }, 1200);
+  }, 6000);
+});
+
+// לחיצה על התקנה
+btn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  const choice = await deferredPrompt.userChoice;
+
+  if (choice.outcome === "accepted") {
+    console.log("התקנה בוצעה");
+  }
+
+  deferredPrompt = null;
+  btn.style.display = "none";
+});
+
+// אם כבר מותקן
+window.addEventListener("appinstalled", () => {
+  btn.style.display = "none";
+});
+</script>
+<button id="installApp" style="
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  padding: 14px;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+">
+📲 התקן את סיפורי סבא
+</button>
 </body>
 </html>
     
