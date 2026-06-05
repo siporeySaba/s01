@@ -210,7 +210,15 @@ fetch(URL)
    let viewed = JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
 
 const currentId = String(ep.id);
-
+//מונה צפיות
+    if (typeof gtag === "function") {
+  gtag('event', 'view_episode', {
+    episode_id: ep.id,
+    episode_title: ep.title
+  });
+    }
+//עד כאן מונה
+    
 if (!viewed.includes(currentId)) {
   viewed.push(currentId);
   localStorage.setItem("viewedEpisodes", JSON.stringify(viewed));
