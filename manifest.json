@@ -1,0 +1,16 @@
+{
+  "name": "סיפורי סבא",
+  "short_name": "סיפורי סבא",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#111827",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/M15F39y.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
