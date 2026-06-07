@@ -125,11 +125,36 @@ iframe {
   color: white;
 }
 
-.share-btn {
-  background: #2563eb;
-  color: white;
+.share-wrapper {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
 }
 
+.share-btn {
+  width: 100%;
+  max-width: 320px;
+
+  padding: 14px;
+  border-radius: 14px;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  background: #2563eb;
+  color: white;
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.share-btn:active {
+  transform: scale(0.97);
+}
 .nav {
   display: flex;
   gap: 10px;
