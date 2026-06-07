@@ -88,7 +88,7 @@ if (activeBtn) {
     : dataGlobal.filter(e => e.series === filter);
 
   filtered.sort((a, b) =>
-    new Date(b.publishAt || 0) - new Date(a.publishAt || 0)
+    new Date(b.publishAt || "1970-01-01") - new Date(a.publishAt || 0)
   );
 
   console.log("📦 Episodes count:", filtered.length);
@@ -98,6 +98,43 @@ if (activeBtn) {
   return new Date(ep.publishAt) > new Date();
 });
 
+const futureBox = document.getElementById("futureEpisodesBox");
+const futureList = document.getElementById("futureEpisodesList");
+
+function getCountdown(dateStr) {
+  const target = new Date(dateStr);
+  const now = new Date();
+
+  const diff = target - now;
+
+  if (diff <= 0) return "זמין עכשיו";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+  return `⏳ עוד ${days} ימים ו־${hours} שעות`;
+}
+
+if (futureBox && futureList) {
+
+  if (future.length === 0) {
+    futureBox.style.display = "none";
+  } else {
+    futureBox.style.display = "block";
+
+    futureList.innerHTML = future
+      .sort((a,b) => new Date(a.publishAt) - new Date(b.publishAt))
+      .map(ep => `
+        <div class="future-item">
+          <b>${ep.title}</b><br>
+          ${getCountdown(ep.publishAt)}
+        </div>
+      `)
+      .join("");
+  }
+}
+
+   
 const box = document.getElementById("futureEpisodesBox");
 if (box) {
   box.style.display = future.length ? "block" : "none";
