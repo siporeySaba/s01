@@ -57,8 +57,11 @@ iframe {
   position: sticky;
   top: 0;
   z-index: 9999;
-  background: #f5f5f5;
-  backdrop-filter: blur(8px);
+
+  background: rgba(245, 245, 245, 0.75); /* 👈 שקיפות */
+  backdrop-filter: blur(10px); /* 👈 אפקט זכוכית */
+  -webkit-backdrop-filter: blur(10px);
+
   padding: 10px 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
