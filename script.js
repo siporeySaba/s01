@@ -61,6 +61,17 @@ function getEpisodeStatus(ep) {
 
 function render(filter = "all") {
 
+// הסרת active מכל הכפתורים
+document.querySelectorAll(".filters button")
+  .forEach(btn => btn.classList.remove("active"));
+
+// הוספת active לכפתור הנבחר
+const activeBtn = document.getElementById("btn-" + filter);
+
+if (activeBtn) {
+  activeBtn.classList.add("active");
+}
+   
   const container = document.getElementById("episodes");
 
   if (!container) {
