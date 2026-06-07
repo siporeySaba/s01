@@ -307,12 +307,20 @@ function shareEpisode() {
     return;
   }
 
-  const msg = `📖 סיפורי סבא
+ function shareEpisode() {
+
+  const message =
+`📖 סיפורי סבא
 
 ${currentEpisode.title}
 
-🎧 ${currentEpisode.link}`;
+🎧 לצפייה:
+${currentEpisode.link}
 
+📲 רוצים לקבל את הפרקים החדשים לפני כולם?
+
+הצטרפו לקבוצת הוואטסאפ שלנו:
+https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
   console.log("📤 Sharing episode");
 
   if (navigator.share) {
