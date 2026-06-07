@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#111827">
 
-<title>פרק</title>
+<title>סיפורי סבא</title>
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWX9C43JV9"></script>
 <script>
@@ -16,33 +19,72 @@ gtag('js', new Date());
 gtag('config', 'G-XWX9C43JV9');
 </script>
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="card">
-
-    <div class="title" id="title">טוען...</div>
-
-    <iframe id="video"></iframe>
-
-    <div class="desc" id="desc"></div>
-
-    <div class="nav" id="nav"></div>
-
-    <button class="btn share-btn" onclick="shareEpisode()">
-      📤 שתף
-    </button>
-
-    <a class="back-full" href="index.html">
-      ⬅ חזרה למסך הראשי
-    </a>
-
+  <!-- לוגו -->
+  <div class="header-img">
+    <img src="https://i.imgur.com/M15F39y.jpeg">
   </div>
 
+  <!-- רשתות -->
+  <div class="top-bar">
+    <div class="social-buttons">
+
+      <a class="social-btn whatsapp"
+         href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
+
+      <a class="social-btn youtube"
+         href="https://youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q" target="_blank">
+        <i class="fa-brands fa-youtube"></i>
+      </a>
+
+      <a class="social-btn spotify"
+         href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank">
+        <i class="fa-brands fa-spotify"></i>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- לוח -->
+  <div class="card">
+    <div class="title">📅 לוז יציאת פרקים</div>
+    <div class="desc">
+      שני ורביעי: סיפורים<br>
+      חמישי: פרשת שבוע
+    </div>
+  </div>
+
+  <!-- הנצחה -->
+  <div class="card">
+    <div class="title">🕯️ הנצחה</div>
+    <div class="desc">
+המיזם מוקדש לזכר הנופלים והגיבורים...
+    </div>
+  </div>
+
+  <!-- פילטרים -->
+  <div class="filters">
+    <button onclick="render('all')" class="active" id="btn-all">הכל</button>
+    <button onclick="render('stories')" id="btn-stories">סיפורים</button>
+    <button onclick="render('parasha')" id="btn-parasha">פרשת שבוע</button>
+  </div>
+
+  <!-- פרקים -->
+  <div id="episodes"></div>
+
 </div>
+
+<button id="installApp" class="install-btn">📲 התקן את האפליקציה</button>
 
 <script src="script.js"></script>
 
