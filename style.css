@@ -1,0 +1,97 @@
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f5f5f5;
+  direction: rtl;
+}
+
+.container { padding: 10px; }
+
+.card {
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.title { font-weight: bold; margin-bottom: 8px; }
+
+.desc { color: #555; font-size: 14px; }
+
+img {
+  width: 100%;
+  border-radius: 10px;
+  height: 190px;
+  object-fit: cover;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.youtube { background: red; color: white; }
+.entry { background: #333; color: white; }
+
+.locked {
+  background: #999;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: black;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.social-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.youtube { background: #ff0000; }
+.whatsapp { background: #25D366; }
+.spotify { background: #1DB954; }
+
+.install-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  padding: 14px;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  display: none;
+}
