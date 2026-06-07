@@ -82,6 +82,16 @@ function render(filter = "all") {
 
   console.log("📦 Episodes count:", filtered.length);
 
+   const future = dataGlobal.filter(ep => {
+  if (!ep.publishAt) return false;
+  return new Date(ep.publishAt) > new Date();
+});
+
+const box = document.getElementById("futureEpisodesBox");
+if (box) {
+  box.style.display = future.length ? "block" : "none";
+}
+   
   filtered.forEach(ep => {
 
     const status = getEpisodeStatus(ep);
