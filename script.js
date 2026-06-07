@@ -306,7 +306,9 @@ function shareEpisode() {
     console.warn("⚠️ No episode to share");
     return;
   }
-   
+
+ function shareEpisode() {
+
   const message =
 `📖 סיפורי סבא
 
@@ -319,13 +321,12 @@ ${currentEpisode.link}
 
 הצטרפו לקבוצת הוואטסאפ שלנו:
 https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
-  
-   console.log("📤 Sharing episode");
+  console.log("📤 Sharing episode");
 
   if (navigator.share) {
     navigator.share({
       title: currentEpisode.title,
-      text: message
+      text: msg
     });
   } else {
     alert("שיתוף לא נתמך");
