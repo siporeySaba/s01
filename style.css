@@ -103,21 +103,23 @@ iframe {
   text-decoration: none;
 }
 
-.back-full,
-.share-btn {
+.back-full {
   display: block;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px;
+
   padding: 14px;
   border-radius: 12px;
+
   text-align: center;
   font-weight: bold;
   font-size: 15px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-}
 
+  background: #0f172a;
+  color: white;
+
+  box-sizing: border-box; 
+}
 .back-full {
   background: #0f172a;
   color: white;
