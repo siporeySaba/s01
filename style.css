@@ -27,6 +27,19 @@ img {
   object-fit: cover;
 }
 
+.filters button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #ddd;
+}
+
+.filters button.active {
+  background: #333;
+  color: white;
+}
+
 .buttons {
   display: flex;
   gap: 8px;
