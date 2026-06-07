@@ -386,4 +386,4 @@ if ("serviceWorker" in navigator) {
    START
 ======================= */
 
-initApp();
+document.addEventListener("DOMContentLoaded", initApp);
