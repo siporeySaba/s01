@@ -325,7 +325,7 @@ https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
   if (navigator.share) {
     navigator.share({
       title: currentEpisode.title,
-      text: msg
+      text: message
     });
   } else {
     alert("שיתוף לא נתמך");
