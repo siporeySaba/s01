@@ -172,6 +172,46 @@ function loadEpisodeFromData(data) {
 
   console.log("📦 Episode loaded:", ep.title);
 
+// פרקים מאותה סדרה
+const sameSeries = data
+  .filter(item =>
+    (item.series || "").trim() === (ep.series || "").trim()
+  )
+  .sort((a, b) => Number(a.id) - Number(b.id));
+
+const currentIndex = sameSeries.findIndex(item =>
+  String(item.id) === String(ep.id)
+);
+
+const prev = sameSeries[currentIndex - 1];
+const next = sameSeries[currentIndex + 1];
+
+const nav = document.getElementById("nav");
+
+if (!nav) {
+  console.warn("⚠️ Nav container not found");
+} else {
+  nav.innerHTML = "";
+
+  if (prev) {
+    nav.innerHTML += `
+      <a class="btn" href="episode.html?id=${prev.id}">
+        ⬅ פרק קודם
+      </a>
+    `;
+  }
+
+  if (next) {
+    nav.innerHTML += `
+      <a class="btn" href="episode.html?id=${next.id}">
+        פרק הבא ➡
+      </a>
+    `;
+  }
+
+  console.log("🧭 Navigation built:", { prev: !!prev, next: !!next });
+}
+   
   const now = new Date();
   const publish = safeDate(ep.publishAt);
 
