@@ -93,11 +93,16 @@ if (activeBtn) {
 
   console.log("📦 Episodes count:", filtered.length);
 
-   const future = dataGlobal.filter(ep => {
-  if (!ep.publishAt) return false;
-  return new Date(ep.publishAt) > new Date();
-});
+const now = Date.now();
 
+const future = dataGlobal.filter(ep => {
+  if (!ep.publishAt) return false;
+
+  const time = Date.parse(ep.publishAt);
+  if (isNaN(time)) return false;
+
+  return time > now;
+});
 const futureBox = document.getElementById("futureEpisodesBox");
 const futureList = document.getElementById("futureEpisodesList");
 
