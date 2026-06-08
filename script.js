@@ -114,10 +114,11 @@ function getCountdown(dateStr) {
 
   if (diff <= 0) return "זמין עכשיו";
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-  return `⏳ עוד ${days} ימים ו־${hours} שעות`;
+return `⏳ עוד ${days} ימים, ${hours} שעות ו־${minutes} דקות`;
 }
 
 if (futureBox && futureList) {
