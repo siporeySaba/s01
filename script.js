@@ -152,9 +152,10 @@ if (box) {
 
     const videoId = getVideoId(ep.link);
 
-    const img = videoId
-      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-      : "https://i.imgur.com/M15F39y.jpeg";
+    const img =
+    status === "locked"
+    ? "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png"
+    : `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
     let badge = "";
     if (status === "new") badge = "🟢 חדש";
