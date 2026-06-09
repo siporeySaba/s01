@@ -150,12 +150,12 @@ if (box) {
 
     const status = getEpisodeStatus(ep);
 
-    const videoId = getVideoId(ep.link);
+    const isLocked = status === "locked";
 
-    const img =
-    status === "locked"
-    ? "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png"
-    : `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+const img = isLocked
+  ? "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png"
+  : (ep.link ? `https://img.youtube.com/vi/${getVideoId(ep.link)}/hqdefault.jpg`
+             : "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png");
 
     let badge = "";
     if (status === "new") badge = "🟢 חדש";
