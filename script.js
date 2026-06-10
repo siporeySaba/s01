@@ -83,10 +83,24 @@ if (activeBtn) {
 
   container.innerHTML = "";
 
-  let filtered = filter === "all"
-    ? [...dataGlobal]
-    : dataGlobal.filter(e => e.series === filter);
+  let filtered;
 
+if (filter === "all") {
+  // רק פרקים שכבר זמינים
+  filtered = dataGlobal.filter(ep => getEpisodeStatus(ep) !== "locked");
+} else if (filter === "future") 
+{
+  // רק פרקים נעולים
+  filtered = dataGlobal.filter(ep => getEpisodeStatus(ep) === "locked");
+} else 
+{
+  // סיפורים / פרשה - רק זמינים
+  filtered = dataGlobal.filter(ep =>
+    ep.series === filter &&
+    getEpisodeStatus(ep) !== "locked"
+  );
+
+}
   filtered.sort((a, b) =>
     new Date(b.publishAt || "1970-01-01") - new Date(a.publishAt || 0)
   );
