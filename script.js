@@ -230,6 +230,17 @@ function loadEpisodeFromData(data) {
 
   console.log("📦 Episode loaded:", ep.title);
 
+// הוספת קובץ PDF
+const pdfSection = document.getElementById("pdfSection");
+const pdfLink = document.getElementById("pdfLink");
+const pdfName = document.getElementById("pdfName");
+
+if (ep.pdf) {
+  pdfSection.style.display = "block";
+  pdfLink.href = ep.pdf;
+  pdfName.textContent = ep.pdfName || "קובץ PDF";
+}
+   
 // פרקים מאותה סדרה
 const sameSeries = data
   .filter(item =>
