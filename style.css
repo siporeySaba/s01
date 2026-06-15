@@ -31,6 +31,41 @@ body {
 
 .desc { color: #555; font-size: 14px; }
 
+.pdf-section{
+    margin:25px 0;
+}
+
+.pdf-text{
+    text-align:center;
+    font-size:16px;
+    line-height:1.6;
+    margin-bottom:12px;
+    color:#444;
+}
+
+.pdf-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:14px;
+    padding:14px 18px;
+    text-decoration:none;
+    color:#222;
+    font-weight:600;
+    transition:.2s;
+}
+
+.pdf-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.pdf-icon{
+    font-size:28px;
+}
+
 img {
   width: 100%;
   border-radius: 10px;
