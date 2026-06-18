@@ -181,6 +181,8 @@ const img = isLocked
 
         ${badge ? `<div class="badge">${badge}</div>` : ""}
 
+        ${ep.pdf ? `<div class="badge-right">📖 אתם יכולים<br>לספר בעצמכם</div>` : ""}
+
         <img src="${img}">
 
         <div class="title">${ep.title || ""}</div>
