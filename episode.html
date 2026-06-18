@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>פרק</title>
-
 <link rel="stylesheet" href="style.css">
-
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWX9C43JV9"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -15,50 +12,39 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XWX9C43JV9');
 </script>
-
 </head>
-
 <body>
-
 <div class="container">
-
   <div class="card">
-
   <div class="title" id="title"></div>
   <div class="video-wrapper">
   <iframe id="video"></iframe>
 </div>
-
     <div class="desc" id="desc"></div>
-
     <div id="pdfSection" class="pdf-section" style="display:none">
     <div class="pdf-text">
         רוצים להקריא לילדים את הסיפור האהוב בקצב שלכם?<br>
         הכנו עבורכם קובץ PDF נוח לקריאה ולהדפסה. 📖
     </div>
-
-      <a id="pdfLink" class="pdf-card" target="_blank">
-        <span class="pdf-icon">📚</span>
-        <span id="pdfName"></span>
+      <a id="pdfLink" class="pdf-download-btn" target="_blank" download>
+        <span class="pdf-btn-icon">📖</span>
+        <div class="pdf-btn-text">
+          <span class="pdf-btn-label" id="pdfName">קובץ PDF</span>
+          <span class="pdf-btn-subtitle">הורד והקרא</span>
+        </div>
       </a>
     </div>
     <div class="nav" id="nav"></div>
-
     <div class="share-wrapper">
   <button class="btn share-btn" onclick="shareEpisode()">
     📤 שתף את הפרק 
   </button>
 </div>
-
     <a class="back-full" href="index.html">
       ⬅ חזרה למסך הראשי
     </a>
-
   </div>
-
 </div>
-
 <script src="script.js"></script>
-
 </body>
 </html>
