@@ -39,31 +39,81 @@ body {
     text-align:center;
     font-size:16px;
     line-height:1.6;
-    margin-bottom:12px;
+    margin-bottom:16px;
     color:#444;
 }
 
-.pdf-card{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:14px;
-    padding:14px 18px;
-    text-decoration:none;
-    color:#222;
-    font-weight:600;
-    transition:.2s;
+/* 📖 כפתור PDF משופר */
+.pdf-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    border-radius: 14px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+    cursor: pointer;
 }
 
-.pdf-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 3px 10px rgba(0,0,0,.12);
+.pdf-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(245, 158, 11, 0.4);
 }
 
-.pdf-icon{
-    font-size:28px;
+.pdf-download-btn:active {
+    transform: translateY(-1px);
+}
+
+.pdf-btn-icon {
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.pdf-btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.pdf-btn-label {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.pdf-btn-subtitle {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* סגנון ישן - כדי שלא יהיה שיבור אם יש קוד שעדיין משתמש בו */
+.pdf-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: #222;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.pdf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+
+.pdf-icon {
+    font-size: 28px;
 }
 
 img {
@@ -93,8 +143,8 @@ iframe {
   top: 0;
   z-index: 9999;
 
-  background: rgba(245, 245, 245, 0.75); /* 👈 שקיפות */
-  backdrop-filter: blur(10px); /* 👈 אפקט זכוכית */
+  background: rgba(245, 245, 245, 0.75);
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
   padding: 10px 0;
@@ -142,22 +192,15 @@ iframe {
   display: block;
   width: 100%;
   margin-top: 12px;
-
   padding: 14px;
   border-radius: 12px;
-
   text-align: center;
   font-weight: bold;
   font-size: 15px;
-
   background: #0f172a;
   color: white;
-
   box-sizing: border-box; 
-}
-.back-full {
-  background: #0f172a;
-  color: white;
+  text-decoration: none;
 }
 
 .share-wrapper {
@@ -169,27 +212,22 @@ iframe {
 .share-btn {
   width: 100%;
   max-width: 320px;
-
   padding: 14px;
   border-radius: 14px;
-
   font-size: 16px;
   font-weight: bold;
-
   background: #2563eb;
   color: white;
-
   border: none;
   cursor: pointer;
-
   box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
-
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .share-btn:active {
   transform: scale(0.97);
 }
+
 .nav {
   display: flex;
   gap: 10px;
@@ -217,6 +255,7 @@ iframe {
   border-radius: 8px;
 }
 
+/* 🔖 סימנים בכרטיסים */
 .badge {
   position: absolute;
   top: 10px;
@@ -226,6 +265,25 @@ iframe {
   padding: 5px 10px;
   border-radius: 8px;
   font-size: 12px;
+  font-weight: 600;
+  z-index: 5;
+}
+
+/* סימן PDF בפינה ימין */
+.badge-right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
 }
 
 .social-buttons {
@@ -242,6 +300,12 @@ iframe {
   justify-content: center;
   align-items: center;
   color: white;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
 }
 
 .youtube { background: #ff0000; }
@@ -259,4 +323,17 @@ iframe {
   border: none;
   border-radius: 12px;
   display: none;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.header-img {
+  margin-bottom: 16px;
+}
+
+.header-img img {
+  width: 100%;
+  border-radius: 12px;
+  height: auto;
 }
