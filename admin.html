@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - הוספת פרק</title>
+</head>
+
+<body style="font-family:Arial; direction:rtl; padding:20px; background:#f5f5f5;">
+
+  <h2>➕ הוספת פרק חדש</h2>
+
+  <input id="title" placeholder="כותרת" style="width:100%;padding:8px;"><br><br>
+
+  <input id="shortDesc" placeholder="תיאור קצר" style="width:100%;padding:8px;"><br><br>
+
+  <textarea id="fullDesc" placeholder="תיאור מלא" style="width:100%;height:120px;padding:8px;"></textarea><br><br>
+
+  <input id="link" placeholder="קישור YouTube" style="width:100%;padding:8px;"><br><br>
+
+  <select id="series" style="width:100%;padding:8px;">
+    <option value="stories">סיפורים</option>
+    <option value="parasha">פרשה</option>
+  </select><br><br>
+
+  <label>תאריך פרסום:</label><br>
+  <input id="publishAt" type="datetime-local" style="width:100%;padding:8px;"><br><br>
+
+  <input id="pdfName" placeholder="שם PDF (לא חובה)" style="width:100%;padding:8px;"><br><br>
+
+  <input id="pdf" placeholder="קישור PDF (לא חובה)" style="width:100%;padding:8px;"><br><br>
+
+  <button onclick="addEpisode()" style="padding:10px 20px;background:#111827;color:white;border:none;border-radius:8px;cursor:pointer;">
+    ➕ שמור פרק
+  </button>
+
+  <p id="status"></p>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const status = document.getElementById("status");
+
+    window.addEpisode = async function () {
+
+      status.innerText = "שומר...";
+
+      try {
+        await addDoc(collection(db, "episodes"), {
+          title: document.getElementById("title").value,
+          shortDesc: document.getElementById("shortDesc").value,
+          fullDesc: document.getElementById("fullDesc").value,
+          link: document.getElementById("link").value,
+          series: document.getElementById("series").value,
+          publishAt: document.getElementById("publishAt").value
+            ? new Date(document.getElementById("publishAt").value).toISOString()
+            : null,
+          pdfName: document.getElementById("pdfName").value,
+          pdf: document.getElementById("pdf").value
+        });
+
+        status.innerText = "✅ הפרק נשמר בהצלחה!";
+      } catch (err) {
+        console.error(err);
+        status.innerText = "❌ שגיאה בשמירה";
+      }
+    };
+  </script>
+
+</body>
+</html>
