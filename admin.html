@@ -29,7 +29,6 @@
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #ddd;
-      font-size: 14px;
     }
 
     button {
@@ -43,24 +42,13 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .login-box {
-      text-align: center;
-      margin-top: 100px;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 
 <body>
 
-<div class="box login-box" id="loginBox">
+<div class="box" id="loginBox">
   <h2>התחברות אדמין</h2>
   <button id="loginBtn">התחבר עם Google</button>
 </div>
@@ -86,22 +74,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/fireba
 import { 
   getFirestore,
   collection,
-  getDocs,
   addDoc,
   doc,
-  setDoc
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 import {
   getAuth,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   GoogleAuthProvider,
-  onAuthStateChanged,
-  signOut
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-// 🔥 Firebase config
+/* Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
   authDomain: "siporeysaba-100.firebaseapp.com",
@@ -115,64 +100,51 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ---------- LOGIN ---------- */
-const loginBtn = document.getElementById("loginBtn");
+/* UI */
 const loginBox = document.getElementById("loginBox");
 const adminBox = document.getElementById("adminBox");
 
-loginBtn.onclick = async () => {
+/* LOGIN */
+document.getElementById("loginBtn").onclick = async () => {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
 };
 
-/* ---------- AUTH CHECK ---------- */
+/* AUTH STATE */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    loginBox.style.display = "block";
+    loginBox.classList.remove("hidden");
     adminBox.classList.add("hidden");
     return;
   }
 
+  // בדיקת הרשאה (אופציונלי)
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  if (!snap.exists() || snap.data().role !== "admin") {
+  if (snap.exists() && snap.data().role === "admin") {
+    loginBox.classList.add("hidden");
+    adminBox.classList.remove("hidden");
+  } else {
     alert("אין הרשאה");
-    window.location.href = "index.html";
-    return;
+    await auth.signOut();
   }
-
-  loginBox.style.display = "none";
-  adminBox.classList.remove("hidden");
-
-  console.log("אדמין מחובר ✔");
 });
 
-signInWithRedirect(auth, provider);
-
-getRedirectResult(auth).then(result => {
-  console.log(result);
-});  
-  
-/* ---------- SAVE EPISODE ---------- */
+/* SAVE */
 document.getElementById("saveBtn").onclick = async () => {
-  try {
-    await addDoc(collection(db, "episodes"), {
-      title: document.getElementById("title").value,
-      shortDesc: document.getElementById("shortDesc").value,
-      fullDesc: document.getElementById("fullDesc").value,
-      link: document.getElementById("link").value,
-      series: document.getElementById("series").value,
-      publishAt: document.getElementById("publishAt").value,
-      pdfName: document.getElementById("pdfName").value,
-      pdf: document.getElementById("pdf").value
-    });
+  await addDoc(collection(db, "episodes"), {
+    title: title.value,
+    shortDesc: shortDesc.value,
+    fullDesc: fullDesc.value,
+    link: link.value,
+    series: series.value,
+    publishAt: publishAt.value,
+    pdfName: pdfName.value,
+    pdf: pdf.value
+  });
 
-    alert("נשמר בהצלחה ✔");
-  } catch (e) {
-    alert("שגיאה בשמירה");
-    console.error(e);
-  }
+  alert("נשמר בהצלחה ✔");
 };
 </script>
 
