@@ -1,5 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
@@ -13,3 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
+
+enableIndexedDbPersistence(db)
+  .catch((err) => {
+    console.log("cache disabled", err);
+  });
