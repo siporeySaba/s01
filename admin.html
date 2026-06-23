@@ -101,11 +101,6 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-signInWithRedirect(auth, provider);
-getRedirectResult(auth).then(result => {
-  console.log(result);
-});  
-
 // 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
@@ -153,6 +148,12 @@ onAuthStateChanged(auth, async (user) => {
   console.log("אדמין מחובר ✔");
 });
 
+signInWithRedirect(auth, provider);
+
+getRedirectResult(auth).then(result => {
+  console.log(result);
+});  
+  
 /* ---------- SAVE EPISODE ---------- */
 document.getElementById("saveBtn").onclick = async () => {
   try {
