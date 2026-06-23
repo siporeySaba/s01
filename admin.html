@@ -94,11 +94,17 @@ import {
 
 import {
   getAuth,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+signInWithRedirect(auth, provider);
+getRedirectResult(auth).then(result => {
+  console.log(result);
+});  
 
 // 🔥 Firebase config
 const firebaseConfig = {
