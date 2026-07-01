@@ -70,9 +70,8 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { 
-  getFirestore,
+import { db, auth } from "./firebase.js";
+import {
   collection,
   addDoc,
   doc,
@@ -80,26 +79,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 import {
-  getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-/* Firebase config */
-const firebaseConfig = {
-  apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
-  authDomain: "siporeysaba-100.firebaseapp.com",
-  projectId: "siporeysaba-100",
-  storageBucket: "siporeysaba-100.appspot.com",
-  messagingSenderId: "780184204501",
-  appId: "1:780184204501:web:8314e52e46d9635d69de5c"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
+  
 /* UI */
 const loginBox = document.getElementById("loginBox");
 const adminBox = document.getElementById("adminBox");
