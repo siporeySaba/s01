@@ -2,6 +2,7 @@
    CONFIG
 ======================= */
 const URL = "https://raw.githubusercontent.com/siporeySaba/s01/main/episodes.json";
+import { loadEpisodes } from "./data.js";
 
 let dataGlobal = [];
 let currentEpisode = null;
@@ -370,7 +371,7 @@ https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
    INIT (SMART ROUTER)
 ======================= */
 
-function initApp() {
+async function initApp() {
 
   console.log("🔍 Detecting page type...");
 
@@ -379,31 +380,27 @@ function initApp() {
 
   console.log("Index:", !!isIndex, "Episode:", !!isEpisode);
 
-  fetch(URL)
-    .then(r => {
-      console.log("🌐 Fetching JSON...");
-      return r.json();
-    })
-    .then(data => {
+  try {
 
-      console.log("📡 Data received:", data.length);
+  const data = await loadEpisodes();
 
-      dataGlobal = data;
+  console.log("📡 Data received:", data.length);
 
-      if (isIndex) {
-        console.log("🏠 Running INDEX mode");
-        render();
-      }
+  dataGlobal = data;
 
-      if (isEpisode) {
-        console.log("📖 Running EPISODE mode");
-        loadEpisodeFromData(data);
-      }
+  if (isIndex) {
+    console.log("🏠 Running INDEX mode");
+    render();
+  }
 
-    })
-    .catch(err => {
-      console.error("❌ Fetch error:", err);
-    });
+  if (isEpisode) {
+    console.log("📖 Running EPISODE mode");
+    loadEpisodeFromData(data);
+  }
+
+} catch (err) {
+  console.error("❌ Load error:", err);
+}
 }
 
 /* =======================
