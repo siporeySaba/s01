@@ -1,9 +1,8 @@
 /* =======================
    CONFIG
 ======================= */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { db } from "./firebase.js";
 import {
-  getFirestore,
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
