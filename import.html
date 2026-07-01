@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<title>Import Episodes</title>
+</head>
+
+<body dir="rtl">
+
+<h2>ייבוא פרקים ל-Firestore</h2>
+
+<button id="startBtn">התחל ייבוא</button>
+
+<pre id="log"></pre>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+getFirestore,
+doc,
+setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
+authDomain: "siporeysaba-100.firebaseapp.com",
+projectId: "siporeysaba-100",
+storageBucket: "siporeysaba-100.appspot.com",
+messagingSenderId: "780184204501",
+appId: "1:780184204501:web:8314e52e46d9635d69de5c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const log = document.getElementById("log");
+
+document.getElementById("startBtn").onclick = async () => {
+
+log.textContent = "קורא את episodes.json...\n";
+
+const res = await fetch("./episodes.json");
+const episodes = await res.json();
+
+log.textContent += `נמצאו ${episodes.length} פרקים\n\n`;
+
+for (const ep of episodes){
+
+await setDoc(
+doc(db,"episodes",String(ep.id)),
+ep
+);
+
+log.textContent += `✔ ${ep.title}\n`;
+
+}
+
+log.textContent += "\n\nהסתיים בהצלחה 🎉";
+
+};
+
+</script>
+
+</body>
+</html>
