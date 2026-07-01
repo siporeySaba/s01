@@ -13,10 +13,18 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-export const db = getFirestore(app);
+const db = getFirestore(app);
 
 enableIndexedDbPersistence(db)
   .catch((err) => {
     console.log("cache disabled", err);
   });
+
+async function loadEpisodes() {
+  const snap = await getDocs(collection(db, "episodes"));
+
+  return snap.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+}
