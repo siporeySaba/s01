@@ -1,8 +1,13 @@
 /* =======================
    CONFIG
 ======================= */
-const URL = "https://raw.githubusercontent.com/siporeySaba/s01/main/episodes.json";
-import { loadEpisodes } from "./data.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 
 let dataGlobal = [];
 let currentEpisode = null;
