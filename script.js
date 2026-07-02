@@ -1,7 +1,11 @@
 /* =======================
+   IMPORTS
+======================= */
+import { loadEpisodes } from "./data.js";
+
+/* =======================
    CONFIG
 ======================= */
-const URL = "https://raw.githubusercontent.com/siporeySaba/s01/main/episodes.json";
 
 let dataGlobal = [];
 let currentEpisode = null;
@@ -370,7 +374,7 @@ https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
    INIT (SMART ROUTER)
 ======================= */
 
-function initApp() {
+async function initApp() {
 
   console.log("🔍 Detecting page type...");
 
@@ -379,31 +383,27 @@ function initApp() {
 
   console.log("Index:", !!isIndex, "Episode:", !!isEpisode);
 
-  fetch(URL)
-    .then(r => {
-      console.log("🌐 Fetching JSON...");
-      return r.json();
-    })
-    .then(data => {
+  try {
+    console.log("📡 Loading episodes...");
+    const data = await loadEpisodes();
 
-      console.log("📡 Data received:", data.length);
+    console.log("✅ Data loaded:", data.length, "episodes");
 
-      dataGlobal = data;
+    dataGlobal = data;
 
-      if (isIndex) {
-        console.log("🏠 Running INDEX mode");
-        render();
-      }
+    if (isIndex) {
+      console.log("🏠 Running INDEX mode");
+      render();
+    }
 
-      if (isEpisode) {
-        console.log("📖 Running EPISODE mode");
-        loadEpisodeFromData(data);
-      }
+    if (isEpisode) {
+      console.log("📖 Running EPISODE mode");
+      loadEpisodeFromData(data);
+    }
 
-    })
-    .catch(err => {
-      console.error("❌ Fetch error:", err);
-    });
+  } catch (err) {
+    console.error("❌ Fatal error:", err);
+  }
 }
 
 /* =======================
