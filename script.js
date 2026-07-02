@@ -1,12 +1,7 @@
 /* =======================
    CONFIG
 ======================= */
-import { db } from "./firebase.js";
-import {
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
+const URL = "https://raw.githubusercontent.com/siporeySaba/s01/main/episodes.json";
 
 let dataGlobal = [];
 let currentEpisode = null;
@@ -375,7 +370,7 @@ https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
    INIT (SMART ROUTER)
 ======================= */
 
-async function initApp() {
+function initApp() {
 
   console.log("🔍 Detecting page type...");
 
@@ -384,27 +379,31 @@ async function initApp() {
 
   console.log("Index:", !!isIndex, "Episode:", !!isEpisode);
 
-  try {
+  fetch(URL)
+    .then(r => {
+      console.log("🌐 Fetching JSON...");
+      return r.json();
+    })
+    .then(data => {
 
-  const data = await loadEpisodes();
+      console.log("📡 Data received:", data.length);
 
-  console.log("📡 Data received:", data.length);
+      dataGlobal = data;
 
-  dataGlobal = data;
+      if (isIndex) {
+        console.log("🏠 Running INDEX mode");
+        render();
+      }
 
-  if (isIndex) {
-    console.log("🏠 Running INDEX mode");
-    render();
-  }
+      if (isEpisode) {
+        console.log("📖 Running EPISODE mode");
+        loadEpisodeFromData(data);
+      }
 
-  if (isEpisode) {
-    console.log("📖 Running EPISODE mode");
-    loadEpisodeFromData(data);
-  }
-
-} catch (err) {
-  console.error("❌ Load error:", err);
-}
+    })
+    .catch(err => {
+      console.error("❌ Fetch error:", err);
+    });
 }
 
 /* =======================
