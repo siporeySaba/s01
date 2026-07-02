@@ -1,7 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
+import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
@@ -14,18 +12,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 export { db };
 
+// אפשר offline caching
 enableIndexedDbPersistence(db)
   .catch((err) => {
-    console.log("cache disabled", err);
+    if (err.code === 'failed-precondition') {
+      console.log("אחד מהחלונות לא תומך בcache");
+    } else if (err.code === 'unimplemented') {
+      console.log("הדפדפן לא תומך בcache");
+    }
   });
-
-async function loadEpisodes() {
-  const snap = await getDocs(collection(db, "episodes"));
-
-  return snap.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
-}
