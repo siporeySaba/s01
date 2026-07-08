@@ -4,99 +4,386 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin - סיפורי סבא</title>
-
   <style>
-    body {
-      font-family: Arial;
-      direction: rtl;
-      background: #f5f5f5;
+    * {
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .box {
-      max-width: 600px;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      direction: rtl;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 500px;
       margin: auto;
+    }
+
+    /* ===== LOGIN BOX ===== */
+    .box {
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
     }
 
-    input, textarea {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+    .box h2 {
+      color: #111827;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
-    button {
+    .hidden {
+      display: none !important;
+    }
+
+    /* ===== LOGIN ===== */
+    #loginBtn {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: none;
-      border-radius: 10px;
-      background: #111827;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    #loginBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    #loginBtn:active {
+      transform: translateY(0);
+    }
+
+    /* ===== FORM ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: #f9fafb;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    /* ===== DATE BUTTONS ===== */
+    .date-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .date-btn {
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      transition: all 0.2s;
+    }
+
+    .date-btn:hover {
+      background: #eef2ff;
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    /* ===== SERIES DROPDOWN ===== */
+    select {
       cursor: pointer;
     }
 
-    .hidden { display: none; }
+    /* ===== SAVE BUTTON ===== */
+    #saveBtn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    #saveBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    #saveBtn:active {
+      transform: translateY(0);
+    }
+
+    #saveBtn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== FEEDBACK ===== */
+    .feedback {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .feedback.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .feedback.loading {
+      background: #dbeafe;
+      color: #0c4a6e;
+    }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 20px;
+      margin-bottom: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .box {
+        padding: 20px;
+      }
+
+      .box h2 {
+        font-size: 20px;
+      }
+
+      input, textarea, select {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
-
 <body>
+<div class="container">
+  <!-- LOGIN BOX -->
+  <div class="box" id="loginBox">
+    <h2>🔐 התחברות אדמין</h2>
+    <button id="loginBtn">🔑 התחבר עם Google</button>
+  </div>
 
-<div class="box" id="loginBox">
-  <h2>התחברות אדמין</h2>
-  <button id="loginBtn">התחבר עם Google</button>
-</div>
+  <!-- ADMIN FORM -->
+  <div class="box hidden" id="adminBox">
+    <h2>📝 יצירת פרק חדש</h2>
 
-<div class="box hidden" id="adminBox">
-  <h2>יצירת פרק חדש</h2>
+    <div class="feedback" id="feedback"></div>
 
-  <input id="title" placeholder="כותרת הפרק" />
-  <input id="shortDesc" placeholder="תיאור קצר" />
-  <textarea id="fullDesc" placeholder="תיאור מלא"></textarea>
-  <input id="link" placeholder="קישור יוטיוב" />
-  <input id="series" placeholder="סדרה (stories/parasha)" />
-  <input id="publishAt" placeholder="תאריך פרסום" />
+    <!-- עיקרי -->
+    <div class="section-title">📖 פרטי הפרק</div>
 
-  <input id="pdfName" placeholder="שם PDF (לא חובה)" />
-  <input id="pdf" placeholder="קישור PDF (לא חובה)" />
+    <div class="form-group">
+      <label>📚 כותרת הפרק *</label>
+      <input id="title" placeholder="הכנס כותרת" />
+    </div>
 
-  <button id="saveBtn">שמור פרק</button>
+    <div class="form-group">
+      <label>📝 תיאור קצר *</label>
+      <input id="shortDesc" placeholder="משפט אחד על הפרק" />
+    </div>
+
+    <div class="form-group">
+      <label>📄 תיאור מלא</label>
+      <textarea id="fullDesc" placeholder="פרטים נוספים על הסיפור..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>🎬 קישור יוטיוב *</label>
+      <input id="link" placeholder="https://youtube.com/watch?v=..." />
+    </div>
+
+    <!-- סדרה -->
+    <div class="section-title">🏷️ סיווג</div>
+
+    <div class="form-group">
+      <label>📚 סוג הסיפור *</label>
+      <select id="series">
+        <option value="">בחר סדרה...</option>
+        <option value="stories">סיפורים</option>
+        <option value="parasha">פרשת שבוע</option>
+      </select>
+    </div>
+
+    <!-- תאריך -->
+    <div class="section-title">📅 תאריך פרסום</div>
+
+    <div class="form-group">
+      <label>⏰ בחר תאריך זמיר</label>
+      <div class="date-buttons">
+        <button class="date-btn" onclick="setDate('sunday')">📅 ראשון 17:00</button>
+        <button class="date-btn" onclick="setDate('tuesday')">📅 שלישי 17:00</button>
+        <button class="date-btn" onclick="setDate('thursday')">📅 חמישי 17:00</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>🕐 תאריך ושעה מלא *</label>
+      <input id="publishAt" type="datetime-local" />
+    </div>
+
+    <!-- PDF -->
+    <div class="section-title">📖 קובץ PDF</div>
+
+    <div class="form-group">
+      <label>📄 שם הקובץ</label>
+      <input id="pdfName" placeholder="יימלא אוטומטית מהכותרת" readonly style="background: #f0f0f0; cursor: not-allowed;" />
+    </div>
+
+    <div class="form-group">
+      <label>🔗 קישור ישיר ל-PDF</label>
+      <input id="pdf" placeholder="https://raw.githubusercontent.com/..." />
+    </div>
+
+    <button id="saveBtn">💾 שמור פרק</button>
+  </div>
 </div>
 
 <script type="module">
 import { db } from "./firebase.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-  import {
+import {
   collection,
   addDoc,
   doc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
 import {
   signInWithPopup,
   GoogleAuthProvider,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-//התחברות גוגל
+
+// ===== ELEMENTS =====
 const auth = getAuth();
-/* UI */
 const loginBox = document.getElementById("loginBox");
 const adminBox = document.getElementById("adminBox");
+const titleInput = document.getElementById("title");
+const pdfNameInput = document.getElementById("pdfName");
+const publishAtInput = document.getElementById("publishAt");
+const feedback = document.getElementById("feedback");
 
-/* LOGIN */
+// ===== AUTO-FILL PDF NAME =====
+titleInput.addEventListener("input", () => {
+  pdfNameInput.value = titleInput.value ? `${titleInput.value}.pdf` : "";
+});
+
+// ===== DATE HELPERS =====
+function setDate(day) {
+  const now = new Date();
+  const daysMap = {
+    sunday: 0,
+    tuesday: 2,
+    thursday: 4
+  };
+
+  let diff = daysMap[day] - now.getDay();
+  if (diff <= 0) diff += 7;
+
+  const date = new Date();
+  date.setDate(now.getDate() + diff);
+  date.setHours(17, 0, 0, 0);
+
+  const pad = n => String(n).padStart(2, '0');
+  publishAtInput.value = 
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T17:00`;
+}
+
+// ===== EXPOSE TO GLOBAL =====
+window.setDate = setDate;
+
+// ===== FEEDBACK HELPER =====
+function showFeedback(message, type) {
+  feedback.textContent = message;
+  feedback.className = `feedback show ${type}`;
+  
+  if (type !== 'loading') {
+    setTimeout(() => {
+      feedback.classList.remove('show');
+    }, 3000);
+  }
+}
+
+// ===== LOGIN =====
 document.getElementById("loginBtn").onclick = async () => {
   const provider = new GoogleAuthProvider();
-  await signInWithPopup(auth, provider);
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    showFeedback("❌ שגיאה בהתחברות", "error");
+  }
 };
 
-/* AUTH STATE */
+// ===== AUTH STATE =====
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     loginBox.classList.remove("hidden");
@@ -104,35 +391,75 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // בדיקת הרשאה (אופציונלי)
+  // בדיקת הרשאה
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
-
+  
   if (snap.exists() && snap.data().role === "admin") {
     loginBox.classList.add("hidden");
     adminBox.classList.remove("hidden");
   } else {
-    alert("אין הרשאה");
+    showFeedback("❌ אין הרשאות מנהל", "error");
     await auth.signOut();
   }
 });
 
-/* SAVE */
-document.getElementById("saveBtn").onclick = async () => {
-  await addDoc(collection(db, "episodes"), {
-    title: title.value,
-    shortDesc: shortDesc.value,
-    fullDesc: fullDesc.value,
-    link: link.value,
-    series: series.value,
-    publishAt: publishAt.value,
-    pdfName: pdfName.value,
-    pdf: pdf.value
-  });
+// ===== VALIDATION =====
+function validateForm() {
+  const title = document.getElementById("title").value.trim();
+  const shortDesc = document.getElementById("shortDesc").value.trim();
+  const link = document.getElementById("link").value.trim();
+  const series = document.getElementById("series").value;
+  const publishAt = document.getElementById("publishAt").value;
 
-  alert("נשמר בהצלחה ✔");
+  if (!title || !shortDesc || !link || !series || !publishAt) {
+    showFeedback("⚠️ מלא את כל השדות החובה", "error");
+    return false;
+  }
+
+  return true;
+}
+
+// ===== SAVE =====
+document.getElementById("saveBtn").onclick = async () => {
+  if (!validateForm()) return;
+
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.disabled = true;
+  showFeedback("⏳ שמור...", "loading");
+
+  try {
+    await addDoc(collection(db, "episodes"), {
+      title: document.getElementById("title").value,
+      shortDesc: document.getElementById("shortDesc").value,
+      fullDesc: document.getElementById("fullDesc").value,
+      link: document.getElementById("link").value,
+      series: document.getElementById("series").value,
+      publishAt: document.getElementById("publishAt").value,
+      pdfName: document.getElementById("pdfName").value,
+      pdf: document.getElementById("pdf").value,
+      createdAt: new Date().toISOString()
+    });
+
+    showFeedback("✅ נשמר בהצלחה!", "success");
+    
+    // אפס את הטופס
+    document.getElementById("title").value = "";
+    document.getElementById("shortDesc").value = "";
+    document.getElementById("fullDesc").value = "";
+    document.getElementById("link").value = "";
+    document.getElementById("series").value = "";
+    document.getElementById("publishAt").value = "";
+    document.getElementById("pdfName").value = "";
+    document.getElementById("pdf").value = "";
+
+  } catch (error) {
+    console.error(error);
+    showFeedback("❌ שגיאה בשמירה", "error");
+  } finally {
+    saveBtn.disabled = false;
+  }
 };
 </script>
-
 </body>
 </html>
