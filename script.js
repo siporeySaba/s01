@@ -421,3 +421,6 @@ if ("serviceWorker" in navigator) {
 ======================= */
 
 document.addEventListener("DOMContentLoaded", initApp);
+
+window.render = render;
+window.shareEpisode = shareEpisode;
