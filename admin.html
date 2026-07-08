@@ -301,7 +301,7 @@
 
     <div class="form-group">
       <label>🔗 קישור ישיר ל-PDF</label>
-      <input id="pdf" placeholder="https://raw.githubusercontent.com/..." />
+      <input id="pdf" placeholder="https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/" />
     </div>
 
     <button id="saveBtn">💾 שמור פרק</button>
@@ -334,7 +334,7 @@ const feedback = document.getElementById("feedback");
 
 // ===== AUTO-FILL PDF NAME =====
 titleInput.addEventListener("input", () => {
-  pdfNameInput.value = titleInput.value ? `${titleInput.value}.pdf` : "";
+  pdfNameInput.value = titleInput.value ? titleInput.value : "";
 });
 
 // ===== DATE HELPERS =====
