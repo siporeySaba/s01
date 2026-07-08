@@ -103,6 +103,44 @@
       min-height: 90px;
     }
 
+    /* ===== PDF URL INPUT ===== */
+    .pdf-url-input {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0 12px;
+      transition: all 0.2s;
+    }
+
+    .pdf-url-input:focus-within {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .pdf-url-input span {
+      color: #666;
+      font-size: 13px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .pdf-url-input input {
+      border: none;
+      background: transparent;
+      flex: 1;
+      min-width: 100px;
+      padding: 12px 0;
+    }
+
+    .pdf-url-input input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
     /* ===== DATE BUTTONS ===== */
     .date-buttons {
       display: grid;
@@ -301,7 +339,10 @@
 
     <div class="form-group">
       <label>🔗 קישור ישיר ל-PDF</label>
-      <input id="pdf" placeholder="https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/" />
+      <div class="pdf-url-input">
+        <span>https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/</span>
+        <input id="pdf" placeholder="שם הקובץ" />
+      </div>
     </div>
 
     <button id="saveBtn">💾 שמור פרק</button>
@@ -429,6 +470,12 @@ document.getElementById("saveBtn").onclick = async () => {
   showFeedback("⏳ שמור...", "loading");
 
   try {
+    // בנה את ה-PDF URL המלא
+    const pdfFileName = document.getElementById("pdf").value;
+    const fullPdfUrl = pdfFileName 
+      ? `https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/${pdfFileName}`
+      : "";
+
     await addDoc(collection(db, "episodes"), {
       title: document.getElementById("title").value,
       shortDesc: document.getElementById("shortDesc").value,
@@ -437,7 +484,7 @@ document.getElementById("saveBtn").onclick = async () => {
       series: document.getElementById("series").value,
       publishAt: document.getElementById("publishAt").value,
       pdfName: document.getElementById("pdfName").value,
-      pdf: document.getElementById("pdf").value,
+      pdf: fullPdfUrl,
       createdAt: new Date().toISOString()
     });
 
