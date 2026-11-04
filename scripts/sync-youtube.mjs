@@ -22,6 +22,18 @@ function videoIdFromUrl(url = "") {
   return m ? m[1] : null;
 }
 
+// משפט קצר מתוך התיאור המלא: המשפט הראשון, עד 140 תווים, נחתך בגבול מילה
+function shortSentence(text, fallback, max = 140) {
+  const clean = (text || "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim();
+  if (!clean) return fallback;
+  const m = clean.match(/^.+?[.!?](?=\s|$)/);
+  let sentence = m ? m[0] : clean;
+  if (sentence.length > max) {
+    sentence = sentence.slice(0, max).replace(/\s+\S*$/, "") + "…";
+  }
+  return sentence;
+}
+
 // פורמט זהה ל-datetime-local שהאדמין שומר: YYYY-MM-DDTHH:mm (שעון ישראל)
 function toIsraelLocal(iso) {
   const parts = new Intl.DateTimeFormat("sv-SE", {
@@ -72,12 +84,11 @@ for (const { id: playlistId, series } of PLAYLISTS) {
     if (knownIds.has(vid)) continue;
 
     const description = (it.snippet.description || "").trim();
-    const firstLine = description.split("\n").map(s => s.trim()).find(Boolean) || "";
     const publishedIso = it.contentDetails.videoPublishedAt || it.snippet.publishedAt;
 
     const doc = {
       title,
-      shortDesc: (firstLine || title).slice(0, 140),
+      shortDesc: shortSentence(description, title),
       fullDesc: description,
       link: `https://www.youtube.com/watch?v=${vid}`,
       series,
