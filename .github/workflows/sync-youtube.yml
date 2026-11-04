@@ -1,0 +1,28 @@
+name: Sync YouTube episodes
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # כל 6 שעות
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "הרצה יבשה (בלי כתיבה ל-Firestore)"
+        type: boolean
+        default: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: scripts
+      - run: node sync-youtube.mjs
+        working-directory: scripts
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
