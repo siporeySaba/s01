@@ -24,8 +24,8 @@ const STARTS_WITH_EMOJI = /^[\p{Extended_Pictographic}\p{Regional_Indicator}]/u;
 // ---------- קריאת קובץ הסיפור ----------
 export function parseStory(text) {
   const lines = text.replace(/^\uFEFF/, "").replace(/\r/g, "").split("\n");
-  const meta = { title: "", chapter: "", summary: "", author: "חגי כהן, סיפורי סבא", ages: "3-12", file: "" };
-  const keys = { "כותרת": "title", "פרק": "chapter", "תקציר": "summary", "מאת": "author", "גילאים": "ages", "קובץ": "file" };
+  const meta = { title: "", chapter: "", summary: "", author: "חגי כהן, סיפורי סבא", ages: "3-12", file: "", merge: "כן" };
+  const keys = { "כותרת": "title", "פרק": "chapter", "תקציר": "summary", "מאת": "author", "גילאים": "ages", "קובץ": "file", "מיזוג": "merge" };
 
   let i = 0, lastKey = null;
   for (; i < lines.length; i++) {
@@ -48,10 +48,31 @@ export function parseStory(text) {
     const text = clean(raw);
     if (!text) continue;
     if (!blocks.length && /סיפורי סבא\s*:/.test(text)) { meta.chapter ||= text; continue; }
+    // כותרת ראשית (# בודד) בראש הסיפור הופכת לכותרת הפרק
+    if (!blocks.length && !meta.chapter && /^#(?!#)/.test(raw)) { meta.chapter = text; continue; }
     const isHeading = raw.startsWith("#") || (startsWithEmoji(text) && text.length <= 70);
-    blocks.push({ type: isHeading ? "h" : "p", text });
+    // שורה שכולה מודגשת (**...**) היא משפט מסר: נשארת שורה נפרדת
+    const strong = /^\*\*.*\*\*\S*$/.test(raw);
+    blocks.push({ type: isHeading ? "h" : "p", text, strong });
   }
-  return { meta, blocks };
+  return { meta, blocks: meta.merge === "לא" ? blocks : mergeShortLines(blocks) };
+}
+
+// סיפור שבו כל משפט בשורה נפרדת יוצר עשרות עמודים. שורות קצרות רצופות מתאחדות לפסקה
+// (בלי לשנות מילה), עד בערך PARA_MAX תווים. שורה ארוכה או משפט מודגש נשארים לבד.
+// אפשר לבטל עם "מיזוג: לא" בשורות הפתיחה.
+const PARA_MAX = 340, SHORT_LINE = 160;
+function mergeShortLines(blocks) {
+  const out = [];
+  for (const b of blocks) {
+    const prev = out[out.length - 1];
+    const canJoin = prev && prev.type === "p" && b.type === "p" && !prev.strong && !b.strong
+      && prev.short && b.text.length < SHORT_LINE
+      && (prev.text.length + b.text.length < PARA_MAX || /:$/.test(prev.text));
+    if (canJoin) prev.text += " " + b.text;
+    else out.push({ ...b, short: b.type === "p" && b.text.length < SHORT_LINE });
+  }
+  return out.map(({ short, ...b }) => b);
 }
 
 // ---------- בניית ה-HTML ----------
