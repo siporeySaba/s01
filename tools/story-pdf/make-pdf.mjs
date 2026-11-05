@@ -93,7 +93,7 @@ export function buildHtml({ meta, blocks }) {
   .cover h1 { font-weight: 700; font-size: 37pt; line-height: 1.32; margin: 0 0 12mm; }
   .cover .summary { font-size: 11pt; line-height: 1.55; margin: 0 0 18mm; max-width: 150mm; }
   .cover table { border-collapse: collapse; font-size: 11pt; }
-  .cover td { border: 1px solid #999; padding: 4px 14px; text-align: right; }
+  .cover td { border: 1px solid #999; padding: 4px 14px; text-align: center; }
 
   /* גוף הסיפור */
   h2 { font-size: 20pt; font-weight: 700; margin: 6mm 0 6mm; }
