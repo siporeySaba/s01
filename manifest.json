@@ -1,21 +1,17 @@
 {
   "name": "סיפורי סבא",
-  "short_name": "סבא",
+  "short_name": "סיפורי סבא",
+  "description": "סיפורי צדיקים ופרשת שבוע לילדים",
+  "lang": "he",
+  "dir": "rtl",
   "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#111827",
-  "theme_color": "#111827",
+  "background_color": "#faf5ec",
+  "theme_color": "#1c140e",
   "orientation": "portrait",
   "icons": [
-    {
-      "src": "https://i.imgur.com/M15F39y.jpeg",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://i.imgur.com/M15F39y.jpeg",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

@@ -2,7 +2,10 @@ name: Sync YouTube episodes
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # כל 6 שעות
+    # כל חצי שעה. דקות "עקומות" כי GitHub מעכב ריצות בראש השעה
+    - cron: "7,37 * * * *"
+    # תוספת צפופה בשעות ההעלאה הקבועות (16:00-19:00 שעון ישראל = 13:00-17:00 UTC, לאורך כל השנה)
+    - cron: "17,27,47,57 13-17 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -10,15 +13,20 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: sync-youtube
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
+      - run: npm install --no-audit --no-fund
         working-directory: scripts
       - run: node sync-youtube.mjs
         working-directory: scripts

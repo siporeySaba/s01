@@ -1,426 +1,308 @@
-/* =======================
-   IMPORTS
-======================= */
 import { loadEpisodes } from "./data.js";
 
 /* =======================
-   CONFIG
+   קבועים ועזרים
 ======================= */
+const WHATSAPP_GROUP = "https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N";
+const COMING_SOON_IMG = "img/coming-soon.jpg";
+const SERIES_LABEL = { stories: "סיפורי צדיקים", parasha: "פרשת שבוע" };
+const NEW_DAYS = 7;
 
-let dataGlobal = [];
-let currentEpisode = null;
+const $ = id => document.getElementById(id);
 
-console.log("🚀 SCRIPT LOADED");
-
-/* =======================
-   UTILS
-======================= */
-
-function getVideoId(url) {
-  if (!url) return "";
-  if (url.includes("v=")) return url.split("v=")[1].split("&")[0];
-  if (url.includes("youtu.be/")) return url.split("youtu.be/")[1].split("?")[0];
-  return "";
+function esc(s = "") {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-function safeDate(dateStr) {
-  if (!dateStr) return null;
+// תומך ב-watch?v=, youtu.be/, shorts/, embed/, live/
+function getVideoId(url = "") {
+  const m = String(url).match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : "";
+}
+
+function parseDate(s) {
+  if (!s) return null;
+  const d = new Date(String(s).replace(" ", "T"));
+  return isNaN(d) ? null : d;
+}
+// כותרת לתצוגה בלי הקידומת "סיפורי סבא |" / "סבא בפרשה |" (הסדרה כבר מופיעה בתגית)
+const shortTitle = t => String(t || "").replace(/^\s*(סיפורי סבא|סבא בפרשה)\s*[|\-–:]\s*/, "");
+const time = ep => parseDate(ep.publishAt)?.getTime() || 0;
+
+const dateFmt = new Intl.DateTimeFormat("he-IL", { day: "numeric", month: "long", year: "numeric" });
+const formatDate = ep => { const d = parseDate(ep.publishAt); return d ? dateFmt.format(d) : ""; };
+
+function getViewed() {
+  try { return JSON.parse(localStorage.getItem("viewedEpisodes") || "[]"); } catch { return []; }
+}
+function markViewed(id) {
   try {
-    return new Date(dateStr.replace(" ", "T"));
-  } catch (e) {
-    console.warn("⚠️ Invalid date:", dateStr);
-    return null;
-  }
+    const v = getViewed();
+    if (!v.includes(String(id))) { v.push(String(id)); localStorage.setItem("viewedEpisodes", JSON.stringify(v)); }
+  } catch {}
 }
 
-/* =======================
-   STATUS LOGIC
-======================= */
-
-function getEpisodeStatus(ep) {
-  const now = new Date();
-  const viewed = JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
-
-  const publish = safeDate(ep.publishAt);
-
-  if (publish && publish > now) {
-    return "locked";
-  }
-
-  if (publish) {
-    const diff = (now - publish) / (1000 * 60 * 60 * 24);
-    if (diff <= 7 && !viewed.includes(String(ep.id))) {
-      return "new";
-    }
-  }
-
+function getStatus(ep, viewed = getViewed()) {
+  const t = time(ep);
+  const now = Date.now();
+  if (t && t > now) return "locked";
   if (viewed.includes(String(ep.id))) return "viewed";
-
+  if (t && (now - t) / 864e5 <= NEW_DAYS) return "new";
   return "available";
 }
 
-/* =======================
-   INDEX PAGE
-======================= */
-
-function render(filter = "all") {
-
-// הסרת active מכל הכפתורים
-document.querySelectorAll(".filters button")
-  .forEach(btn => btn.classList.remove("active"));
-
-// הוספת active לכפתור הנבחר
-const activeBtn = document.getElementById("btn-" + filter);
-
-if (activeBtn) {
-  activeBtn.classList.add("active");
+function thumb(ep, quality = "hqdefault") {
+  const vid = getVideoId(ep.link);
+  return vid ? `https://i.ytimg.com/vi/${vid}/${quality}.jpg` : COMING_SOON_IMG;
 }
-   
-  const container = document.getElementById("episodes");
 
-  if (!container) {
-    console.log("ℹ️ Index page not detected - skipping render()");
-    return;
-  }
-
-  console.log("📺 Rendering index:", filter);
-
-  container.innerHTML = "";
-
-  let filtered;
-
-if (filter === "all") {
-  // רק פרקים שכבר זמינים
-  filtered = dataGlobal.filter(ep => getEpisodeStatus(ep) !== "locked");
-} else if (filter === "future") 
-{
-  // רק פרקים נעולים
-  filtered = dataGlobal.filter(ep => getEpisodeStatus(ep) === "locked");
-} else 
-{
-  // סיפורים / פרשה - רק זמינים
-  filtered = dataGlobal.filter(ep =>
-    ep.series === filter &&
-    getEpisodeStatus(ep) !== "locked"
-  );
-
-}
-  filtered.sort((a, b) =>
-    new Date(b.publishAt || "1970-01-01") - new Date(a.publishAt || 0)
-  );
-
-  console.log("📦 Episodes count:", filtered.length);
-
-const now = Date.now();
-
-const future = dataGlobal.filter(ep => {
-  if (!ep.publishAt) return false;
-
-  const time = Date.parse(ep.publishAt);
-  if (isNaN(time)) return false;
-
-  return time > now;
-});
-const futureBox = document.getElementById("futureEpisodesBox");
-const futureList = document.getElementById("futureEpisodesList");
-
-function getCountdown(dateStr) {
-  const target = new Date(dateStr);
-  const now = new Date();
-
-  const diff = target - now;
-
+function countdown(ep) {
+  const diff = time(ep) - Date.now();
   if (diff <= 0) return "זמין עכשיו";
-
-const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-return `⏳ עוד ${days} ימים, ${hours} שעות ו־${minutes} דקות`;
-}
-
-if (futureBox && futureList) {
-
-  if (future.length === 0) {
-    futureBox.style.display = "none";
-  } else {
-    futureBox.style.display = "block";
-
-    futureList.innerHTML = future
-      .sort((a,b) => new Date(a.publishAt) - new Date(b.publishAt))
-      .map(ep => `
-        <div class="future-item">
-          <b>${ep.title}</b><br>
-          ${getCountdown(ep.publishAt)}
-        </div>
-      `)
-      .join("");
-  }
-}
-
-   
-const box = document.getElementById("futureEpisodesBox");
-if (box) {
-  box.style.display = future.length ? "block" : "none";
-}
-   
-  filtered.forEach(ep => {
-
-    const status = getEpisodeStatus(ep);
-
-    const isLocked = status === "locked";
-
-const img = isLocked
-  ? "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png"
-  : (ep.link ? `https://img.youtube.com/vi/${getVideoId(ep.link)}/hqdefault.jpg`
-             : "https://raw.githubusercontent.com/siporeySaba/s01/main/1779343032290.png");
-
-    let badge = "";
-    if (status === "new") badge = "🟢 חדש";
-    if (status === "locked") badge = "🔒 בקרוב";
-    if (status === "viewed") badge = "👀 נצפה";
-
-    container.innerHTML += `
-      <div class="card">
-
-        ${badge ? `<div class="badge">${badge}</div>` : ""}
-
-        ${ep.pdf ? `<div class="badge-right">📖 אתם יכולים<br>לספר בעצמכם</div>` : ""}
-
-        <img src="${img}">
-
-        <div class="title">${ep.title || ""}</div>
-        <div class="desc">${ep.shortDesc || ""}</div>
-
-        <div class="buttons">
-
-          ${
-            status === "locked"
-              ? `<div class="locked">🔒 בקרוב</div>`
-              : `
-                <a class="btn youtube" href="${ep.link}" target="_blank">▶ יוטיוב</a>
-                <a class="btn entry" href="episode.html?id=${ep.id}">📖 פרק</a>
-              `
-          }
-
-        </div>
-
-      </div>
-    `;
-  });
+  const d = Math.floor(diff / 864e5);
+  const h = Math.floor(diff / 36e5) % 24;
+  const m = Math.floor(diff / 6e4) % 60;
+  if (d > 0) return `עוד ${d} ימים ו-${h} שעות`;
+  if (h > 0) return `עוד ${h} שעות ו-${m} דקות`;
+  return `עוד ${m} דקות`;
 }
 
 /* =======================
-   EPISODE PAGE
+   דף הבית
 ======================= */
+let all = [];
+const state = { filter: "all", query: "" };
 
-function loadEpisodeFromData(data) {
-
-  const id = new URLSearchParams(location.search).get("id");
-
-  console.log("📖 Episode ID:", id);
-
-  if (!id) {
-    console.warn("⚠️ No episode ID in URL");
-    return;
-  }
-
-  const ep = data.find(e => String(e.id) === String(id));
-
-  if (!ep) {
-    console.error("❌ Episode not found");
-    return;
-  }
-
-  currentEpisode = ep;
-
-  console.log("📦 Episode loaded:", ep.title);
-
-// הוספת קובץ PDF
-const pdfSection = document.getElementById("pdfSection");
-const pdfLink = document.getElementById("pdfLink");
-const pdfName = document.getElementById("pdfName");
-
-if (ep.pdf) {
-  pdfSection.style.display = "block";
-  pdfLink.href = ep.pdf;
-  pdfName.textContent = ep.pdfName || "קובץ PDF";
-}
-   
-// פרקים מאותה סדרה
-const sameSeries = data
-  .filter(item =>
-    (item.series || "").trim() === (ep.series || "").trim()
-  )
-  .sort((a, b) => Number(a.id) - Number(b.id));
-
-const currentIndex = sameSeries.findIndex(item =>
-  String(item.id) === String(ep.id)
-);
-
-const prev = sameSeries[currentIndex - 1];
-const next = sameSeries[currentIndex + 1];
-
-const nav = document.getElementById("nav");
-
-if (!nav) {
-  console.warn("⚠️ Nav container not found");
-} else {
-  nav.innerHTML = "";
-
-  if (prev) {
-    nav.innerHTML += `
-      <a class="btn" href="episode.html?id=${prev.id}">
-        ⬅ פרק קודם
+function cardHTML(ep, viewed) {
+  const status = getStatus(ep, viewed);
+  const badge = status === "new" ? `<span class="badge badge-new">חדש</span>`
+              : status === "viewed" ? `<span class="badge badge-viewed"><i class="fa-solid fa-check"></i> נצפה</span>` : "";
+  const pdf = ep.pdf ? `<span class="badge badge-pdf" title="יש קובץ להקראה"><i class="fa-solid fa-book-open"></i> PDF להקראה</span>` : "";
+  const series = SERIES_LABEL[ep.series] || "";
+  return `
+    <article class="card ep-card">
+      <a class="ep-link" href="episode.html?id=${encodeURIComponent(ep.id)}" aria-label="${esc(ep.title)}">
+        <div class="thumb">
+          <img src="${thumb(ep)}" alt="" loading="lazy">
+          <span class="play"><i class="fa-solid fa-play"></i></span>
+          <div class="badges">${badge}${pdf}</div>
+        </div>
+        <div class="ep-body">
+          <div class="ep-meta">
+            ${series ? `<span class="chip chip-${esc(ep.series)}">${series}</span>` : ""}
+            <span class="meta-date">${formatDate(ep)}</span>
+          </div>
+          <h3 class="ep-title">${esc(shortTitle(ep.title))}</h3>
+          <p class="ep-desc">${esc(ep.shortDesc)}</p>
+        </div>
       </a>
-    `;
-  }
-
-  if (next) {
-    nav.innerHTML += `
-      <a class="btn" href="episode.html?id=${next.id}">
-        פרק הבא ➡
-      </a>
-    `;
-  }
-
-  console.log("🧭 Navigation built:", { prev: !!prev, next: !!next });
+    </article>`;
 }
-   
-  const now = new Date();
-  const publish = safeDate(ep.publishAt);
 
-  if (publish && publish > now) {
-    console.warn("🔒 Episode is locked");
-
-    document.body.innerHTML = `
-      <div style="padding:20px;text-align:center">
-        <h2>🔒 הפרק עדיין לא זמין</h2>
-        <p>סבא עדיין מכין אותו...</p>
+function renderUpcoming() {
+  const box = $("upcoming");
+  const list = $("upcomingList");
+  if (!box) return;
+  const future = all.filter(ep => getStatus(ep) === "locked").sort((a, b) => time(a) - time(b));
+  box.hidden = future.length === 0;
+  list.innerHTML = future.map(ep => `
+    <div class="upcoming-item">
+      <img src="${COMING_SOON_IMG}" alt="">
+      <div>
+        <span class="chip chip-${esc(ep.series)}">${SERIES_LABEL[ep.series] || ""}</span>
+        <b>${esc(shortTitle(ep.title))}</b>
+        <span class="countdown"><i class="fa-regular fa-clock"></i> ${countdown(ep)}</span>
       </div>
-    `;
+    </div>`).join("");
+}
 
+function renderGrid() {
+  const container = $("episodes");
+  const viewed = getViewed();
+  const q = state.query.trim().toLowerCase();
+
+  const list = all
+    .filter(ep => getStatus(ep, viewed) !== "locked")
+    .filter(ep => state.filter === "all" ? true
+                : state.filter === "pdf" ? !!ep.pdf
+                : ep.series === state.filter)
+    .filter(ep => !q || `${ep.title} ${ep.shortDesc} ${ep.fullDesc}`.toLowerCase().includes(q))
+    .sort((a, b) => time(b) - time(a));
+
+  container.innerHTML = list.map(ep => cardHTML(ep, viewed)).join("");
+  $("empty").hidden = list.length > 0;
+  $("count").textContent = list.length ? `(${list.length})` : "";
+}
+
+function setupHero() {
+  const latest = all.filter(ep => getStatus(ep) !== "locked").sort((a, b) => time(b) - time(a))[0];
+  const cta = $("heroCta");
+  if (!latest || !cta) return;
+  cta.href = `episode.html?id=${encodeURIComponent(latest.id)}`;
+  cta.querySelector("span").textContent = `לפרק החדש: ${shortTitle(latest.title)}`;
+  cta.hidden = false;
+}
+
+function initIndex() {
+  document.querySelectorAll(".tabs button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.filter = btn.dataset.filter;
+      renderGrid();
+    });
+  });
+  $("search").addEventListener("input", e => { state.query = e.target.value; renderGrid(); });
+
+  setupHero();
+  renderUpcoming();
+  renderGrid();
+
+  // רענון הספירה לאחור, ופתיחה אוטומטית של פרק כשמגיע זמנו
+  let lockedCount = all.filter(ep => getStatus(ep) === "locked").length;
+  setInterval(() => {
+    const now = all.filter(ep => getStatus(ep) === "locked").length;
+    renderUpcoming();
+    if (now !== lockedCount) { lockedCount = now; setupHero(); renderGrid(); }
+  }, 30000);
+}
+
+/* =======================
+   דף פרק
+======================= */
+let current = null;
+
+function toast(msg) {
+  const t = $("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function shareText(ep) {
+  return `📖 סיפורי סבא\n\n${ep.title}\n\n🎧 לצפייה:\n${location.href}\n\n📲 רוצים לקבל את הפרקים החדשים לפני כולם? הצטרפו לקבוצת הוואטסאפ:\n${WHATSAPP_GROUP}`;
+}
+
+async function shareEpisode() {
+  if (!current) return;
+  if (navigator.share) {
+    try { await navigator.share({ title: current.title, text: shareText(current) }); } catch {}
     return;
   }
+  try {
+    await navigator.clipboard.writeText(shareText(current));
+    toast("הקישור הועתק ✓");
+  } catch {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText(current))}`, "_blank");
+  }
+}
 
-  const titleEl = document.getElementById("title");
-  const descEl = document.getElementById("desc");
-  const videoEl = document.getElementById("video");
+function showMissing(title, text) {
+  $("episode").innerHTML = `
+    <div class="card notice">
+      <h1>${title}</h1>
+      <p>${text}</p>
+      <a class="btn btn-primary" href="index.html">לכל הפרקים</a>
+    </div>`;
+  document.querySelector(".episode-side").hidden = true;
+}
 
-  if (!titleEl || !descEl || !videoEl) {
-    console.error("❌ Episode DOM missing");
-    return;
+function initEpisode() {
+  const id = new URLSearchParams(location.search).get("id");
+  const ep = all.find(e => String(e.id) === String(id));
+
+  if (!ep) return showMissing("הפרק לא נמצא", "אולי הקישור השתנה. כל הפרקים מחכים לכם בעמוד הראשי.");
+  if (getStatus(ep) === "locked") {
+    return showMissing("🔒 הפרק עדיין לא זמין", `סבא עדיין מכין אותו... הפרק ייפתח ${dateFmt.format(parseDate(ep.publishAt))} (${countdown(ep)}).`);
   }
 
-  titleEl.innerText = ep.title || "";
-  descEl.innerText = ep.fullDesc || ep.shortDesc || "";
+  current = ep;
+  document.title = `${ep.title} · סיפורי סבא`;
+
+  $("title").textContent = shortTitle(ep.title);
+  $("date").textContent = formatDate(ep);
+  const chip = $("seriesChip");
+  chip.textContent = SERIES_LABEL[ep.series] || "";
+  chip.classList.add(`chip-${ep.series}`);
+  chip.hidden = !SERIES_LABEL[ep.series];
+
+  const desc = ep.fullDesc || ep.shortDesc || "";
+  $("desc").innerHTML = desc ? esc(desc).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>') : "";
+  $("desc").hidden = !desc;
 
   const vid = getVideoId(ep.link);
-
+  const wrapper = document.querySelector(".video-wrapper");
   if (vid) {
-    videoEl.src = `https://www.youtube.com/embed/${vid}`;
-    console.log("🎥 Video loaded");
+    $("video").src = `https://www.youtube-nocookie.com/embed/${vid}?rel=0&modestbranding=1`;
+    $("video").addEventListener("load", () => wrapper.classList.remove("skeleton"), { once: true });
   } else {
-    videoEl.style.display = "none";
-    console.warn("⚠️ No video found");
+    wrapper.hidden = true;
   }
 
-  let viewed = JSON.parse(localStorage.getItem("viewedEpisodes") || "[]");
+  $("ytBtn").href = ep.link || "#";
+  $("ytBtn").hidden = !ep.link;
+  $("waBtn").href = `https://wa.me/?text=${encodeURIComponent(shareText(ep))}`;
+  $("shareBtn").addEventListener("click", shareEpisode);
 
-  if (!viewed.includes(String(ep.id))) {
-    viewed.push(String(ep.id));
-    localStorage.setItem("viewedEpisodes", JSON.stringify(viewed));
-    console.log("👁 Marked as viewed");
+  if (ep.pdf) {
+    $("pdfSection").hidden = false;
+    $("pdfLink").href = ep.pdf;
+    $("pdfName").textContent = "הורדת הסיפור (PDF)";
   }
+
+  // ניווט בתוך הסדרה, לפי תאריך פרסום
+  const series = all
+    .filter(e => (e.series || "").trim() === (ep.series || "").trim() && getStatus(e) !== "locked")
+    .sort((a, b) => time(a) - time(b));
+  const i = series.findIndex(e => String(e.id) === String(ep.id));
+  const prev = series[i - 1];
+  const next = series[i + 1];
+  $("nav").innerHTML = `
+    ${prev ? `<a class="nav-card" href="episode.html?id=${encodeURIComponent(prev.id)}"><small><i class="fa-solid fa-arrow-right"></i> הפרק הקודם</small><b>${esc(shortTitle(prev.title))}</b></a>` : "<span></span>"}
+    ${next ? `<a class="nav-card next" href="episode.html?id=${encodeURIComponent(next.id)}"><small>הפרק הבא <i class="fa-solid fa-arrow-left"></i></small><b>${esc(shortTitle(next.title))}</b></a>` : ""}`;
+
+  // עוד פרקים מהסדרה (החדשים קודם)
+  const more = series.filter(e => e.id !== ep.id).sort((a, b) => time(b) - time(a)).slice(0, 8);
+  $("moreTitle").textContent = `עוד ב${SERIES_LABEL[ep.series] || "סדרה"}`;
+  $("more").innerHTML = more.map(e => `
+    <a class="more-item" href="episode.html?id=${encodeURIComponent(e.id)}">
+      <img src="${thumb(e, "mqdefault")}" alt="" loading="lazy">
+      <div><b>${esc(shortTitle(e.title))}</b><small>${formatDate(e)}</small></div>
+    </a>`).join("");
+
+  markViewed(ep.id);
 }
 
 /* =======================
-   SHARE
+   התקנת אפליקציה
 ======================= */
-
-function shareEpisode() {
-
-  if (!currentEpisode) {
-    console.warn("⚠️ No episode to share");
-    return;
-  }
-
-  const message =
-`📖 סיפורי סבא
-
-${currentEpisode.title}
-
-🎧 לצפייה:
-${currentEpisode.link}
-
-📲 רוצים לקבל את הפרקים החדשים לפני כולם?
-
-הצטרפו לקבוצת הוואטסאפ שלנו:
-https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N`;
-
-  console.log("📤 Sharing episode");
-
-  if (navigator.share) {
-    navigator.share({
-      title: currentEpisode.title,
-      text: message
-    });
-  } else {
-    alert("שיתוף לא נתמך");
-  }
-}
-
-/* =======================
-   INIT (SMART ROUTER)
-======================= */
-
-async function initApp() {
-
-  console.log("🔍 Detecting page type...");
-
-  const isIndex = document.getElementById("episodes");
-  const isEpisode = document.getElementById("video");
-
-  console.log("Index:", !!isIndex, "Episode:", !!isEpisode);
-
-  try {
-    console.log("📡 Loading episodes...");
-    const data = await loadEpisodes();
-
-    console.log("✅ Data loaded:", data.length, "episodes");
-
-    dataGlobal = data;
-
-    if (isIndex) {
-      console.log("🏠 Running INDEX mode");
-      render();
-    }
-
-    if (isEpisode) {
-      console.log("📖 Running EPISODE mode");
-      loadEpisodeFromData(data);
-    }
-
-  } catch (err) {
-    console.error("❌ Fatal error:", err);
-  }
-}
-
-/* =======================
-   PWA
-======================= */
+let installEvent = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  installEvent = e;
+  const btn = $("installApp");
+  if (btn) btn.hidden = false;
+});
+$("installApp")?.addEventListener("click", async () => {
+  if (!installEvent) return;
+  installEvent.prompt();
+  await installEvent.userChoice;
+  installEvent = null;
+  $("installApp").hidden = true;
+});
+window.addEventListener("appinstalled", () => { const b = $("installApp"); if (b) b.hidden = true; });
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("⚙️ SW registered"))
-    .catch(err => console.error("SW error:", err));
+  navigator.serviceWorker.register("sw.js").catch(err => console.error("SW error:", err));
 }
 
 /* =======================
-   START
+   הפעלה
 ======================= */
-
-document.addEventListener("DOMContentLoaded", initApp);
-
-window.render = render;
-window.shareEpisode = shareEpisode;
+async function init() {
+  all = await loadEpisodes();
+  if (document.body.classList.contains("page-index")) initIndex();
+  if (document.body.classList.contains("page-episode")) initEpisode();
+}
+init();

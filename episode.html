@@ -2,8 +2,19 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>פרק</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c140e">
+<title>סיפורי סבא</title>
+<meta property="og:title" content="סיפורי סבא">
+<meta property="og:description" content="סיפורי צדיקים ופרשת שבוע לילדים, בקולו של סבא.">
+<meta property="og:image" content="https://siporeysaba.github.io/s01/img/hero.jpg">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWX9C43JV9"></script>
 <script>
@@ -13,38 +24,60 @@ gtag('js', new Date());
 gtag('config', 'G-XWX9C43JV9');
 </script>
 </head>
-<body>
-<div class="container">
-  <div class="card">
-  <div class="title" id="title"></div>
-  <div class="video-wrapper">
-  <iframe id="video"></iframe>
-</div>
-    <div class="desc" id="desc"></div>
-    <div id="pdfSection" class="pdf-section" style="display:none">
-    <div class="pdf-text">
-        רוצים להקריא לילדים את הסיפור האהוב בקצב שלכם?<br>
-        הכנו עבורכם קובץ PDF נוח לקריאה ולהדפסה. 📖
+<body class="page-episode">
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <img src="img/logo.jpg" alt="" width="40" height="40">
+      <span>סיפורי סבא</span>
+    </a>
+    <a class="back-link" href="index.html"><i class="fa-solid fa-arrow-right"></i> לכל הפרקים</a>
+  </div>
+</header>
+
+<main class="wrap episode-layout">
+  <article id="episode" class="episode-main">
+    <div class="video-wrapper skeleton">
+      <iframe id="video" title="נגן הפרק" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
-      <a id="pdfLink" class="pdf-download-btn" target="_blank" download>
-        <span class="pdf-btn-icon">📖</span>
-        <div class="pdf-btn-text">
-          <span class="pdf-btn-label" id="pdfName">קובץ PDF</span>
-          <span class="pdf-btn-subtitle">הורד והקרא</span>
-        </div>
+
+    <div class="episode-meta">
+      <span id="seriesChip" class="chip chip-series"></span>
+      <span id="date" class="meta-date"></span>
+    </div>
+    <h1 id="title" class="episode-title"></h1>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="shareBtn"><i class="fa-solid fa-share-nodes"></i> שתפו את הפרק</button>
+      <a class="btn btn-whatsapp" id="waBtn" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> וואטסאפ</a>
+      <a class="btn btn-ghost" id="ytBtn" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i> ביוטיוב</a>
+    </div>
+
+    <div id="pdfSection" class="pdf-section" hidden>
+      <div class="pdf-text">
+        <strong>רוצים להקריא לילדים בעצמכם?</strong>
+        <span>הכנו קובץ PDF נוח לקריאה ולהדפסה.</span>
+      </div>
+      <a id="pdfLink" class="pdf-download-btn" target="_blank" rel="noopener">
+        <i class="fa-solid fa-file-arrow-down"></i>
+        <span id="pdfName">הורדת הסיפור</span>
       </a>
     </div>
-    <div class="nav" id="nav"></div>
-    <div class="share-wrapper">
-  <button class="btn share-btn" onclick="shareEpisode()">
-    📤 שתף את הפרק 
-  </button>
-</div>
-    <a class="back-full" href="index.html">
-      ⬅ חזרה למסך הראשי
-    </a>
-  </div>
-</div>
+
+    <div id="desc" class="episode-desc"></div>
+
+    <nav class="ep-nav" id="nav"></nav>
+  </article>
+
+  <aside class="episode-side">
+    <h2 class="section-title" id="moreTitle">עוד פרקים</h2>
+    <div id="more" class="more-list"></div>
+  </aside>
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
 <script type="module" src="script.js"></script>
 </body>
 </html>

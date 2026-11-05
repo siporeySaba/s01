@@ -1,6 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+// מפתח הלקוח של Firebase הוא ציבורי מטבעו. ההגנה על הנתונים היא בכללי האבטחה (Firestore Rules).
 const firebaseConfig = {
   apiKey: "AIzaSyBAMnTuMwt83UU2JNBhcOty8CN4elv8_oM",
   authDomain: "siporeysaba-100.firebaseapp.com",
@@ -11,16 +16,15 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-export { db };
-
-// אפשר offline caching
-enableIndexedDbPersistence(db)
-  .catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.log("אחד מהחלונות לא תומך בcache");
-    } else if (err.code === 'unimplemented') {
-      console.log("הדפדפן לא תומך בcache");
-    }
+let db;
+try {
+  // מטמון מקומי: האתר עובד גם בלי אינטרנט ונטען מהר יותר
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
   });
+} catch {
+  db = initializeFirestore(app, {});
+}
+
+export { app, db };

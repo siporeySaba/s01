@@ -1,7 +1,11 @@
-// מסנכרן סרטונים מרשימות ההשמעה ביוטיוב אל אוסף "episodes" ב-Firestore.
+// מסנכרן סרטונים מיוטיוב אל אוסף "episodes" ב-Firestore.
+// מקורות: שתי רשימות ההשמעה + כל ההעלאות בערוץ (גיבוי לסרטון ששכחו להכניס לרשימה).
+// פרקים שנוספו אוטומטית מתעדכנים אם הכותרת או התיאור השתנו ביוטיוב.
 // הרצה יבשה (בלי כתיבה): DRY_RUN=1 node sync-youtube.mjs
 import admin from "firebase-admin";
 
+const CHANNEL_ID = "UCldwZhwQyvnU03udHWtJ69Q";
+const UPLOADS_PLAYLIST = "UU" + CHANNEL_ID.slice(2);
 const PLAYLISTS = [
   { id: "PL6IarGfRfL5ZOFWnzWjpYQsMyJnCESCgc", series: "stories" }, // סדרת הסיפורים
   { id: "PL6IarGfRfL5Ze016CnIsH2ui54jb-pPLb", series: "parasha" }  // פרשת השבוע
@@ -18,7 +22,7 @@ const db = admin.firestore();
 
 // ---------- עזרים ----------
 function videoIdFromUrl(url = "") {
-  const m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);
+  const m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([A-Za-z0-9_-]{11})/);
   return m ? m[1] : null;
 }
 
@@ -44,9 +48,17 @@ function toIsraelLocal(iso) {
   return parts.replace(" ", "T");
 }
 
-async function fetchPlaylist(playlistId) {
+// סיווג סרטון שלא נמצא באף רשימה, לפי הכותרת. מחזיר null אם הוא לא נראה כמו פרק.
+function seriesFromTitle(title) {
+  if (/סבא בפרשה|פרשת/.test(title)) return "parasha";
+  if (/^סיפורי סבא\s*\|/.test(title)) return "stories";
+  return null;
+}
+
+async function fetchPlaylist(playlistId, maxPages = Infinity) {
   const items = [];
   let pageToken = "";
+  let pages = 0;
   do {
     const url = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
     url.searchParams.set("part", "snippet,contentDetails,status");
@@ -59,34 +71,61 @@ async function fetchPlaylist(playlistId) {
     const data = await res.json();
     items.push(...data.items);
     pageToken = data.nextPageToken || "";
-  } while (pageToken);
+    pages++;
+  } while (pageToken && pages < maxPages);
   return items;
 }
 
-// ---------- ריצה ----------
+function isPublic(it) {
+  const title = it.snippet?.title;
+  if (!it.contentDetails?.videoId || !title) return false;
+  if (title === "Private video" || title === "Deleted video") return false;
+  return !it.status?.privacyStatus || it.status.privacyStatus === "public";
+}
+
+// ---------- איסוף מיוטיוב ----------
+const videos = new Map(); // videoId -> { item, series }
+for (const { id, series } of PLAYLISTS) {
+  for (const it of await fetchPlaylist(id)) {
+    if (isPublic(it) && !videos.has(it.contentDetails.videoId)) {
+      videos.set(it.contentDetails.videoId, { item: it, series });
+    }
+  }
+}
+// ההעלאות האחרונות בערוץ (עמוד אחד = 50 סרטונים מספיק)
+let orphan = 0;
+for (const it of await fetchPlaylist(UPLOADS_PLAYLIST, 1)) {
+  const vid = it.contentDetails?.videoId;
+  if (!isPublic(it) || videos.has(vid)) continue;
+  const series = seriesFromTitle(it.snippet.title);
+  if (!series) { console.log(`מדלג (לא נראה כמו פרק): ${it.snippet.title}`); continue; }
+  console.log(`⚠️ לא נמצא באף רשימת השמעה, סווג לפי כותרת כ-${series}: ${it.snippet.title}`);
+  videos.set(vid, { item: it, series });
+  orphan++;
+}
+console.log(`ביוטיוב: ${videos.size} סרטונים ציבוריים (${orphan} מחוץ לרשימות)`);
+
+// ---------- השוואה ל-Firestore ----------
 const existing = await db.collection("episodes").get();
-const knownIds = new Set();
+const byVid = new Map();
 existing.forEach(d => {
   const id = videoIdFromUrl(d.data().link);
-  if (id) knownIds.add(id);
+  if (id) byVid.set(id, d);
 });
-console.log(`קיימים ב-Firestore: ${existing.size} פרקים (${knownIds.size} עם מזהה יוטיוב)`);
+console.log(`ב-Firestore: ${existing.size} פרקים`);
 
-let added = 0;
-for (const { id: playlistId, series } of PLAYLISTS) {
-  const items = await fetchPlaylist(playlistId);
-  for (const it of items) {
-    const vid = it.contentDetails?.videoId;
-    const title = it.snippet?.title;
-    // מדלגים על סרטונים פרטיים/מחוקים
-    if (!vid || !title || title === "Private video" || title === "Deleted video") continue;
-    if (it.status?.privacyStatus && it.status.privacyStatus !== "public") continue;
-    if (knownIds.has(vid)) continue;
+let added = 0, updated = 0;
+const batch = db.batch();
 
-    const description = (it.snippet.description || "").trim();
-    const publishedIso = it.contentDetails.videoPublishedAt || it.snippet.publishedAt;
+for (const [vid, { item, series }] of videos) {
+  const title = item.snippet.title.trim();
+  const description = (item.snippet.description || "").trim();
+  const doc = byVid.get(vid);
 
-    const doc = {
+  if (!doc) {
+    const publishedIso = item.contentDetails.videoPublishedAt || item.snippet.publishedAt;
+    console.log(`${DRY_RUN ? "[יבש] " : ""}חדש (${series}): ${title}`);
+    batch.set(db.collection("episodes").doc(), {
       title,
       shortDesc: shortSentence(description, title),
       fullDesc: description,
@@ -97,12 +136,24 @@ for (const { id: playlistId, series } of PLAYLISTS) {
       pdf: "",
       createdAt: new Date().toISOString(),
       source: "auto-sync"
-    };
-
-    console.log(`${DRY_RUN ? "[יבש] " : ""}חדש (${series}): ${title}`);
-    if (!DRY_RUN) await db.collection("episodes").add(doc);
-    knownIds.add(vid);
+    });
     added++;
+    continue;
+  }
+
+  // עדכון רק לפרקים שנוצרו אוטומטית, כדי לא לדרוס עריכה ידנית
+  const data = doc.data();
+  if (data.source === "auto-sync" && (data.title !== title || data.fullDesc !== description)) {
+    console.log(`${DRY_RUN ? "[יבש] " : ""}עודכן: ${title}`);
+    batch.update(doc.ref, {
+      title,
+      fullDesc: description,
+      shortDesc: shortSentence(description, title),
+      updatedAt: new Date().toISOString()
+    });
+    updated++;
   }
 }
-console.log(`הסתיים. נוספו ${added} פרקים.`);
+
+if (!DRY_RUN && (added || updated)) await batch.commit();
+console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}.`);

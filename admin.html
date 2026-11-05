@@ -388,7 +388,8 @@ function setDate(day) {
   };
 
   let diff = daysMap[day] - now.getDay();
-  if (diff <= 0) diff += 7;
+  // היום עצמו נחשב רק אם עוד לא הגענו ל-17:00
+  if (diff < 0 || (diff === 0 && now.getHours() >= 17)) diff += 7;
 
   const date = new Date();
   date.setDate(now.getDate() + diff);
@@ -471,9 +472,9 @@ document.getElementById("saveBtn").onclick = async () => {
 
   try {
     // בנה את ה-PDF URL המלא
-    const pdfFileName = document.getElementById("pdf").value;
-    const fullPdfUrl = pdfFileName 
-      ? `https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/${pdfFileName}`
+    const pdfFileName = document.getElementById("pdf").value.trim();
+    const fullPdfUrl = pdfFileName
+      ? `https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/${encodeURIComponent(pdfFileName)}`
       : "";
 
     await addDoc(collection(db, "episodes"), {

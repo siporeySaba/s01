@@ -2,12 +2,23 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#1c140e">
 <title>סיפורי סבא</title>
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="סיפורי צדיקים ופרשת שבוע לילדים, בקולו של סבא. פרקים חדשים בכל ראשון, שלישי וחמישי.">
+<meta property="og:title" content="סיפורי סבא">
+<meta property="og:description" content="סיפורי צדיקים ופרשת שבוע לילדים, בקולו של סבא.">
+<meta property="og:image" content="https://siporeysaba.github.io/s01/img/hero.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWX9C43JV9"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -15,65 +26,94 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XWX9C43JV9');
 </script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
-<div class="container">
-  <!-- לוגו -->
-  <div class="header-img">
-    <img src="https://i.imgur.com/M15F39y.jpeg">
+<body class="page-index">
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <img src="img/logo.jpg" alt="" width="40" height="40">
+      <span>סיפורי סבא</span>
+    </a>
+    <nav class="social" aria-label="רשתות">
+      <a class="social-btn whatsapp" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank" rel="noopener" aria-label="קבוצת וואטסאפ"><i class="fa-brands fa-whatsapp"></i></a>
+      <a class="social-btn youtube" href="https://youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q" target="_blank" rel="noopener" aria-label="ערוץ יוטיוב"><i class="fa-brands fa-youtube"></i></a>
+      <a class="social-btn spotify" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank" rel="noopener" aria-label="ספוטיפיי"><i class="fa-brands fa-spotify"></i></a>
+    </nav>
   </div>
-  <!-- רשתות -->
-  <div class="top-bar">
-    <div class="social-buttons">
-      <a class="social-btn whatsapp"
-         href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank">
-        <i class="fa-brands fa-whatsapp"></i>
-      </a>
-      <a class="social-btn youtube"
-         href="https://youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q" target="_blank">
-        <i class="fa-brands fa-youtube"></i>
-      </a>
-      <a class="social-btn spotify"
-         href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank">
-        <i class="fa-brands fa-spotify"></i>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero-bg" src="img/hero.jpg" alt="סבא מספר סיפור לנכדים מתוך ספר גדול">
+    <div class="hero-shade"></div>
+    <div class="wrap hero-content">
+      <h1>סיפורי סבא</h1>
+      <p class="hero-lead">סיפורי צדיקים ופרשת השבוע לילדים, עם הרבה ערכים, אמונה וחסד. כמו שסבא מספר.</p>
+      <div class="schedule">
+        <span class="chip"><i class="fa-regular fa-calendar"></i> ראשון ושלישי: סיפורי צדיקים</span>
+        <span class="chip"><i class="fa-solid fa-book-open"></i> חמישי: פרשת שבוע</span>
+      </div>
+      <a id="heroCta" class="btn btn-primary hero-cta" href="#episodes" hidden>
+        <i class="fa-solid fa-play"></i> <span>לפרק החדש</span>
       </a>
     </div>
+  </section>
+
+  <div class="wrap">
+    <!-- הנצחה -->
+    <section class="memorial">
+      <div class="memorial-candle" aria-hidden="true">🕯️</div>
+      <div>
+        <h2>המיזם מוקדש לזכרם</h2>
+        <p>
+          המיזם מוקדש באהבה ובקדושה לזכרם של ארבעת גיבורי שלומית, אביעד, אוריאל, בכור וראובן ז"ל ולזכר שי שימריז ז"ל, שנפלו בקרבות הגבורה בשמחת תורה תשפ"ד ובמלחמת התקומה.
+          פרויקט "סיפורי סבא" נולד מתוך רצון להרבות טוב, חסד וערכים בעולם, ואת הכוח, הרוח והאור למיזם הזה ובכלל אנחנו שואבים מהגבורה והלב הענק שהם השאירו לנו. יהי זכרם ברוך.
+        </p>
+      </div>
+    </section>
+
+    <!-- פרקים שבדרך -->
+    <section id="upcoming" class="upcoming" hidden>
+      <h2 class="section-title"><i class="fa-solid fa-hourglass-half"></i> פרקים שבדרך</h2>
+      <div id="upcomingList" class="upcoming-list"></div>
+    </section>
+
+    <!-- פרקים -->
+    <section id="episodesSection">
+      <div class="toolbar">
+        <h2 class="section-title">כל הפרקים <span id="count" class="count"></span></h2>
+        <div class="toolbar-controls">
+          <div class="tabs" role="tablist">
+            <button role="tab" data-filter="all" class="active">הכל</button>
+            <button role="tab" data-filter="stories">סיפורים</button>
+            <button role="tab" data-filter="parasha">פרשת שבוע</button>
+            <button role="tab" data-filter="pdf"><i class="fa-solid fa-book"></i> עם PDF</button>
+          </div>
+          <label class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="search" type="search" placeholder="חיפוש פרק..." autocomplete="off">
+          </label>
+        </div>
+      </div>
+      <div id="episodes" class="grid">
+        <div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div>
+      </div>
+      <p id="empty" class="empty" hidden>לא נמצאו פרקים</p>
+    </section>
   </div>
-  <!-- לוח -->
-  <div class="card">
-    <div class="title">📅 לוח יציאת פרקים</div>
-    <div class="desc">
-      ימי ראשון ושלישי: סיפורי צדיקים<br>
-      ימי חמישי: פרשת שבוע
-    </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>סיפורי סבא · סיפורים עם ערכים לכל המשפחה</span>
+    <a href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> קבלו פרקים חדשים בוואטסאפ</a>
   </div>
-  <!-- פרקים שבדרך -->
-<div class="card" id="futureEpisodesBox" style="display:none">
-  <div class="title">📅 פרקים שבדרך</div>
-  <div id="futureEpisodesList" class="desc"></div>
-</div>
-  
-  <!-- הנצחה -->
-  <div class="card">
-    <div class="title">🕯️ הנצחה</div>
-    <div class="desc">
-המיזם מוקדש באהבה ובקדושה לזכרם של ארבעת גיבורי שלומית, אביעד, אוריאל, בכור וראובן ז"ל ולזכר שי שימריז ז"ל, שנפלו בקרבות הגבורה בשמחת תורה תשפ"ד ובמלחמת התקומה. 
-פרויקט "סיפורי סבא" נולד מתוך רצון להרבות טוב, חסד וערכים בעולם – ואת הכוח, הרוח והאור למיזם הזה ובכלל אנחנו שואבים מהגבורה והלב הענק שהם השאירו לנו. יהי זכרם ברוך. 💔
-    </div>
-  </div>
-  <!-- פילטרים -->
-  <div class="filters">
-    <button onclick="render('all')" class="active" id="btn-all">הכל</button>
-    <button onclick="render('stories')" id="btn-stories">סיפורים</button>
-    <button onclick="render('parasha')" id="btn-parasha">פרשת שבוע</button>
-    <button onclick="render('future')" id="btn-future">🔒בקרוב</button>
-  </div>
-  <!-- פרקים -->
-  <div id="episodes"></div>
-</div>
-<button id="installApp" class="install-btn">📲 התקן את האפליקציה</button>
+</footer>
+
+<button id="installApp" class="install-btn" hidden><i class="fa-solid fa-mobile-screen"></i> התקן את האפליקציה</button>
+
 <script type="module" src="script.js"></script>
 </body>
 </html>
