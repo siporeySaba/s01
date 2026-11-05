@@ -3,6 +3,7 @@
 // פרקים שנוספו אוטומטית מתעדכנים אם הכותרת או התיאור השתנו ביוטיוב.
 // הרצה יבשה (בלי כתיבה): DRY_RUN=1 node sync-youtube.mjs
 import admin from "firebase-admin";
+import { readFileSync } from "node:fs";
 
 const CHANNEL_ID = "UCldwZhwQyvnU03udHWtJ69Q";
 const UPLOADS_PLAYLIST = "UU" + CHANNEL_ID.slice(2);
@@ -155,5 +156,24 @@ for (const [vid, { item, series }] of videos) {
   }
 }
 
-if (!DRY_RUN && (added || updated)) await batch.commit();
-console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}.`);
+// ---------- חיבור קובצי PDF לפרקים (לפי pdf story/links.json) ----------
+const PDF_BASE = "https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/";
+const norm = s => String(s || "").replace(/[\s\-–—|:"״'׳]/g, "");
+let linked = 0;
+try {
+  const links = JSON.parse(readFileSync(new URL("../pdf story/links.json", import.meta.url), "utf8"));
+  for (const { episode, file } of links) {
+    const matches = existing.docs.filter(d => norm(d.data().title).includes(norm(episode)));
+    if (matches.length !== 1) { console.log(`⚠️ PDF ${file}: נמצאו ${matches.length} פרקים מתאימים ל-"${episode}", מדלג`); continue; }
+    const url = PDF_BASE + encodeURIComponent(file);
+    if (matches[0].data().pdf === url) continue;
+    console.log(`${DRY_RUN ? "[יבש] " : ""}PDF חובר: ${episode} ← ${file}`);
+    batch.update(matches[0].ref, { pdf: url, pdfName: episode });
+    linked++;
+  }
+} catch (e) {
+  console.log("קריאת links.json נכשלה:", e.message);
+}
+
+if (!DRY_RUN && (added || updated || linked)) await batch.commit();
+console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, חוברו ${linked} קובצי PDF.`);
