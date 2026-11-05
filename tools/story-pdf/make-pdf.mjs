@@ -45,14 +45,25 @@ export function parseStory(text) {
 }
 
 // ---------- בניית ה-HTML ----------
-// מודגש עם **כוכביות**
-const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+// כוכביות (סימון מודגש מ-Markdown) נמחקות תמיד
+const inline = s => esc(String(s).replace(/\*+/g, "").replace(/\s{2,}/g, " ").trim());
+// 📜 נוסף לכותרת הפרק רק אם היא לא מתחילה כבר באימוג'י
+const chapterLine = c => /^\p{Extended_Pictographic}/u.test(c.trim()) ? c : "📜 " + c;
 
 export function buildHtml({ meta, blocks }) {
   const logo = pathToFileURL(path.join(HERE, "logo-white.png")).href;
-  const body = blocks.map(b => b.type === "h"
-    ? `<h3>${inline(b.text)}</h3>`
-    : `<p>${inline(b.text)}</p>`).join("\n");
+  // כותרת משנה נדבקת לפסקה שאחריה, כדי שלא תישאר לבד בתחתית עמוד
+  const parts = [];
+  for (let i = 0; i < blocks.length; i++) {
+    const b = blocks[i];
+    if (b.type === "h") {
+      const next = blocks[i + 1]?.type === "p" ? `<p>${inline(blocks[++i].text)}</p>` : "";
+      parts.push(`<div class="keep"><h3>${inline(b.text)}</h3>${next}</div>`);
+    } else {
+      parts.push(`<p>${inline(b.text)}</p>`);
+    }
+  }
+  const body = parts.join("\n");
 
   return `<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
@@ -98,6 +109,7 @@ export function buildHtml({ meta, blocks }) {
   /* גוף הסיפור */
   h2 { font-size: 20pt; font-weight: 700; margin: 6mm 0 6mm; }
   h3 { font-size: 15pt; font-weight: 700; margin: 6mm 0 3mm; break-after: avoid; }
+  .keep { break-inside: avoid; }
   p  { margin: 0 0 0; text-align: justify; orphans: 2; widows: 2; }
   p + p { margin-top: 0; }
 </style></head>
@@ -115,7 +127,7 @@ export function buildHtml({ meta, blocks }) {
   <table class="flow">
     <thead><tr><td><img src="${logo}" alt=""></td></tr></thead>
     <tbody><tr><td>
-      ${meta.chapter ? `<h2>📜 ${inline(meta.chapter)}</h2>` : ""}
+      ${meta.chapter ? `<h2>${inline(chapterLine(meta.chapter))}</h2>` : ""}
       ${body}
     </td></tr></tbody>
   </table>
