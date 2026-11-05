@@ -18,6 +18,9 @@ const EDGE_PATHS = [
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// אימוג'י רגיל או דגל (🇮🇱 בנוי מ-Regional Indicator)
+const STARTS_WITH_EMOJI = /^[\p{Extended_Pictographic}\p{Regional_Indicator}]/u;
+
 // ---------- קריאת קובץ הסיפור ----------
 export function parseStory(text) {
   const lines = text.replace(/^\uFEFF/, "").replace(/\r/g, "").split("\n");
@@ -34,21 +37,28 @@ export function parseStory(text) {
   }
   if (!meta.title) throw new Error('חסרה שורת "כותרת:" בראש הקובץ');
 
+  // גוף הסיפור: אפשר להדביק טקסט כמו שהוא (גם עם סימוני Markdown של # ו-*).
+  // כותרת משנה = שורה שמתחילה ב-# או שורה קצרה שמתחילה באימוג'י.
+  // שורת "סיפורי סבא: ..." בתחילת הסיפור הופכת לכותרת הפרק (אם לא הוגדרה "פרק:").
+  const clean = s => s.replace(/[*#]+/g, "").replace(/\s{2,}/g, " ").trim();
+  const startsWithEmoji = s => STARTS_WITH_EMOJI.test(s);
   const blocks = [];
   for (; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    if (line.startsWith("#")) blocks.push({ type: "h", text: line.replace(/^#+\s*/, "") });
-    else blocks.push({ type: "p", text: line });
+    const raw = lines[i].trim();
+    const text = clean(raw);
+    if (!text) continue;
+    if (!blocks.length && /סיפורי סבא\s*:/.test(text)) { meta.chapter ||= text; continue; }
+    const isHeading = raw.startsWith("#") || (startsWithEmoji(text) && text.length <= 70);
+    blocks.push({ type: isHeading ? "h" : "p", text });
   }
   return { meta, blocks };
 }
 
 // ---------- בניית ה-HTML ----------
 // כוכביות (סימון מודגש מ-Markdown) נמחקות תמיד
-const inline = s => esc(String(s).replace(/\*+/g, "").replace(/\s{2,}/g, " ").trim());
+const inline = s => esc(String(s).replace(/[*#]+/g, "").replace(/\s{2,}/g, " ").trim());
 // 📜 נוסף לכותרת הפרק רק אם היא לא מתחילה כבר באימוג'י
-const chapterLine = c => /^\p{Extended_Pictographic}/u.test(c.trim()) ? c : "📜 " + c;
+const chapterLine = c => STARTS_WITH_EMOJI.test(c.trim()) ? c : "📜 " + c;
 
 export function buildHtml({ meta, blocks }) {
   const logo = pathToFileURL(path.join(HERE, "logo-white.png")).href;
