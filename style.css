@@ -219,6 +219,7 @@ a { color: inherit; }
 }
 .chip-stories { background: var(--stories-soft); color: var(--stories); }
 .chip-parasha { background: var(--parasha-soft); color: var(--parasha); }
+.chip-shorts { background: #ffe9e6; color: #d93025; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;

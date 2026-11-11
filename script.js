@@ -5,7 +5,9 @@ import { loadEpisodes } from "./data.js";
 ======================= */
 const WHATSAPP_GROUP = "https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N";
 const COMING_SOON_IMG = "img/coming-soon.jpg";
-const SERIES_LABEL = { stories: "סיפורי צדיקים", parasha: "פרשת שבוע" };
+const SERIES_LABEL = { stories: "סיפורי צדיקים", parasha: "פרשת שבוע", shorts: "שורטים" };
+// שורטים מוצגים רק בלשונית שלהם, כדי לא להציף את הרשימה הראשית (אחד ביום)
+const isShort = ep => ep.series === "shorts";
 const NEW_DAYS = 7;
 
 const $ = id => document.getElementById(id);
@@ -25,8 +27,12 @@ function parseDate(s) {
   const d = new Date(String(s).replace(" ", "T"));
   return isNaN(d) ? null : d;
 }
-// כותרת לתצוגה בלי הקידומת "סיפורי סבא |" / "סבא בפרשה |" (הסדרה כבר מופיעה בתגית)
-const shortTitle = t => String(t || "").replace(/^\s*(סיפורי סבא|סבא בפרשה)\s*[|\-–:]\s*/, "");
+// כותרת לתצוגה בלי "סיפורי סבא" / "סבא בפרשה" (בהתחלה או בסוף) ובלי #shorts: הסדרה כבר מופיעה בתגית
+const shortTitle = t => String(t || "")
+  .replace(/#shorts/gi, "")
+  .replace(/^\s*(סיפורי סבא|סבא בפרשה)\s*[|\-–:]\s*/, "")
+  .replace(/\s*[|\-–]\s*(סיפורי סבא|סבא בפרשה)\s*$/, "")
+  .trim();
 const time = ep => parseDate(ep.publishAt)?.getTime() || 0;
 
 const dateFmt = new Intl.DateTimeFormat("he-IL", { day: "numeric", month: "long", year: "numeric" });
@@ -103,7 +109,7 @@ function renderUpcoming() {
   const box = $("upcoming");
   const list = $("upcomingList");
   if (!box) return;
-  const future = all.filter(ep => getStatus(ep) === "locked").sort((a, b) => time(a) - time(b));
+  const future = all.filter(ep => getStatus(ep) === "locked" && !isShort(ep)).sort((a, b) => time(a) - time(b));
   box.hidden = future.length === 0;
   list.innerHTML = future.map(ep => `
     <div class="upcoming-item">
@@ -123,7 +129,7 @@ function renderGrid() {
 
   const list = all
     .filter(ep => getStatus(ep, viewed) !== "locked")
-    .filter(ep => state.filter === "all" ? true
+    .filter(ep => state.filter === "all" ? !isShort(ep)
                 : state.filter === "pdf" ? !!ep.pdf
                 : ep.series === state.filter)
     .filter(ep => !q || `${ep.title} ${ep.shortDesc} ${ep.fullDesc}`.toLowerCase().includes(q))
@@ -135,7 +141,7 @@ function renderGrid() {
 }
 
 function setupHero() {
-  const latest = all.filter(ep => getStatus(ep) !== "locked").sort((a, b) => time(b) - time(a))[0];
+  const latest = all.filter(ep => getStatus(ep) !== "locked" && !isShort(ep)).sort((a, b) => time(b) - time(a))[0];
   const cta = $("heroCta");
   if (!latest || !cta) return;
   cta.href = `episode.html?id=${encodeURIComponent(latest.id)}`;

@@ -49,10 +49,20 @@ function toIsraelLocal(iso) {
   return parts.replace(" ", "T");
 }
 
+// סרטונים בערוץ שאינם פרקים (פתיח, תדמית, הודעות) ולא ייכנסו לאתר
+const SKIP_IDS = new Set([
+  "dYvRSkenGcI", // פתיח לסדרת הסיפורים
+  "bx5XTIzhu88", // סרטון תדמית / טריילר הערוץ
+  "jp2JNNom5UY"  // חידושים: עונה חדשה
+]);
+
 // סיווג סרטון שלא נמצא באף רשימה, לפי הכותרת. מחזיר null אם הוא לא נראה כמו פרק.
+// פורמט הכותרות: "<שם> - <דמות> | סיפורי סבא", "פרשת X | סבא בפרשה", ושורטים עם "#shorts"
 function seriesFromTitle(title) {
+  if (/#shorts/i.test(title)) return "shorts";
+  if (/טריילר/.test(title)) return null;
   if (/סבא בפרשה|פרשת/.test(title)) return "parasha";
-  if (/^סיפורי סבא\s*\|/.test(title)) return "stories";
+  if (/סיפורי סבא/.test(title)) return "stories";
   return null;
 }
 
@@ -97,7 +107,7 @@ for (const { id, series } of PLAYLISTS) {
 let orphan = 0;
 for (const it of await fetchPlaylist(UPLOADS_PLAYLIST, 1)) {
   const vid = it.contentDetails?.videoId;
-  if (!isPublic(it) || videos.has(vid)) continue;
+  if (!isPublic(it) || videos.has(vid) || SKIP_IDS.has(vid)) continue;
   const series = seriesFromTitle(it.snippet.title);
   if (!series) { console.log(`מדלג (לא נראה כמו פרק): ${it.snippet.title}`); continue; }
   console.log(`⚠️ לא נמצא באף רשימת השמעה, סווג לפי כותרת כ-${series}: ${it.snippet.title}`);
@@ -156,6 +166,41 @@ for (const [vid, { item, series }] of videos) {
   }
 }
 
+// ---------- פרקים מתוזמנים (scripts/upcoming.json) ----------
+// סרטון מתוזמן ביוטיוב הוא פרטי עד הפרסום, ולכן ה-API לא רואה אותו. הרשימה מתעדכנת בכל תזמון,
+// והפרק נכנס לאתר מראש כ"בקרוב" עם ספירה לאחור. כשהסרטון עולה, הוא מזוהה לפי הקישור ומתעדכן.
+let upcoming = 0;
+try {
+  const list = JSON.parse(readFileSync(new URL("./upcoming.json", import.meta.url), "utf8"));
+  for (const u of list) {
+    const vid = videoIdFromUrl(u.link);
+    if (!vid || videos.has(vid)) continue; // כבר ציבורי: טופל למעלה
+    const doc = byVid.get(vid);
+    if (!doc) {
+      console.log(`${DRY_RUN ? "[יבש] " : ""}בקרוב (${u.series}, ${u.publishAt}): ${u.title}`);
+      batch.set(db.collection("episodes").doc(), {
+        title: u.title,
+        shortDesc: u.shortDesc || u.title,
+        fullDesc: u.shortDesc || "",
+        link: `https://www.youtube.com/watch?v=${vid}`,
+        series: u.series,
+        publishAt: u.publishAt,
+        pdfName: "",
+        pdf: "",
+        createdAt: new Date().toISOString(),
+        source: "auto-sync"
+      });
+      upcoming++;
+    } else if (doc.data().source === "auto-sync" && doc.data().publishAt !== u.publishAt) {
+      console.log(`${DRY_RUN ? "[יבש] " : ""}מועד עודכן: ${u.title} → ${u.publishAt}`);
+      batch.update(doc.ref, { publishAt: u.publishAt, updatedAt: new Date().toISOString() });
+      upcoming++;
+    }
+  }
+} catch (e) {
+  console.log("קריאת upcoming.json נכשלה:", e.message);
+}
+
 // ---------- חיבור קובצי PDF לפרקים (לפי pdf story/links.json) ----------
 const PDF_BASE = "https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/";
 const norm = s => String(s || "").replace(/[\s\-–—|:"״'׳]/g, "");
@@ -175,5 +220,5 @@ try {
   console.log("קריאת links.json נכשלה:", e.message);
 }
 
-if (!DRY_RUN && (added || updated || linked)) await batch.commit();
-console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, חוברו ${linked} קובצי PDF.`);
+if (!DRY_RUN && (added || updated || linked || upcoming)) await batch.commit();
+console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, בקרוב ${upcoming}, חוברו ${linked} קובצי PDF.`);
