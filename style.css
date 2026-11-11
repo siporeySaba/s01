@@ -317,9 +317,8 @@ a { color: inherit; }
   gap: 4px;
   padding: 4px;
   background: var(--bg-2);
-  border-radius: 999px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  border-radius: 22px;
+  flex-wrap: wrap;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs button {
