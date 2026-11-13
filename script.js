@@ -248,6 +248,7 @@ function initEpisode() {
 
   $("ytBtn").href = ep.link || "#";
   $("ytBtn").hidden = !ep.link;
+  if (ep.spotify) { $("spBtn").href = ep.spotify; $("spBtn").hidden = false; }
   $("waBtn").href = `https://wa.me/?text=${encodeURIComponent(shareText(ep))}`;
   $("shareBtn").addEventListener("click", shareEpisode);
 

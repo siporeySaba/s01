@@ -220,5 +220,54 @@ try {
   console.log("קריאת links.json נכשלה:", e.message);
 }
 
-if (!DRY_RUN && (added || updated || linked || upcoming)) await batch.commit();
-console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, בקרוב ${upcoming}, חוברו ${linked} קובצי PDF.`);
+// ---------- קישורי ספוטיפי ----------
+// 1. קישורים קבועים מ-spotify/links.json (לפי מזהה הפרק ב-Firestore)
+// 2. הפרק האחרון בפודקאסט (מעמוד ה-embed של ספוטיפי) מותאם אוטומטית לפי כותרת
+const SPOTIFY_SHOW = "033fWrnJ6gp7UtVx9CK6Io";
+const spotifyUrl = id => `https://open.spotify.com/episode/${id}`;
+const words = s => String(s || "").replace(/סיפורי סבא|סבא בפרשה|#shorts|פרק\s*\d+/g, " ")
+  .replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter(Boolean);
+const similarity = (a, b) => {
+  const A = new Set(words(a)), B = new Set(words(b));
+  let common = 0; A.forEach(w => B.has(w) && common++);
+  return common / Math.max(1, Math.min(A.size, B.size));
+};
+let spotifyLinked = 0;
+const docsById = new Map(existing.docs.map(d => [d.id, d]));
+const setSpotify = (doc, id, label) => {
+  if (doc.data().spotify === spotifyUrl(id)) return;
+  console.log(`${DRY_RUN ? "[יבש] " : ""}ספוטיפי חובר: ${label}`);
+  batch.update(doc.ref, { spotify: spotifyUrl(id) });
+  spotifyLinked++;
+};
+try {
+  const links = JSON.parse(readFileSync(new URL("../spotify/links.json", import.meta.url), "utf8"));
+  for (const { spotify, episode, title } of links) {
+    const doc = docsById.get(episode);
+    if (doc) setSpotify(doc, spotify, title); else console.log(`⚠️ ספוטיפי: הפרק ${episode} (${title}) לא נמצא`);
+  }
+} catch (e) {
+  console.log("קריאת spotify/links.json נכשלה:", e.message);
+}
+try {
+  const html = await (await fetch(`https://open.spotify.com/embed/show/${SPOTIFY_SHOW}`)).text();
+  const data = JSON.parse(html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)[1]);
+  const latest = data.props.pageProps.state?.data?.entity;
+  if (latest?.type === "episode" && latest.id) {
+    const known = existing.docs.some(d => d.data().spotify === spotifyUrl(latest.id));
+    if (!known) {
+      const scored = existing.docs
+        .filter(d => d.data().series !== "shorts" && !d.data().spotify)
+        .map(d => ({ d, v: similarity(latest.title, d.data().title) }))
+        .sort((a, b) => b.v - a.v);
+      const [best, second] = scored;
+      if (best && best.v >= 0.75 && (!second || second.v < best.v)) setSpotify(best.d, latest.id, `${latest.title} (אוטומטי)`);
+      else console.log(`⚠️ ספוטיפי: לא נמצא פרק תואם בוודאות ל-"${latest.title}"`);
+    }
+  }
+} catch (e) {
+  console.log("בדיקת הפרק האחרון בספוטיפי נכשלה:", e.message);
+}
+
+if (!DRY_RUN && (added || updated || linked || upcoming || spotifyLinked)) await batch.commit();
+console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, בקרוב ${upcoming}, חוברו ${linked} קובצי PDF, ${spotifyLinked} קישורי ספוטיפי.`);

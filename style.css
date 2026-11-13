@@ -240,6 +240,7 @@ a { color: inherit; }
 .btn-primary { background: var(--accent); color: #fff; }
 .btn-primary:hover { background: var(--accent-2); }
 .btn-whatsapp { background: #25d366; color: #fff; }
+.btn-spotify { background: #1db954; color: #fff; }
 .btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
 
 .card {
