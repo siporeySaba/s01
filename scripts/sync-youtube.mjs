@@ -233,8 +233,10 @@ const similarity = (a, b) => {
   return common / Math.max(1, Math.min(A.size, B.size));
 };
 let spotifyLinked = 0;
+const knownSpotify = new Set(existing.docs.map(d => d.data().spotify).filter(Boolean));
 const docsById = new Map(existing.docs.map(d => [d.id, d]));
 const setSpotify = (doc, id, label) => {
+  knownSpotify.add(spotifyUrl(id));
   if (doc.data().spotify === spotifyUrl(id)) return;
   console.log(`${DRY_RUN ? "[יבש] " : ""}ספוטיפי חובר: ${label}`);
   batch.update(doc.ref, { spotify: spotifyUrl(id) });
@@ -254,8 +256,7 @@ try {
   const data = JSON.parse(html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)[1]);
   const latest = data.props.pageProps.state?.data?.entity;
   if (latest?.type === "episode" && latest.id) {
-    const known = existing.docs.some(d => d.data().spotify === spotifyUrl(latest.id));
-    if (!known) {
+    if (!knownSpotify.has(spotifyUrl(latest.id))) {
       const scored = existing.docs
         .filter(d => d.data().series !== "shorts" && !d.data().spotify)
         .map(d => ({ d, v: similarity(latest.title, d.data().title) }))
