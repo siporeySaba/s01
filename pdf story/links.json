@@ -6,5 +6,19 @@
   { "episode": "פרשת נח והלל הזקן", "file": "noachVehilel.pdf" },
   { "episode": "הרב שלא ויתר על אף אחד", "file": "haravSheloVitter.pdf" },
   { "episode": "דוד המלך וישבי בנוב", "file": "davidYishbiBenov.pdf" },
-  { "episode": "הסוד של רבי עקיבא", "file": "sodRabiAkiva.pdf" }
+  { "episode": "הסוד של רבי עקיבא", "file": "sodRabiAkiva.pdf" },
+  { "episode": "פרק 1 - התרנגולות שהפכו לעיזים", "file": "s01e01_tarnegolimLeizim.pdf" },
+  { "episode": "פרק 2 - מי יצעק ראשון", "file": "s01e02_miYitzakRishon.pdf" },
+  { "episode": "פרק 3 - הטיול שלא התקיים", "file": "s01e03_hatiyulSheloHitkayem.pdf" },
+  { "episode": "פרק 4 - הדלתות של ניקנור", "file": "s01e04_daltotNikanor.pdf" },
+  { "episode": "פרק 5 - הסידור ששר - חלק א", "file": "s01e05a_hasidurShesar.pdf" },
+  { "episode": "פרק 5 - הסידור ששר - חלק ב", "file": "s01e05b_hasidurShesar.pdf" },
+  { "episode": "פרק 6 – המסע הגדול - עזרא הסופר", "file": "s01e06_hamasaHagadol.pdf" },
+  { "episode": "פרק 7 - התפוח של שלום", "file": "s01e07_tapuachShelShalom.pdf" },
+  { "episode": "פרק 8 - אור החיים הקדוש חלק א", "file": "s01e08_orHachaimPart1.pdf" },
+  { "episode": "פרשת שמיני - השריקה שפתחה את השערים", "file": "parasha-shmini.pdf" },
+  { "episode": "פרשת תזריע מצורע - הרוכל המסתורי", "file": "parasha-tazria.pdf" },
+  { "episode": "פרשת במדבר - דגלים ברוח", "file": "parasha-bamidbar.pdf" },
+  { "episode": "פרשת נשא - הסוד של הרועה ושמעון הצדיק", "file": "parasha-naso.pdf" },
+  { "episode": "יום העצמאות - דוד בן גוריון והכרזת המדינה", "file": "yomHaatzmaut-benGurion.pdf" }
 ]
