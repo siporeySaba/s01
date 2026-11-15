@@ -237,8 +237,8 @@ function initEpisode() {
   chip.hidden = !SERIES_LABEL[ep.series];
 
   const desc = ep.fullDesc || ep.shortDesc || "";
-  $("desc").innerHTML = desc ? esc(desc).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>') : "";
-  $("desc").hidden = !desc;
+  if (!document.body.dataset.id) $("desc").innerHTML = desc ? esc(desc).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>') : "";
+  if (!document.body.dataset.id) $("desc").hidden = !desc; // בדף סטטי התיאור והכפתורים כבר מוכנים
 
   const vid = getVideoId(ep.link);
   const wrapper = document.querySelector(".video-wrapper");

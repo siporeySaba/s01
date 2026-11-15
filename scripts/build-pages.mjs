@@ -43,6 +43,53 @@ const firstSentence = (t, max = 155) => {
   return s.length <= max ? s : s.slice(0, max).replace(/\s+\S*$/, "") + "…";
 };
 
+// סיכומים כתובים לפרקים (scripts/summaries.json): videoId -> { summary: [פסקאות], lesson, questions: [] }
+let SUMMARIES = {};
+try { SUMMARIES = JSON.parse(readFileSync(new URL("summaries.json", import.meta.url), "utf8")); } catch {}
+
+function summaryHTML(s) {
+  if (!s) return "";
+  return `
+    <section class="ep-summary">
+      <h2>על הסיפור</h2>
+      ${(s.summary || []).map(p => `<p>${esc(p)}</p>`).join("\n      ")}
+      ${s.lesson ? `<h3><i class="fa-solid fa-heart"></i> המסר</h3>
+      <p>${esc(s.lesson)}</p>` : ""}
+      ${s.questions?.length ? `<h3><i class="fa-solid fa-comments"></i> שאלות לשיחה עם הילדים</h3>
+      <ul>${s.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul>` : ""}
+    </section>
+`;
+}
+
+// חלוקת הסרטון לפרקים מתוך התיאור ביוטיוב: "0:16 אורי עוז מחליט..." -> קישורים לנקודה בסרטון
+function chapters(text = "") {
+  const body = String(text).split(/\n\s*(?:━{3,}|-{5,}|—{3,})/)[0];
+  return body.split("\n").map(l => l.trim().match(/^(\d{1,2}(?::\d{2}){1,2})\s+(.+)$/)).filter(Boolean)
+    .map(m => ({ t: m[1], s: m[1].split(":").reduce((a, n) => a * 60 + Number(n), 0), label: m[2] }));
+}
+
+// תיאור הפרק: אם יש סיכום כתוב - רק חלוקת הדקות, אחרת גם הטקסט מיוטיוב
+function descHTML(ep, text, sum) {
+  const ch = chapters(ep.fullDesc);
+  let html = sum || !text ? "" : `<p class="desc-text">${esc(text)}</p>`;
+  if (ch.length) {
+    html += `<h3 class="desc-h"><i class="fa-regular fa-clock"></i> מה יש בפרק</h3><ul class="chapters">` +
+      ch.map(c => `<li><a href="https://www.youtube.com/watch?v=${ep.vid}&amp;t=${c.s}s" target="_blank" rel="noopener"><span class="t">${c.t}</span> ${esc(c.label)}</a></li>`).join("") + `</ul>`;
+  }
+  return html;
+}
+
+// כפתורי מעקב קבועים (במקום רשימת הקישורים הארוכה מתיאור היוטיוב)
+const FOLLOW_HTML = `
+    <section class="follow">
+      <h3>רוצים עוד סיפורים?</h3>
+      <div class="follow-btns">
+        <a class="btn btn-whatsapp" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> לקבוצת הוואטסאפ</a>
+        <a class="btn btn-spotify" href="https://open.spotify.com/show/033fWrnJ6gp7UtVx9CK6Io" target="_blank" rel="noopener"><i class="fa-brands fa-spotify"></i> בספוטיפיי</a>
+        <a class="btn btn-youtube" href="https://www.youtube.com/channel/UCldwZhwQyvnU03udHWtJ69Q?sub_confirmation=1" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i> הרשמה לערוץ</a>
+      </div>
+    </section>`;
+
 // ---------- נתונים ----------
 async function fetchEpisodes() {
   const out = [];
@@ -83,7 +130,8 @@ function relatedFor(ep) {
 for (const ep of all) {
   const title = shortTitle(ep.title);
   const text = cleanDesc(ep.fullDesc || ep.shortDesc || "");
-  const metaDesc = firstSentence(text.replace(/^[^\p{L}\p{N}"]+/u, "") || ep.shortDesc || title);
+  const sum = SUMMARIES[ep.vid];
+  const metaDesc = sum?.summary?.[0] ? firstSentence(sum.summary[0]) : firstSentence(text.replace(/^[^\p{L}\p{N}"]+/u, "") || ep.shortDesc || title);
   const url = `${SITE}ep/${ep.vid}.html`;
   const thumbUrl = `https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg`;
   const series = SERIES_LABEL[ep.series] || "";
@@ -93,7 +141,7 @@ for (const ep of all) {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     name: title,
-    description: firstSentence(text.replace(/\n/g, " "), 500) || title,
+    description: firstSentence(sum?.summary?.join(" ") || text.replace(/\n/g, " "), 500) || title,
     thumbnailUrl: [thumbUrl],
     uploadDate: ep.when?.iso,
     embedUrl: `https://www.youtube.com/embed/${ep.vid}`,
@@ -128,7 +176,7 @@ for (const ep of all) {
     .replace('<span id="date" class="meta-date"></span>', `<span id="date" class="meta-date">${ep.when ? heDate(ep.when.date) : ""}</span>`)
     .replace('<h1 id="title" class="episode-title"></h1>', `<h1 id="title" class="episode-title">${esc(title)}</h1>`)
     .replace('<a class="btn btn-ghost" id="ytBtn"', `<a class="btn btn-ghost" id="ytBtn" href="https://www.youtube.com/watch?v=${ep.vid}"`)
-    .replace('<div id="desc" class="episode-desc"></div>', `<div id="desc" class="episode-desc">${esc(text)}</div>`)
+    .replace('<div id="desc" class="episode-desc"></div>', `${summaryHTML(sum)}<div id="desc" class="episode-desc">${descHTML(ep, text, sum)}</div>${FOLLOW_HTML}`)
     .replace('<div id="more" class="more-list"></div>', `<div id="more" class="more-list">${more}\n    </div>`);
   if (ep.pdf) {
     html = html.replace('<div id="pdfSection" class="pdf-section" hidden>', '<div id="pdfSection" class="pdf-section">')
