@@ -612,3 +612,27 @@ a { color: inherit; }
 .ep-summary p { margin: 0 0 10px; }
 .ep-summary ul { margin: 0; padding-inline-start: 20px; }
 .ep-summary li { margin-bottom: 4px; }
+
+/* ---------- נגן בלחיצה ---------- */
+.lite-yt { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: #000; }
+.lite-yt img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lite-yt .play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(216, 137, 28, .92); color: #fff; display: grid; place-items: center; font-size: 28px; box-shadow: 0 6px 24px rgba(0,0,0,.35); transition: transform .2s; }
+.lite-yt:hover .play { transform: translate(-50%, -50%) scale(1.08); }
+
+/* ---------- אודות + 404 ---------- */
+.about { padding-block: 32px 48px; }
+.about-article { max-width: 760px; margin-inline: auto; font-size: 17px; line-height: 1.85; color: var(--ink-2); }
+.about-kicker { color: var(--accent-2); font-weight: 700; margin: 0 0 6px; }
+.about-article h1 { font-family: "Frank Ruhl Libre", serif; font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.25; color: var(--ink); margin: 0 0 16px; }
+.about-article h2 { color: var(--ink); font-size: 1.3rem; margin: 28px 0 8px; }
+.about-lead { font-size: 1.15rem; color: var(--ink); }
+.about-list { padding-inline-start: 22px; }
+.about-list li { margin-bottom: 6px; }
+.about-memorial { margin-block: 28px; }
+.about-help { margin-top: 28px; padding: 18px 20px; border-radius: var(--radius); background: var(--accent-soft); }
+.about-help h2 { margin-top: 0; }
+.about-sign { margin-top: 28px; font-weight: 600; color: var(--ink); }
+.memorial-more { display: inline-block; margin-top: 8px; color: var(--accent-2); font-weight: 600; text-decoration: none; }
+.notfound { padding-block: 48px; text-align: center; }
+.notfound-icon { font-size: 56px; }
+.notfound .notice { max-width: 520px; margin-inline: auto; }

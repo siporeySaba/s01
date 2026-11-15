@@ -35,6 +35,7 @@ const shortTitle = t => String(t || "")
   .replace(/#shorts/gi, "")
   .replace(/^\s*(סיפורי סבא|סבא בפרשה)\s*[|\-–:]\s*/, "")
   .replace(/\s*[|\-–]\s*(סיפורי סבא|סבא בפרשה)\s*$/, "")
+  .replace(/^\s*פרק\s*\d+\s*[-–:]?\s*/, "") // "פרק 13 - ..." מהעונה הראשונה
   .trim();
 const time = ep => parseDate(ep.publishAt)?.getTime() || 0;
 
@@ -242,7 +243,9 @@ function initEpisode() {
 
   const vid = getVideoId(ep.link);
   const wrapper = document.querySelector(".video-wrapper");
-  if (vid) {
+  if (document.querySelector(".lite-yt")) {
+    // דף סטטי: הנגן נטען רק בלחיצה (טעינה מהירה יותר)
+  } else if (vid) {
     $("video").src = `https://www.youtube-nocookie.com/embed/${vid}?rel=0&modestbranding=1`;
     $("video").addEventListener("load", () => wrapper.classList.remove("skeleton"), { once: true });
   } else {
@@ -302,6 +305,19 @@ $("installApp")?.addEventListener("click", async () => {
   $("installApp").hidden = true;
 });
 window.addEventListener("appinstalled", () => { const b = $("installApp"); if (b) b.hidden = true; });
+
+// נגן יוטיוב בלחיצה: מחליף את התמונה בנגן ומתחיל לנגן
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".lite-yt");
+  if (!btn) return;
+  const f = document.createElement("iframe");
+  f.id = "video";
+  f.title = "נגן הפרק";
+  f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  f.allowFullscreen = true;
+  f.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.vid}?rel=0&modestbranding=1&autoplay=1`;
+  btn.replaceWith(f);
+});
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(err => console.error("SW error:", err));

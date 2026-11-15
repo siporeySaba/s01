@@ -16,6 +16,7 @@ const shortTitle = t => String(t || "")
   .replace(/#shorts/gi, "")
   .replace(/^\s*(סיפורי סבא|סבא בפרשה)\s*[|\-–:]\s*/, "")
   .replace(/\s*[|\-–]\s*(סיפורי סבא|סבא בפרשה)\s*$/, "")
+  .replace(/^\s*פרק\s*\d+\s*[-–:]?\s*/, "") // "פרק 13 - ..." מהעונה הראשונה
   .trim();
 
 // publishAt נשמר בשעון ישראל בלי אזור זמן: "2026-11-10T18:00"
@@ -135,7 +136,13 @@ for (const ep of all) {
   const url = `${SITE}ep/${ep.vid}.html`;
   const thumbUrl = `https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg`;
   const series = SERIES_LABEL[ep.series] || "";
-  const pageTitle = `${title} | ${ep.series === "parasha" ? "סבא בפרשה" : "סיפורי סבא"} - ${ep.series === "parasha" ? "פרשת השבוע לילדים" : "סיפורים לילדים"}`;
+  // כותרת לגוגל: עד ~60 תווים. קודם השם, אחר כך הסדרה, ותוספת "לילדים" רק אם יש מקום
+  const brand = ep.series === "parasha" ? "סבא בפרשה" : "סיפורי סבא";
+  const extra = ep.series === "parasha" ? "פרשת השבוע לילדים" : "סיפורים לילדים";
+  const cut = (t, n) => t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, "").replace(/[\s\-–|:,]+$/, "");
+  const cleanT = title.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{1F1E6}-\u{1F1FF}]/gu, "").replace(/\s+/g, " ").trim();
+  const pageTitle = `${cleanT} | ${brand} - ${extra}`.length <= 62 ? `${cleanT} | ${brand} - ${extra}`
+    : `${cut(cleanT, 60 - brand.length - 3)} | ${brand}`;
 
   const ld = {
     "@context": "https://schema.org",
@@ -164,14 +171,16 @@ for (const ep of all) {
 
   const related = relatedFor(ep);
   const more = related.map(e => `
-      <a class="more-item" href="ep/${e.vid}.html"><img src="https://i.ytimg.com/vi/${e.vid}/mqdefault.jpg" alt="" loading="lazy"><div><b>${esc(shortTitle(e.title))}</b><small>${heDate(e.when.date)}</small></div></a>`).join("");
+      <a class="more-item" href="ep/${e.vid}.html"><img src="https://i.ytimg.com/vi/${e.vid}/mqdefault.jpg" alt="${esc(shortTitle(e.title))}" loading="lazy"><div><b>${esc(shortTitle(e.title))}</b><small>${heDate(e.when.date)}</small></div></a>`).join("");
 
   let html = template
+    .replace(/<link rel="stylesheet" href="(https:\/\/cdnjs[^"]+font-awesome[^"]+)">/, '<link rel="stylesheet" href="$1" media="print" onload="this.media=\'all\'">')
     .replace(/<title>[^<]*<\/title>\n?/, "")
     .replace(/<meta property="og:(title|description|image)"[^>]*>\n?/g, "")
     .replace('<meta name="theme-color"', head + '\n<meta name="theme-color"')
     .replace('<body class="page-episode">', `<body class="page-episode" data-id="${esc(ep.id)}">`)
-    .replace('<iframe id="video"', `<iframe id="video" src="https://www.youtube-nocookie.com/embed/${ep.vid}?rel=0&amp;modestbranding=1" loading="lazy"`)
+    .replace(/<iframe id="video"[^>]*><\/iframe>/, `<button class="lite-yt" data-vid="${ep.vid}" aria-label="ניגון הפרק: ${esc(title)}"><img src="https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg" alt="${esc(title)}" fetchpriority="high"><span class="play"><i class="fa-solid fa-play"></i></span></button>`)
+    .replace('<div class="video-wrapper skeleton">', '<div class="video-wrapper">')
     .replace('<span id="seriesChip" class="chip chip-series"></span>', `<span id="seriesChip" class="chip chip-series chip-${esc(ep.series)}"${series ? "" : " hidden"}>${series}</span>`)
     .replace('<span id="date" class="meta-date"></span>', `<span id="date" class="meta-date">${ep.when ? heDate(ep.when.date) : ""}</span>`)
     .replace('<h1 id="title" class="episode-title"></h1>', `<h1 id="title" class="episode-title">${esc(title)}</h1>`)
@@ -197,6 +206,7 @@ for (const f of readdirSync(new URL("ep/", ROOT))) {
 const lastmod = d => d.toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}</loc><lastmod>${lastmod(publicEps[0]?.when.date || new Date())}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`,
+  `  <url><loc>${SITE}about.html</loc><lastmod>2026-11-16</lastmod></url>`,
   ...publicEps.filter(ep => ep.series !== "shorts").map(ep => `  <url><loc>${SITE}ep/${ep.vid}.html</loc><lastmod>${lastmod(ep.when.date)}</lastmod></url>`)
 ];
 writeFileSync(new URL("sitemap.xml", ROOT), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);
@@ -205,7 +215,7 @@ writeFileSync(new URL("sitemap.xml", ROOT), `<?xml version="1.0" encoding="UTF-8
 const cards = publicEps.filter(ep => ep.series !== "shorts").map(ep => `
     <article class="card ep-card">
       <a class="ep-link" href="ep/${ep.vid}.html" aria-label="${esc(ep.title)}">
-        <div class="thumb"><img src="https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg" alt="" loading="lazy"><span class="play"><i class="fa-solid fa-play"></i></span></div>
+        <div class="thumb"><img src="https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg" alt="${esc(shortTitle(ep.title))}" loading="lazy"><span class="play"><i class="fa-solid fa-play"></i></span></div>
         <div class="ep-body">
           <div class="ep-meta">${SERIES_LABEL[ep.series] ? `<span class="chip chip-${esc(ep.series)}">${SERIES_LABEL[ep.series]}</span>` : ""}<span class="meta-date">${heDate(ep.when.date)}</span></div>
           <h3 class="ep-title">${esc(shortTitle(ep.title))}</h3>
