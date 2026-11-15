@@ -4,7 +4,7 @@
 //   node scripts/build-pages.mjs
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync, existsSync } from "node:fs";
 
-const SITE = "https://siporeysaba.github.io/s01/"; // לעדכן כשיהיה דומיין משלנו
+const SITE = "https://siporeysaba.com/"; // לעדכן כשיהיה דומיין משלנו
 const ROOT = new URL("../", import.meta.url);
 const PROJECT = "siporeysaba-100";
 const SERIES_LABEL = { stories: "סיפורי צדיקים", parasha: "פרשת שבוע", shorts: "שורטים" };
@@ -145,7 +145,7 @@ for (const f of readdirSync(new URL("ep/", ROOT))) {
 }
 
 // ---------- sitemap.xml ----------
-// (robots.txt לא נבנה: באתר github.io הוא נקרא רק משורש הדומיין, ולכן את ה-sitemap שולחים ב-Search Console)
+// robots.txt קבוע בשורש האתר ומפנה ל-sitemap
 const lastmod = d => d.toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}</loc><lastmod>${lastmod(publicEps[0]?.when.date || new Date())}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`,
