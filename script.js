@@ -22,6 +22,9 @@ function getVideoId(url = "") {
   return m ? m[1] : "";
 }
 
+// כתובת דף הפרק: דף סטטי לפי מזהה הסרטון (נבנה ע"י scripts/build-pages.mjs), אחרת הדף הדינמי
+const epHref = ep => { const v = getVideoId(ep.link); return v ? `ep/${v}.html` : `episode.html?id=${encodeURIComponent(ep.id)}`; };
+
 function parseDate(s) {
   if (!s) return null;
   const d = new Date(String(s).replace(" ", "T"));
@@ -87,7 +90,7 @@ function cardHTML(ep, viewed) {
   const series = SERIES_LABEL[ep.series] || "";
   return `
     <article class="card ep-card">
-      <a class="ep-link" href="episode.html?id=${encodeURIComponent(ep.id)}" aria-label="${esc(ep.title)}">
+      <a class="ep-link" href="${epHref(ep)}" aria-label="${esc(ep.title)}">
         <div class="thumb">
           <img src="${thumb(ep)}" alt="" loading="lazy">
           <span class="play"><i class="fa-solid fa-play"></i></span>
@@ -144,7 +147,7 @@ function setupHero() {
   const latest = all.filter(ep => getStatus(ep) !== "locked" && !isShort(ep)).sort((a, b) => time(b) - time(a))[0];
   const cta = $("heroCta");
   if (!latest || !cta) return;
-  cta.href = `episode.html?id=${encodeURIComponent(latest.id)}`;
+  cta.href = epHref(latest);
   cta.querySelector("span").textContent = `לפרק החדש: ${shortTitle(latest.title)}`;
   cta.hidden = false;
 }
@@ -215,7 +218,7 @@ function showMissing(title, text) {
 }
 
 function initEpisode() {
-  const id = new URLSearchParams(location.search).get("id");
+  const id = new URLSearchParams(location.search).get("id") || document.body.dataset.id;
   const ep = all.find(e => String(e.id) === String(id));
 
   if (!ep) return showMissing("הפרק לא נמצא", "אולי הקישור השתנה. כל הפרקים מחכים לכם בעמוד הראשי.");
@@ -224,7 +227,7 @@ function initEpisode() {
   }
 
   current = ep;
-  document.title = `${ep.title} · סיפורי סבא`;
+  if (!document.body.dataset.id) document.title = `${ep.title} · סיפורי סבא`; // בדף סטטי הכותרת כבר מוכנה
 
   $("title").textContent = shortTitle(ep.title);
   $("date").textContent = formatDate(ep);
@@ -266,14 +269,14 @@ function initEpisode() {
   const prev = series[i - 1];
   const next = series[i + 1];
   $("nav").innerHTML = `
-    ${prev ? `<a class="nav-card" href="episode.html?id=${encodeURIComponent(prev.id)}"><small><i class="fa-solid fa-arrow-right"></i> הפרק הקודם</small><b>${esc(shortTitle(prev.title))}</b></a>` : "<span></span>"}
-    ${next ? `<a class="nav-card next" href="episode.html?id=${encodeURIComponent(next.id)}"><small>הפרק הבא <i class="fa-solid fa-arrow-left"></i></small><b>${esc(shortTitle(next.title))}</b></a>` : ""}`;
+    ${prev ? `<a class="nav-card" href="${epHref(prev)}"><small><i class="fa-solid fa-arrow-right"></i> הפרק הקודם</small><b>${esc(shortTitle(prev.title))}</b></a>` : "<span></span>"}
+    ${next ? `<a class="nav-card next" href="${epHref(next)}"><small>הפרק הבא <i class="fa-solid fa-arrow-left"></i></small><b>${esc(shortTitle(next.title))}</b></a>` : ""}`;
 
   // עוד פרקים מהסדרה (החדשים קודם)
   const more = series.filter(e => e.id !== ep.id).sort((a, b) => time(b) - time(a)).slice(0, 8);
   $("moreTitle").textContent = `עוד ב${SERIES_LABEL[ep.series] || "סדרה"}`;
   $("more").innerHTML = more.map(e => `
-    <a class="more-item" href="episode.html?id=${encodeURIComponent(e.id)}">
+    <a class="more-item" href="${epHref(e)}">
       <img src="${thumb(e, "mqdefault")}" alt="" loading="lazy">
       <div><b>${esc(shortTitle(e.title))}</b><small>${formatDate(e)}</small></div>
     </a>`).join("");
