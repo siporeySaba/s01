@@ -31,5 +31,8 @@
   { "episode": "פרשת כי תבוא - הפרי הראשון", "file": "parasha-kiTavo.pdf" },
   { "episode": "הברכה והבשר הכשר", "file": "habrachaVehabasar.pdf" },
   { "episode": "כל עוד הנר דולק", "file": "kolOdHanerDolek.pdf" },
-  { "episode": "הלילה שלא נגמר", "file": "sukkot-simchatBeitHashoeva.pdf" }
+  { "episode": "הלילה שלא נגמר", "file": "sukkot-simchatBeitHashoeva.pdf" },
+  { "episode": "הערבה החסרה", "file": "sukkot-aravotShechasru.pdf" },
+  { "episode": "האתרוג השבור", "file": "sukkot-etrogShenishbar.pdf" },
+  { "episode": "האור שנשאר", "file": "haorShenishar.pdf" }
 ]
