@@ -47,6 +47,8 @@ export function parseStory(text) {
     const raw = lines[i].trim();
     const text = clean(raw);
     if (!text) continue;
+    // שורת --- בתוך הסיפור = מעבר סצנה: לא מודפסת, אבל שורות משני צדיה לא מתאחדות
+    if (/^[-–—_]{3,}$/.test(text)) { if (blocks.length) blocks.push({ type: "br" }); continue; }
     if (!blocks.length && /סיפורי סבא\s*:/.test(text)) { meta.chapter ||= text; continue; }
     // כותרת ראשית (# בודד) בראש הסיפור הופכת לכותרת הפרק
     if (!blocks.length && !meta.chapter && /^#(?!#)/.test(raw)) { meta.chapter = text; continue; }
@@ -55,7 +57,8 @@ export function parseStory(text) {
     const strong = /^\*\*.*\*\*\S*$/.test(raw);
     blocks.push({ type: isHeading ? "h" : "p", text, strong });
   }
-  return { meta, blocks: meta.merge === "לא" ? blocks : mergeShortLines(blocks) };
+  const merged = meta.merge === "לא" ? blocks : mergeShortLines(blocks);
+  return { meta, blocks: merged.filter(b => b.type !== "br") };
 }
 
 // סיפור שבו כל משפט בשורה נפרדת יוצר עשרות עמודים. שורות קצרות רצופות מתאחדות לפסקה
