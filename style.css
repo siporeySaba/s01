@@ -683,7 +683,8 @@ a { color: inherit; }
 .story-body h3, .activity-body h3 { margin: 0; font-size: 1.15rem; color: var(--ink); }
 .story-body p, .activity-body p { margin: 0; color: var(--ink-2); line-height: 1.6; flex: 1; }
 .story-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-.activity-card { display: flex; align-items: stretch; overflow: hidden; }
-.activity-icon { flex: none; width: 96px; display: grid; place-items: center; font-size: 46px; background: var(--accent-soft); }
+.activity-card { display: flex; flex-direction: column; overflow: hidden; }
+.activity-img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.activity-icon { flex: none; aspect-ratio: 16/9; display: grid; place-items: center; font-size: 46px; background: var(--accent-soft); }
 .activity-card.soon { border-style: dashed; }
 .soon-tag { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--accent-2); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; }

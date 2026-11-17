@@ -6,7 +6,8 @@
     "desc": "הפעלה חדשה לחנוכה בדרך: סיפור, משחק ושאלות לשיחה עם הילדים סביב הנרות.",
     "ages": "3-12",
     "file": "",
-    "comingSoon": true
+    "comingSoon": true,
+    "image": "img/activities/chanukah.webp"
   },
   {
     "title": "המטמון שמקרב את הגאולה",
@@ -14,6 +15,7 @@
     "icon": "🗝️",
     "desc": "משחק מטמון בבית עם סבא חיים והנכדים: כרטיסיות משימה שמובילות מפתק לפתק, ובכל משימה מגלים עוד דבר על בית המקדש. הרעיון למשחק ולמשימות של איתיאל ספרלינג הי\"ו.",
     "ages": "3-12",
-    "file": "activities/tishaBeav.pdf"
+    "file": "activities/tishaBeav.pdf",
+    "image": "img/activities/tishaBeav.webp"
   }
 ]

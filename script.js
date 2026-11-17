@@ -365,7 +365,7 @@ async function initActivities() {
   try { items = await (await fetch("activities.json", { cache: "no-cache" })).json(); } catch {}
   box.innerHTML = items.map(a => `
     <article class="card activity-card${a.comingSoon ? " soon" : ""}">
-      <div class="activity-icon" aria-hidden="true">${esc(a.icon || "🎈")}</div>
+      ${a.image ? `<img class="activity-img" src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">` : `<div class="activity-icon" aria-hidden="true">${esc(a.icon || "🎈")}</div>`}
       <div class="activity-body">
         <div class="ep-meta">
           ${a.occasion ? `<span class="chip chip-parasha">${esc(a.occasion)}</span>` : ""}
