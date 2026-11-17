@@ -636,3 +636,54 @@ a { color: inherit; }
 .notfound { padding-block: 48px; text-align: center; }
 .notfound-icon { font-size: 56px; }
 .notfound .notice { max-width: 520px; margin-inline: auto; }
+
+/* ---------- תפריט ראשי ---------- */
+.header-inner { position: relative; }
+.main-nav { display: flex; gap: 2px; margin-inline-start: auto; }
+.main-nav a {
+  text-decoration: none; font-weight: 600; font-size: 15px; color: var(--ink-2);
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 13px; border-radius: 999px; transition: background .2s, color .2s;
+}
+.main-nav a i { font-size: .9em; color: var(--accent); }
+.main-nav a:hover { background: var(--bg-2); color: var(--ink); }
+.main-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--ink); }
+.nav-toggle {
+  display: none; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-size: 18px; cursor: pointer; place-items: center; flex: none;
+}
+.page-index .social { order: 3; }
+@media (max-width: 899px) {
+  .nav-toggle { display: grid; order: 4; }
+  .brand { margin-inline-end: auto; }
+  .main-nav {
+    display: none; position: absolute; top: 100%; inset-inline: 0;
+    flex-direction: column; gap: 4px; margin: 0;
+    padding: 10px 16px 16px; background: var(--surface);
+    border-bottom: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .main-nav.open { display: flex; }
+  .main-nav a { font-size: 17px; padding: 12px 14px; border-radius: 12px; }
+}
+@media (max-width: 420px) { .brand span { font-size: 19px; } .social { gap: 6px; } .social-btn { width: 36px; height: 36px; font-size: 17px; } }
+
+/* ---------- סיפורים כתובים / הפעלות ---------- */
+.page-section { padding-block: 28px 48px; }
+.page-head { max-width: 720px; margin-bottom: 24px; }
+.page-head h1 { font-family: var(--display); font-size: clamp(1.9rem, 5vw, 2.6rem); margin: 0 0 10px; color: var(--ink); }
+.page-lead { font-size: 1.08rem; line-height: 1.75; color: var(--ink-2); margin: 0; }
+.page-section .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.story-grid, .activity-grid { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 14px; }
+@media (min-width: 720px) { .story-grid, .activity-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .story-grid { grid-template-columns: repeat(3, 1fr); } }
+.story-card { display: flex; flex-direction: column; overflow: hidden; }
+.story-thumb img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.story-body, .activity-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; align-items: flex-start; }
+.story-body h3, .activity-body h3 { margin: 0; font-size: 1.15rem; color: var(--ink); }
+.story-body p, .activity-body p { margin: 0; color: var(--ink-2); line-height: 1.6; flex: 1; }
+.story-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.activity-card { display: flex; align-items: stretch; overflow: hidden; }
+.activity-icon { flex: none; width: 96px; display: grid; place-items: center; font-size: 46px; background: var(--accent-soft); }
+.activity-card.soon { border-style: dashed; }
+.soon-tag { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--accent-2); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; }

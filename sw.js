@@ -1,10 +1,13 @@
 // Network-first לקבצי האתר עצמו, עם גיבוי מהמטמון כשאין אינטרנט.
 // בקשות לשרתים חיצוניים (Firestore, יוטיוב, גוגל) לא עוברות דרך ה-SW בכלל.
-const CACHE_NAME = "saba-v5";
+const CACHE_NAME = "saba-v6";
 const CORE = [
   "./",
   "./index.html",
   "./episode.html",
+  "./stories.html",
+  "./activities.html",
+  "./nav.js",
   "./style.css",
   "./script.js",
   "./data.js",

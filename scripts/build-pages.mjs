@@ -207,6 +207,8 @@ const lastmod = d => d.toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}</loc><lastmod>${lastmod(publicEps[0]?.when.date || new Date())}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`,
   `  <url><loc>${SITE}about.html</loc><lastmod>2026-11-16</lastmod></url>`,
+  `  <url><loc>${SITE}stories.html</loc><lastmod>2026-11-17</lastmod></url>`,
+  `  <url><loc>${SITE}activities.html</loc><lastmod>2026-11-17</lastmod></url>`,
   ...publicEps.filter(ep => ep.series !== "shorts").map(ep => `  <url><loc>${SITE}ep/${ep.vid}.html</loc><lastmod>${lastmod(ep.when.date)}</lastmod></url>`)
 ];
 writeFileSync(new URL("sitemap.xml", ROOT), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);

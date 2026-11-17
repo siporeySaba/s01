@@ -323,11 +323,71 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(err => console.error("SW error:", err));
 }
 
+
+/* =======================
+   סיפורים כתובים
+======================= */
+function initStories() {
+  const list = all
+    .filter(ep => ep.pdf && !isShort(ep) && getStatus(ep) !== "locked")
+    .sort((a, b) => time(b) - time(a));
+  const box = $("storyList");
+  const render = (q = "") => {
+    const words = q.trim().toLowerCase().split(/s+/).filter(Boolean);
+    const shown = list.filter(ep => words.every(w => `${ep.title} ${ep.shortDesc || ""}`.toLowerCase().includes(w)));
+    $("count").textContent = `(${shown.length})`;
+    box.innerHTML = shown.length ? shown.map(ep => `
+      <article class="card story-card">
+        <a class="story-thumb" href="${epHref(ep)}" aria-label="לפרק: ${esc(shortTitle(ep.title))}">
+          <img src="${thumb(ep, "mqdefault")}" alt="" loading="lazy">
+        </a>
+        <div class="story-body">
+          <span class="chip chip-${esc(ep.series)}">${SERIES_LABEL[ep.series] || ""}</span>
+          <h3>${esc(shortTitle(ep.title))}</h3>
+          <p>${esc(ep.shortDesc || "")}</p>
+          <div class="story-actions">
+            <a class="btn btn-primary" href="${esc(ep.pdf)}" target="_blank" rel="noopener"><i class="fa-solid fa-book-open"></i> לקריאת הסיפור</a>
+            <a class="btn btn-ghost" href="${epHref(ep)}"><i class="fa-solid fa-play"></i> לפרק</a>
+          </div>
+        </div>
+      </article>`).join("") : `<div class="card notice"><p>לא מצאנו סיפור כזה. נסו מילה אחרת.</p></div>`;
+  };
+  render();
+  $("search").addEventListener("input", e => render(e.target.value));
+}
+
+/* =======================
+   הפעלות
+======================= */
+async function initActivities() {
+  const box = $("activityList");
+  let items = [];
+  try { items = await (await fetch("activities.json", { cache: "no-cache" })).json(); } catch {}
+  box.innerHTML = items.map(a => `
+    <article class="card activity-card${a.comingSoon ? " soon" : ""}">
+      <div class="activity-icon" aria-hidden="true">${esc(a.icon || "🎈")}</div>
+      <div class="activity-body">
+        <div class="ep-meta">
+          ${a.occasion ? `<span class="chip chip-parasha">${esc(a.occasion)}</span>` : ""}
+          ${a.ages ? `<span class="meta-date">לגילאי ${esc(a.ages)}</span>` : ""}
+        </div>
+        <h3>${esc(a.title)}</h3>
+        <p>${esc(a.desc || "")}</p>
+        ${a.comingSoon || !a.file
+          ? `<span class="soon-tag"><i class="fa-regular fa-clock"></i> בקרוב</span>`
+          : `<a class="btn btn-primary" href="${esc(a.file)}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i> להורדת ההפעלה</a>`}
+      </div>
+    </article>`).join("");
+}
+
 /* =======================
    הפעלה
 ======================= */
 async function init() {
+  if (document.body.classList.contains("page-activities")) return initActivities();
+  if (document.body.classList.contains("page-about")) return;
   all = await loadEpisodes();
+  if (document.body.classList.contains("page-stories")) initStories();
   if (document.body.classList.contains("page-index")) initIndex();
   if (document.body.classList.contains("page-episode")) initEpisode();
 }
