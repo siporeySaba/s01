@@ -38,7 +38,13 @@ gtag('config', 'G-XWX9C43JV9');
       <img src="img/logo.jpg" alt="" width="40" height="40">
       <span>סיפורי סבא</span>
     </a>
-    <a class="back-link" href="index.html"><i class="fa-solid fa-arrow-right"></i> לכל הפרקים</a>
+    <button class="nav-toggle" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mainNav"><i class="fa-solid fa-bars"></i></button>
+    <nav class="main-nav" id="mainNav" aria-label="ניווט ראשי">
+      <a href="./" aria-current="page"><i class="fa-solid fa-circle-play"></i> פרקים</a>
+      <a href="stories.html"><i class="fa-solid fa-book-open"></i> סיפורים כתובים</a>
+      <a href="activities.html"><i class="fa-solid fa-puzzle-piece"></i> הפעלות</a>
+      <a href="about.html"><i class="fa-solid fa-heart"></i> אודות</a>
+    </nav>
   </div>
 </header>
 
@@ -113,5 +119,6 @@ gtag('config', 'G-XWX9C43JV9');
 <div id="toast" class="toast" role="status"></div>
 
 <script type="module" src="script.js"></script>
+<script src="nav.js" defer></script>
 </body>
 </html>
