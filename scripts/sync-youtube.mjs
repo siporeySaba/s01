@@ -201,6 +201,27 @@ try {
   console.log("קריאת upcoming.json נכשלה:", e.message);
 }
 
+// ---------- ניקוי: פרק אוטומטי שהסרטון שלו כבר לא ציבורי (הוסתר או נמחק) ----------
+// רק לפרקים שנוצרו אוטומטית, רק אחרי מועד הפרסום, ולא כשהוא עדיין ב-upcoming.json.
+let removed = 0;
+const upcomingIds = new Set();
+try {
+  for (const u of JSON.parse(readFileSync(new URL("./upcoming.json", import.meta.url), "utf8"))) {
+    const id = videoIdFromUrl(u.link); if (id) upcomingIds.add(id);
+  }
+} catch {}
+const nowLocal = toIsraelLocal(new Date().toISOString());
+if (videos.size > 20) { // הגנה: אם ה-API החזיר רשימה ריקה או חלקית, לא מוחקים כלום
+  for (const [vid, doc] of byVid) {
+    const d = doc.data();
+    if (d.source !== "auto-sync" || videos.has(vid) || upcomingIds.has(vid) || SKIP_IDS.has(vid)) continue;
+    if (!d.publishAt || d.publishAt > nowLocal) continue;
+    console.log(`${DRY_RUN ? "[יבש] " : ""}הוסר (הסרטון לא ציבורי): ${d.title} (${vid})`);
+    batch.delete(doc.ref);
+    removed++;
+  }
+}
+
 // ---------- חיבור קובצי PDF לפרקים (לפי pdf story/links.json) ----------
 const PDF_BASE = "https://raw.githubusercontent.com/siporeySaba/s01/main/pdf%20story/";
 const norm = s => String(s || "").replace(/[\s\-–—|:"״'׳]/g, "");
@@ -270,5 +291,5 @@ try {
   console.log("בדיקת הפרק האחרון בספוטיפי נכשלה:", e.message);
 }
 
-if (!DRY_RUN && (added || updated || linked || upcoming || spotifyLinked)) await batch.commit();
-console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, בקרוב ${upcoming}, חוברו ${linked} קובצי PDF, ${spotifyLinked} קישורי ספוטיפי.`);
+if (!DRY_RUN && (added || updated || linked || upcoming || spotifyLinked || removed)) await batch.commit();
+console.log(`הסתיים. נוספו ${added}, עודכנו ${updated}, בקרוב ${upcoming}, חוברו ${linked} קובצי PDF, ${spotifyLinked} קישורי ספוטיפי, הוסרו ${removed}.`);
