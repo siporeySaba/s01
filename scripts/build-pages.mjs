@@ -201,6 +201,54 @@ for (const f of readdirSync(new URL("ep/", ROOT))) {
   if (f.endsWith(".html") && !written.has(f)) unlinkSync(new URL(`ep/${f}`, ROOT));
 }
 
+// ---------- דפי נושא (אוספים) ----------
+const HUBS = [
+  { file: "tzadikim.html", series: "stories", title: "סיפורי צדיקים לילדים", h1: "סיפורי צדיקים לילדים",
+    desc: "כל סיפורי הצדיקים של סיפורי סבא: סיפורי חז״ל, תנאים וחסידות לילדים, בקולו של סבא חיים. לכל סיפור סיכום, מסר ושאלות לשיחה עם הילדים.",
+    intro: "סבא חיים מספר לנכדים סיפורים על צדיקים, חכמים ואנשים פשוטים עם לב גדול: רבי עקיבא, הלל הזקן, רבי חנינא בן דוסא, הבעל שם טוב ועוד. כל סיפור מסתיים במסר קטן לחיים ובשאלות לשיחה משפחתית, ומתאים לשמיעה לפני השינה, בנסיעה או בשולחן השבת." },
+  { file: "parasha.html", series: "parasha", title: "פרשת השבוע לילדים – סבא בפרשה", h1: "פרשת השבוע לילדים – סבא בפרשה",
+    desc: "פרשת השבוע לילדים בסדרת סבא בפרשה: סבא חיים והנכדים יוצאים למסע בפרשה, עם סיפור, מסר ושאלות לשיחה בשולחן השבת.",
+    intro: "בכל שבוע סבא חיים ואחד הנכדים מטיילים יחד בפרשת השבוע: מה קרה, מה אפשר ללמוד מזה, ואיך זה קשור לחיים שלנו היום. הפרקים קצרים, מותאמים לילדים, ומושלמים לדבר תורה בשולחן השבת." }
+];
+const shell = readFileSync(new URL("about.html", ROOT), "utf8");
+const card = ep => `
+    <article class="card ep-card">
+      <a class="ep-link" href="ep/${ep.vid}.html" aria-label="${esc(ep.title)}">
+        <div class="thumb"><img src="https://i.ytimg.com/vi/${ep.vid}/hqdefault.jpg" alt="${esc(shortTitle(ep.title))}" loading="lazy"><span class="play"><i class="fa-solid fa-play"></i></span></div>
+        <div class="ep-body">
+          <div class="ep-meta"><span class="meta-date">${heDate(ep.when.date)}</span></div>
+          <h3 class="ep-title">${esc(shortTitle(ep.title))}</h3>
+          <p class="ep-desc">${esc(ep.shortDesc || "")}</p>
+        </div>
+      </a>
+    </article>`;
+for (const h of HUBS) {
+  const eps = publicEps.filter(e => e.series === h.series);
+  const url = SITE + h.file;
+  const ld = { "@context": "https://schema.org", "@type": "CollectionPage", name: h.title, url, inLanguage: "he", description: h.desc,
+    isPartOf: { "@id": SITE + "#website" },
+    mainEntity: { "@type": "ItemList", numberOfItems: eps.length, itemListElement: eps.map((e, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}ep/${e.vid}.html`, name: shortTitle(e.title) })) } };
+  const html = shell
+    .replace(/<title>[^<]*<\/title>/, `<title>${esc(h.title)} | סיפורי סבא</title>`)
+    .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(h.desc)}">`)
+    .replace(/about\.html(?=">)/g, h.file)
+    .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(h.title)}">`)
+    .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(h.desc)}">`)
+    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, () => `<script type="application/ld+json">
+${JSON.stringify(ld).replace(/</g, "\\u003c")}
+</script>`)
+    .replace(' aria-current="page"', "")
+    .replace(/body class="page-about"/, 'body class="page-hub"')
+    .replace(/<main class="wrap about">[\s\S]*?<\/main>/, () => `<main class="wrap hub">
+  <h1>${esc(h.h1)}</h1>
+  <p class="lead">${esc(h.intro)}</p>
+  <p class="lead">${eps.length} פרקים באתר. <a href="./">לכל הפרקים</a> · <a href="${h.file === "parasha.html" ? "tzadikim.html\">סיפורי צדיקים לילדים" : "parasha.html\">פרשת השבוע לילדים"}</a></p>
+  <div class="grid">${eps.map(card).join("")}
+  </div>
+</main>`);
+  writeFileSync(new URL(h.file, ROOT), html);
+}
+
 // ---------- sitemap.xml ----------
 // robots.txt קבוע בשורש האתר ומפנה ל-sitemap
 const lastmod = d => d.toISOString().slice(0, 10);
@@ -209,6 +257,7 @@ const urls = [
   `  <url><loc>${SITE}about.html</loc><lastmod>2026-11-16</lastmod></url>`,
   `  <url><loc>${SITE}stories.html</loc><lastmod>2026-11-17</lastmod></url>`,
   `  <url><loc>${SITE}activities.html</loc><lastmod>2026-11-17</lastmod></url>`,
+  ...HUBS.map(h => `  <url><loc>${SITE}${h.file}</loc><lastmod>${lastmod(publicEps.find(e => e.series === h.series)?.when.date || new Date())}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`),
   ...publicEps.filter(ep => ep.series !== "shorts").map(ep => `  <url><loc>${SITE}ep/${ep.vid}.html</loc><lastmod>${lastmod(ep.when.date)}</lastmod></url>`)
 ];
 writeFileSync(new URL("sitemap.xml", ROOT), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);
