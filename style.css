@@ -545,6 +545,8 @@ a { color: inherit; }
 }
 .pdf-download-btn:hover { background: var(--accent-2); transform: translateY(-1px); }
 .pdf-download-btn i { font-size: 18px; }
+.pdf-personal-btn { background: var(--brand); box-shadow: 0 6px 18px color-mix(in srgb, var(--brand) 30%, transparent); }
+.pdf-personal-btn:hover { background: #1d2c52; }
 
 .ep-nav {
   margin-top: 32px;

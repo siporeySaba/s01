@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c140e">
+<title>סיפור עם השמות שלכם | סיפורי סבא</title>
+<meta name="description" content="מכניסים את שמות הילדים, ומקבלים את הסיפור כקובץ PDF שבו הם הגיבורים.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="personal.css">
+</head>
+<body class="page-personal">
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./">
+      <img src="img/logo.jpg" alt="" width="40" height="40">
+      <span>סיפורי סבא</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mainNav"><i class="fa-solid fa-bars"></i></button>
+    <nav class="main-nav" id="mainNav" aria-label="ניווט ראשי">
+      <a href="./"><i class="fa-solid fa-circle-play"></i> פרקים</a>
+      <a href="tzadikim.html"><i class="fa-solid fa-star"></i> סיפורי צדיקים</a>
+      <a href="parasha.html"><i class="fa-solid fa-scroll"></i> פרשת השבוע</a>
+      <a href="stories.html"><i class="fa-solid fa-book-open"></i> סיפורים כתובים</a>
+      <a href="activities.html"><i class="fa-solid fa-puzzle-piece"></i> הפעלות</a>
+      <a href="about.html"><i class="fa-solid fa-heart"></i> אודות</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap p-main">
+  <p id="loading" class="p-loading">טוען את הסיפור...</p>
+  <div id="app" hidden>
+    <a id="p-back" class="p-back" href="stories.html"><i class="fa-solid fa-arrow-right"></i> חזרה לפרק</a>
+    <h1 class="p-h1">📖 <span id="p-title"></span><br><small>עם השמות של הילדים שלכם</small></h1>
+    <p class="p-lead">כתבו את שמות הילדים במקום ילדי משפחת כהן, ובחרו בן או בת. הסיפור מתעדכן למטה תוך כדי כתיבה.
+      שדה שנשאר ריק שומר על השם המקורי. <b>השמות לא נשלחים לשום מקום</b>, הכל קורה אצלכם בטלפון.</p>
+    <form id="form" class="p-form" onsubmit="return false">
+      <div id="roles"></div>
+      <div class="p-extra">
+        <label>שם המשפחה <input id="f-family" class="p-input" maxlength="20" autocomplete="off"></label>
+        <label>השם של סבא <input id="f-saba" class="p-input" maxlength="20" autocomplete="off"></label>
+      </div>
+      <button type="button" id="print" class="pdf-download-btn p-print"><i class="fa-solid fa-file-arrow-down"></i> שמירה כ-PDF / הדפסה</button>
+      <p class="p-hint">בחלון שנפתח בוחרים <b>"שמירה כ-PDF"</b> (ולא מדפסת), ואז שומרים.</p>
+    </form>
+    <h2 class="p-preview-h">👀 כך ייראה הסיפור</h2>
+  </div>
+  <div id="story" class="story-doc"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>סיפורי סבא · מרבים אור וטוב ✨</span>
+    <a href="./">לכל הסיפורים</a>
+  </div>
+</footer>
+<script src="nav.js" defer></script>
+<script type="module" src="personal.js"></script>
+</body>
+</html>

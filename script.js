@@ -262,6 +262,15 @@ function initEpisode() {
     $("pdfSection").hidden = false;
     $("pdfLink").href = ep.pdf;
     $("pdfName").textContent = "הורדת הסיפור (PDF)";
+    // סיפור שיש לו תבנית אישית: כפתור להכנת PDF עם השמות של הילדים
+    const file = decodeURIComponent(ep.pdf.split("/").pop() || "");
+    fetch("personal/index.json").then(r => r.ok ? r.json() : []).then(list => {
+      const item = list.find(x => x.pdf === file);
+      if (!item || $("personalLink")) return;
+      $("pdfLink").insertAdjacentHTML("afterend",
+        `<a id="personalLink" class="pdf-download-btn pdf-personal-btn" href="personal.html?s=${encodeURIComponent(item.id)}">
+          <i class="fa-solid fa-child-reaching"></i><span>עם השמות של הילדים שלכם</span></a>`);
+    }).catch(() => {});
   }
 
   // ניווט בתוך הסדרה, לפי תאריך פרסום

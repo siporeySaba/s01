@@ -1,0 +1,63 @@
+/* ---------- עמוד "סיפור עם השמות שלכם" ---------- */
+.p-main { max-width: 760px; padding-top: 18px; padding-bottom: 40px; }
+.p-loading { text-align: center; color: var(--ink-2); padding: 40px 0; }
+.p-back { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-2); text-decoration: none; font-size: 15px; }
+.p-h1 { font-family: "Frank Ruhl Libre", serif; font-size: 30px; line-height: 1.25; margin: 10px 0 8px; }
+.p-h1 small { font-family: Rubik, sans-serif; font-size: 18px; font-weight: 500; color: var(--accent-2); }
+.p-lead { color: var(--ink-2); line-height: 1.6; margin: 0 0 16px; }
+.p-form { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+.p-role { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.p-role > label { grid-column: 1 / -1; font-size: 15px; color: var(--ink-2); }
+.p-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 17px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); }
+.p-input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.p-gender { display: flex; gap: 4px; background: var(--bg-2); border-radius: 999px; padding: 3px; }
+.p-gender label { cursor: pointer; }
+.p-gender input { position: absolute; opacity: 0; pointer-events: none; }
+.p-gender label:has(input) { padding: 7px 14px; border-radius: 999px; font-weight: 600; font-size: 15px; display: inline-block; }
+.p-gender label:has(input:checked) { background: var(--accent); color: #fff; }
+.p-gender label:has(input:focus-visible) { outline: 2px solid var(--accent-2); }
+.p-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 0 4px; }
+.p-extra label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); }
+.p-print { margin-top: 14px; border: 0; cursor: pointer; font: inherit; font-weight: 700; width: 100%; justify-content: center; font-size: 17px; }
+.p-hint { color: var(--ink-3); font-size: 14px; text-align: center; margin: 8px 0 0; }
+.p-preview-h { font-size: 20px; margin: 28px 0 10px; }
+@media (max-width: 520px) { .p-extra { grid-template-columns: 1fr; } .p-h1 { font-size: 25px; } }
+
+/* ---------- הסיפור עצמו: על המסך תצוגה מקדימה כדף נייר ---------- */
+.story-doc { font-family: Gisha, "Noto Sans Hebrew", Arial, "Segoe UI Emoji", sans-serif; color: #000; }
+@media screen {
+  .story-doc { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 8px 24px rgb(0 0 0 / .06); padding: 22px 20px; font-size: 16px; line-height: 1.6; }
+  .story-doc .cover { text-align: center; border-bottom: 1px solid #eee; padding-bottom: 18px; margin-bottom: 8px; }
+  .story-doc .cover .logo { width: 150px; max-width: 50%; }
+  .story-doc .cover h1 { font-size: 28px; margin: 12px 0 8px; }
+  .story-doc .cover table { margin: 0 auto; }
+  .story-doc table.flow thead { display: none; }
+  .story-doc table.flow, .story-doc table.flow td { display: block; }
+}
+.story-doc .for { font-weight: 700; color: #b86e0a; }
+.story-doc .cover table { border-collapse: collapse; font-size: 11pt; }
+.story-doc .cover td { border: 1px solid #999; padding: 4px 14px; text-align: center; }
+.story-doc h2 { font-size: 20pt; font-weight: 700; margin: 6mm 0 6mm; }
+.story-doc h3 { font-size: 15pt; font-weight: 700; margin: 6mm 0 3mm; break-after: avoid; }
+.story-doc .keep { break-inside: avoid; }
+.story-doc p { margin: 0; text-align: justify; orphans: 2; widows: 2; }
+
+/* ---------- הדפסה: רק הסיפור, באותו עיצוב כמו קובצי ה-PDF של האתר ---------- */
+@media print {
+  @page { size: A4; margin: 10mm 22mm 18mm; @bottom-center { content: counter(page); font: 11pt Gisha, Arial, sans-serif; color: #000; } }
+  @page :first { margin: 0; @bottom-center { content: none; } }
+  html { counter-reset: page -1; }
+  html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+  body > *:not(main), .p-main > *:not(.story-doc) { display: none !important; }
+  .p-main { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+  .story-doc { font-size: 14pt; line-height: 1.36; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .story-doc table.flow { width: 100%; border-collapse: collapse; }
+  .story-doc table.flow > thead td { text-align: center; padding: 0 0 7mm; }
+  .story-doc table.flow > thead img { height: 17mm; }
+  .story-doc table.flow > tbody td { padding: 0; }
+  .story-doc .cover { height: 296mm; display: flex; flex-direction: column; align-items: center; padding: 30mm 26mm 0; box-sizing: border-box; break-after: page; text-align: center; }
+  .story-doc .cover .logo { width: 82mm; margin-bottom: 20mm; }
+  .story-doc .cover h1 { font-weight: 700; font-size: 37pt; line-height: 1.32; margin: 0 0 8mm; }
+  .story-doc .cover .for { font-size: 16pt; margin: 0 0 10mm; }
+  .story-doc .cover .summary { font-size: 11pt; line-height: 1.55; margin: 0 0 18mm; max-width: 150mm; }
+}
