@@ -672,6 +672,28 @@ a { color: inherit; }
   .main-nav.open { display: flex; }
   .main-nav a { font-size: 17px; padding: 12px 14px; border-radius: 12px; }
 }
+/* בעמוד הראשי יש גם כפתורי רשתות, אז התפריט המלא לא נכנס בשורה אחת עד רוחב גדול יותר */
+.main-nav a, .brand { white-space: nowrap; }
+.brand { flex: none; }
+.page-index .main-nav a { padding-inline: 10px; }
+/* מסכים בינוניים (מחשב נייד): תפריט קומפקטי בלי אייקונים */
+@media (min-width: 900px) and (max-width: 1279px) {
+  .main-nav a { padding: 8px 9px; }
+  .main-nav a i { display: none; }
+}
+@media (min-width: 900px) and (max-width: 1069px) {
+  .page-index .nav-toggle { display: grid; order: 4; }
+  .page-index .brand { margin-inline-end: auto; }
+  .page-index .main-nav {
+    display: none; position: absolute; top: 100%; inset-inline: 0;
+    flex-direction: column; gap: 4px; margin: 0;
+    padding: 10px 16px 16px; background: var(--surface);
+    border-bottom: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .page-index .main-nav.open { display: flex; }
+  .page-index .main-nav a { font-size: 17px; padding: 12px 14px; border-radius: 12px; }
+  .page-index .main-nav a i { display: inline; }
+}
 @media (max-width: 420px) { .brand span { font-size: 19px; } .social { gap: 6px; } .social-btn { width: 36px; height: 36px; font-size: 17px; } }
 
 /* ---------- סיפורים כתובים / הפעלות ---------- */
