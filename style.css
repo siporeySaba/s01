@@ -547,6 +547,10 @@ a { color: inherit; }
 .pdf-download-btn i { font-size: 18px; }
 .pdf-personal-btn { background: var(--brand); box-shadow: 0 6px 18px color-mix(in srgb, var(--brand) 30%, transparent); }
 .pdf-personal-btn:hover { background: #1d2c52; }
+@media (prefers-color-scheme: dark) {
+  .pdf-personal-btn { color: #1c140e; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+  .pdf-personal-btn:hover { background: #fff; }
+}
 
 .ep-nav {
   margin-top: 32px;
