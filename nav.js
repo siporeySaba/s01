@@ -12,3 +12,6 @@
   document.addEventListener("click", e => { if (!nav.contains(e.target)) set(false); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
 })();
+
+// מונה כניסות (GoatCounter)
+(function(){if(/^(localhost|127.|192.168.)/.test(location.hostname))return;var s=document.createElement('script');s.async=true;s.src='//gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://siporeysaba.goatcounter.com/count');s.onload=function(){try{window.goatcounter.count({path:'site-s01',title:'s01',event:true})}catch(e){}};document.head.appendChild(s)})();
