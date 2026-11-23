@@ -1,38 +1,154 @@
 [
-  { "episode":"השמן שלא נגמר - אלישע הנביא", "file":"shemenSheloNigmar.pdf" },
-  { "episode":"הבחירות האמיתיות - משל יותם", "file":"habchirotHaamitiyot.pdf" },
-  { "episode":"הכיסא של נפוליאון - הרב מרדכי אליהו", "file":"kiseNapoleon.pdf" },
-  { "episode":"צדיק או רשע - החפץ חיים", "file":"tzadikOrasha.pdf" },
-  { "episode":"פרשת נח והלל הזקן", "file":"noachVehilel.pdf" },
-  { "episode":"הרב שלא ויתר על אף אחד", "file":"haravSheloVitter.pdf" },
-  { "episode":"דוד המלך וישבי בנוב", "file":"davidYishbiBenov.pdf" },
-  { "episode":"הסוד של רבי עקיבא", "file":"sodRabiAkiva.pdf" },
-  { "episode":"פרק 1 - התרנגולות שהפכו לעיזים", "file":"s01e01_tarnegolimLeizim.pdf" },
-  { "episode":"פרק 2 - מי יצעק ראשון", "file":"s01e02_miYitzakRishon.pdf" },
-  { "episode":"פרק 3 - הטיול שלא התקיים", "file":"s01e03_hatiyulSheloHitkayem.pdf" },
-  { "episode":"פרק 4 - הדלתות של ניקנור", "file":"s01e04_daltotNikanor.pdf" },
-  { "episode":"פרק 5 - הסידור ששר - חלק א", "file":"s01e05a_hasidurShesar.pdf" },
-  { "episode":"פרק 5 - הסידור ששר - חלק ב", "file":"s01e05b_hasidurShesar.pdf" },
-  { "episode":"פרק 6 – המסע הגדול - עזרא הסופר", "file":"s01e06_hamasaHagadol.pdf" },
-  { "episode":"פרק 7 - התפוח של שלום", "file":"s01e07_tapuachShelShalom.pdf" },
-  { "episode":"פרק 8 - אור החיים הקדוש חלק א", "file":"s01e08_orHachaimPart1.pdf" },
-  { "episode":"פרשת שמיני - השריקה שפתחה את השערים", "file":"parasha-shmini.pdf" },
-  { "episode":"פרשת תזריע מצורע - הרוכל המסתורי", "file":"parasha-tazria.pdf" },
-  { "episode":"פרשת במדבר - דגלים ברוח", "file":"parasha-bamidbar.pdf" },
-  { "episode":"פרשת נשא - הסוד של הרועה ושמעון הצדיק", "file":"parasha-naso.pdf" },
-  { "episode":"יום העצמאות - דוד בן גוריון והכרזת המדינה", "file":"yomHaatzmaut-benGurion.pdf" },
-  { "episode":"בואי כלה - הארי הקדוש", "file":"s01e18_boiKala.pdf" },
-  { "episode": "להסתכל מעבר לזבוב - דוד המלך", "file": "davidVehazvuv.pdf" },
-  { "episode": "פרשת שופטים - השופט הוא אני", "file": "parasha-shoftim.pdf" },
-  { "episode": "לחרוש את הלב - רבי ישראל סלנטר", "file": "lacharoshEtHalev.pdf" },
-  { "episode": "זהב שלא שווה כלום", "file": "zahavSheloShave.pdf" },
-  { "episode": "מתחילים מחדש - היום הראשון ללימודים", "file": "matchilimMechadash.pdf" },
-  { "episode": "לקחת את מה שאוהבים - רבי שמעון בר יוחאי", "file": "lakachatMaShehohavim.pdf" },
-  { "episode": "פרשת כי תבוא - הפרי הראשון", "file": "parasha-kiTavo.pdf" },
-  { "episode": "הברכה והבשר הכשר", "file": "habrachaVehabasar.pdf" },
-  { "episode": "כל עוד הנר דולק", "file": "kolOdHanerDolek.pdf" },
-  { "episode": "הלילה שלא נגמר", "file": "sukkot-simchatBeitHashoeva.pdf" },
-  { "episode": "הערבה החסרה", "file": "sukkot-aravotShechasru.pdf" },
-  { "episode": "האתרוג השבור", "file": "sukkot-etrogShenishbar.pdf" },
-  { "episode": "האור שנשאר", "file": "haorShenishar.pdf" }
+  {
+    "episode": "השמן שלא נגמר - אלישע הנביא",
+    "file": "shemenSheloNigmar.pdf"
+  },
+  {
+    "episode": "הבחירות האמיתיות - משל יותם",
+    "file": "habchirotHaamitiyot.pdf"
+  },
+  {
+    "episode": "הכיסא של נפוליאון - הרב מרדכי אליהו",
+    "file": "kiseNapoleon.pdf"
+  },
+  {
+    "episode": "צדיק או רשע - החפץ חיים",
+    "file": "tzadikOrasha.pdf"
+  },
+  {
+    "episode": "פרשת נח והלל הזקן",
+    "file": "noachVehilel.pdf"
+  },
+  {
+    "episode": "הרב שלא ויתר על אף אחד",
+    "file": "haravSheloVitter.pdf"
+  },
+  {
+    "episode": "דוד המלך וישבי בנוב",
+    "file": "davidYishbiBenov.pdf"
+  },
+  {
+    "episode": "הסוד של רבי עקיבא",
+    "file": "sodRabiAkiva.pdf"
+  },
+  {
+    "episode": "פרק 1 - התרנגולות שהפכו לעיזים",
+    "file": "s01e01_tarnegolimLeizim.pdf"
+  },
+  {
+    "episode": "פרק 2 - מי יצעק ראשון",
+    "file": "s01e02_miYitzakRishon.pdf"
+  },
+  {
+    "episode": "פרק 3 - הטיול שלא התקיים",
+    "file": "s01e03_hatiyulSheloHitkayem.pdf"
+  },
+  {
+    "episode": "פרק 4 - הדלתות של ניקנור",
+    "file": "s01e04_daltotNikanor.pdf"
+  },
+  {
+    "episode": "פרק 5 - הסידור ששר - חלק א",
+    "file": "s01e05a_hasidurShesar.pdf"
+  },
+  {
+    "episode": "פרק 5 - הסידור ששר - חלק ב",
+    "file": "s01e05b_hasidurShesar.pdf"
+  },
+  {
+    "episode": "פרק 6 – המסע הגדול - עזרא הסופר",
+    "file": "s01e06_hamasaHagadol.pdf"
+  },
+  {
+    "episode": "פרק 7 - התפוח של שלום",
+    "file": "s01e07_tapuachShelShalom.pdf"
+  },
+  {
+    "episode": "פרק 8 - אור החיים הקדוש חלק א",
+    "file": "s01e08_orHachaimPart1.pdf"
+  },
+  {
+    "episode": "פרשת שמיני - השריקה שפתחה את השערים",
+    "file": "parasha-shmini.pdf"
+  },
+  {
+    "episode": "פרשת תזריע מצורע - הרוכל המסתורי",
+    "file": "parasha-tazria.pdf"
+  },
+  {
+    "episode": "פרשת במדבר - דגלים ברוח",
+    "file": "parasha-bamidbar.pdf"
+  },
+  {
+    "episode": "פרשת נשא - הסוד של הרועה ושמעון הצדיק",
+    "file": "parasha-naso.pdf"
+  },
+  {
+    "episode": "יום העצמאות - דוד בן גוריון והכרזת המדינה",
+    "file": "yomHaatzmaut-benGurion.pdf"
+  },
+  {
+    "episode": "בואי כלה - הארי הקדוש",
+    "file": "s01e18_boiKala.pdf"
+  },
+  {
+    "episode": "להסתכל מעבר לזבוב - דוד המלך",
+    "file": "davidVehazvuv.pdf"
+  },
+  {
+    "episode": "פרשת שופטים - השופט הוא אני",
+    "file": "parasha-shoftim.pdf"
+  },
+  {
+    "episode": "לחרוש את הלב - רבי ישראל סלנטר",
+    "file": "lacharoshEtHalev.pdf"
+  },
+  {
+    "episode": "זהב שלא שווה כלום",
+    "file": "zahavSheloShave.pdf"
+  },
+  {
+    "episode": "מתחילים מחדש - היום הראשון ללימודים",
+    "file": "matchilimMechadash.pdf"
+  },
+  {
+    "episode": "לקחת את מה שאוהבים - רבי שמעון בר יוחאי",
+    "file": "lakachatMaShehohavim.pdf"
+  },
+  {
+    "episode": "פרשת כי תבוא - הפרי הראשון",
+    "file": "parasha-kiTavo.pdf"
+  },
+  {
+    "episode": "הברכה והבשר הכשר",
+    "file": "habrachaVehabasar.pdf"
+  },
+  {
+    "episode": "כל עוד הנר דולק",
+    "file": "kolOdHanerDolek.pdf"
+  },
+  {
+    "episode": "הלילה שלא נגמר",
+    "file": "sukkot-simchatBeitHashoeva.pdf"
+  },
+  {
+    "episode": "הערבה החסרה",
+    "file": "sukkot-aravotShechasru.pdf"
+  },
+  {
+    "episode": "האתרוג השבור",
+    "file": "sukkot-etrogShenishbar.pdf"
+  },
+  {
+    "episode": "האור שנשאר",
+    "file": "haorShenishar.pdf"
+  },
+  {
+    "episode": "בת הש\"ך - חלק א",
+    "file": "batHashach-a.pdf"
+  },
+  {
+    "episode": "בת הש\"ך - חלק ב",
+    "file": "batHashach-b.pdf"
+  }
 ]

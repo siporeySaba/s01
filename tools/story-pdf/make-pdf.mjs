@@ -11,9 +11,9 @@ const REPO = path.resolve(HERE, "../..");
 const OUT_DIR = path.join(REPO, "pdf story");
 
 const EDGE_PATHS = [
+  "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
-  "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
-  "C:/Program Files/Google/Chrome/Application/chrome.exe"
+  "C:/Program Files/Microsoft/Edge/Application/msedge.exe"
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
