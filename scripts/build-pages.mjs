@@ -257,6 +257,7 @@ const urls = [
   `  <url><loc>${SITE}about.html</loc><lastmod>2026-11-16</lastmod></url>`,
   `  <url><loc>${SITE}stories.html</loc><lastmod>2026-11-17</lastmod></url>`,
   `  <url><loc>${SITE}activities.html</loc><lastmod>2026-11-17</lastmod></url>`,
+  `  <url><loc>${SITE}alon.html</loc><lastmod>2026-11-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,
   ...HUBS.map(h => `  <url><loc>${SITE}${h.file}</loc><lastmod>${lastmod(publicEps.find(e => e.series === h.series)?.when.date || new Date())}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`),
   ...publicEps.filter(ep => ep.series !== "shorts").map(ep => `  <url><loc>${SITE}ep/${ep.vid}.html</loc><lastmod>${lastmod(ep.when.date)}</lastmod></url>`)
 ];
