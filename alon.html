@@ -63,14 +63,13 @@ gtag('config', 'G-XWX9C43JV9');
     <section class="alon-box" id="signup">
       <h2>✉️ קבלו את העלון כל שבוע במייל</h2>
       <form id="alonForm" novalidate>
-        <label>שם (לא חובה)<input name="name" type="text" maxlength="80" autocomplete="name"></label>
-        <label>כתובת מייל<input name="email" type="email" required maxlength="190" autocomplete="email" dir="ltr"></label>
+        <label>שם <span style="font-weight:400;opacity:.7">(לא חובה)</span><input name="name" type="text" maxlength="80" autocomplete="name" placeholder="איך לפנות אליכם?"></label>
+        <label>כתובת מייל<input name="email" type="email" required maxlength="190" autocomplete="email" dir="ltr" placeholder="name@example.com"></label>
         <label class="alon-consent"><input name="consent" type="checkbox" required> אני מאשר/ת לקבל מסיפורי סבא את העלון השבועי במייל. אפשר להסיר את עצמכם בכל רגע בקישור שבתחתית כל מייל.</label>
         <button class="btn" type="submit"><i class="fa-solid fa-paper-plane"></i> הרשמה לעלון</button>
         <p id="alonMsg" class="alon-msg" role="status"></p>
       </form>
-      <p>מעדיפים וואטסאפ? העלון נשלח גם בקבוצה:</p>
-      <div class="follow-btns"><a class="btn btn-whatsapp" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> לקבוצת הוואטסאפ</a></div>
+      <div class="alon-alt"><span>מעדיפים וואטסאפ? העלון נשלח גם בקבוצה</span><div class="follow-btns"><a class="btn btn-whatsapp" href="https://chat.whatsapp.com/Bw6tW2DqX1mJNGeKQE0V6N" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> לקבוצת הוואטסאפ</a></div></div>
     </section>
 
     <h2>העלונים שיצאו</h2>
@@ -78,13 +77,23 @@ gtag('config', 'G-XWX9C43JV9');
   </article>
 </main>
 <style>
-.alon-box{border:2px solid currentColor;border-radius:16px;padding:16px 18px;margin:20px 0;}
-#alonForm{display:grid;gap:12px;max-width:460px}
-#alonForm label{display:grid;gap:4px;font-weight:600}
-#alonForm input[type=text],#alonForm input[type=email]{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid #bbb}
-#alonForm .alon-consent{display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:.95em}
-#alonForm button{justify-self:start;cursor:pointer}
-.alon-msg{min-height:1.4em;font-weight:600;margin:0}
+.alon-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px 18px;margin:22px 0;}
+.alon-box h2{margin-top:0}
+#signup{border-top:4px solid var(--accent)}
+#alonForm{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;max-width:560px;margin-bottom:6px}
+#alonForm label{display:grid;gap:6px;font-size:.88rem;font-weight:600;color:var(--ink);opacity:.9}
+#alonForm input[type=text],#alonForm input[type=email]{font:inherit;font-size:1rem;padding:11px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--line);background:var(--bg);color:var(--ink);transition:border-color .15s,box-shadow .15s,background .15s;outline:none;width:100%;box-sizing:border-box}
+#alonForm input[type=email]{text-align:right}
+#alonForm input::placeholder{color:var(--ink);opacity:.4}
+#alonForm input[type=text]:focus,#alonForm input[type=email]:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 4px var(--accent-soft)}
+#alonForm .alon-consent{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:.88rem;line-height:1.5;opacity:.85;cursor:pointer}
+#alonForm .alon-consent input{accent-color:var(--accent);width:18px;height:18px;margin:2px 0 0;flex:none;cursor:pointer}
+#alonForm button{grid-column:1/-1;justify-self:start;cursor:pointer;background:var(--accent);color:#fff;border:none;padding:12px 26px;font-size:1rem;box-shadow:0 4px 14px rgba(216,137,28,.3);transition:transform .15s,box-shadow .15s}
+#alonForm button:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(216,137,28,.4)}
+.alon-msg{grid-column:1/-1;min-height:1.4em;font-weight:600;margin:0;color:var(--ok)}
+.alon-alt{margin:14px 0 0;padding-top:14px;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-size:.95rem}
+.alon-alt .follow-btns{margin:0}
+@media (max-width:560px){#alonForm{grid-template-columns:1fr}#alonForm button{justify-self:stretch}}
 </style>
 <script type="module">
 import { db } from "./firebase.js";
