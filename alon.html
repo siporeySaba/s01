@@ -56,6 +56,12 @@ gtag('config', 'G-XWX9C43JV9');
     <h1>עלון לשולחן השבת 📖</h1>
     <p class="about-lead">בכל יום רביעי יוצא עלון חדש בעמוד אחד להדפסה: הסיפור המלא של פרשת השבוע, שאלות לשיחה ליד השולחן, "חפשו ומצאו" לקטנים וחידה בפרשה. מתאים למשפחות, לגננות ולמורות.</p>
 
+    <section class="alon-box alon-preview" id="alonPreview" hidden>
+      <h2>👀 כך נראה העלון</h2>
+      <a id="alonPrevLink" href="#" target="_blank" rel="noopener"><img id="alonPrevImg" src="" alt="" width="909" height="1287" loading="lazy"></a>
+      <p class="alon-prev-cap"><span id="alonPrevCap"></span> <a class="btn" id="alonPrevBtn" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i> להורדת העלון (PDF)</a></p>
+    </section>
+
     <section id="unsubBox" class="alon-box" hidden>
       <h2>הסרה מרשימת התפוצה</h2>
       <p id="unsubMsg">מסירים אתכם מהרשימה…</p>
@@ -80,6 +86,9 @@ gtag('config', 'G-XWX9C43JV9');
 <style>
 .alon-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px 18px;margin:22px 0;}
 .alon-box h2{margin-top:0}
+.alon-preview>a{display:block;max-width:520px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1px solid var(--line)}
+.alon-preview img{display:block;width:100%;height:auto;background:#fff}
+.alon-prev-cap{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 14px;margin:16px 0 0;text-align:center}
 #signup{border-top:4px solid var(--accent)}
 #alonForm{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;max-width:560px;margin-bottom:6px}
 #alonForm label{display:grid;gap:6px;font-size:.88rem;font-weight:600;color:var(--ink);opacity:.9}
@@ -105,6 +114,14 @@ const token = () => [...crypto.getRandomValues(new Uint8Array(18))].map(b => b.t
 fetch("alon/sheets.json", { cache: "no-store" }).then(r => r.json()).then(list => {
   const today = new Date().toISOString().slice(0, 10);
   const items = list.filter(x => x.sendOn <= today).reverse();
+  const last = items.find(x => x.img);
+  if (last) {
+    const pdf = `alon/${last.file}`, box = document.getElementById("alonPreview"), img = document.getElementById("alonPrevImg");
+    img.src = `alon/${last.img}`; img.alt = `עלון סבא בפרשה – ${last.parasha}`;
+    document.getElementById("alonPrevLink").href = pdf; document.getElementById("alonPrevBtn").href = pdf;
+    document.getElementById("alonPrevCap").textContent = `העלון של השבוע: ${last.parasha}`;
+    box.hidden = false;
+  }
   document.getElementById("alonList").innerHTML = items.map(x =>
     `<li><b>${x.parasha}</b>: ${x.summary} <a href="alon/${x.file}" target="_blank" rel="noopener">להורדת העלון (PDF)</a></li>`).join("") || "<li>בקרוב…</li>";
 }).catch(() => {});
